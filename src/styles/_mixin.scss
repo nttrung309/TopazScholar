@@ -1,0 +1,155 @@
+@mixin no-outline($color) {
+  outline: none;
+  box-shadow: none;
+
+  &:focus {
+    outline: none;
+    border: 1px solid $color;
+    box-shadow: none;
+  }
+
+  &:hover {
+    border: 1px solid $color;
+    outline: none;
+    box-shadow: none;
+
+  }
+}
+
+@mixin no-box-shadow() {
+  outline: none;
+  box-shadow: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  &:hover {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+@mixin center-absolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 30%);
+}
+
+@mixin text-wrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin style-text($fw, $fs, $line-height, $color) {
+  font-weight: $fw;
+  font-size: $fs;
+  line-height: $line-height;
+  color: $color;
+}
+
+
+@mixin centerFlexItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin centerAbsItem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%, -50%);
+}
+
+
+// RESPONSIVE - MIN-WIDTH - ANTD- xs -sm -md - lg -xl - xxl
+// USE: @include respond(xs-screen) {}
+
+@mixin respond($breakpoint) {
+
+  // screen < 576px
+  @if $breakpoint==xs-screen {
+    @media only screen and (max-width: 576px) {
+      @content
+    }
+  };
+
+  // screen ≥ 576px
+  @if $breakpoint==sm-screen {
+    @media only screen and (min-width: 576px) {
+      @content
+    }
+  };
+
+  // screen ≥ 768px
+  @if $breakpoint==md-screen {
+    @media only screen and (min-width: 768px) {
+      @content
+    }
+  };
+
+  // screen ≥ 992px
+  @if $breakpoint==lg-screen {
+    @media only screen and (min-width: 992px) {
+      @content
+    }
+  };
+
+  // screen ≥ 1200px
+  @if $breakpoint==xl-screen {
+    @media only screen and (min-width: 1024px) {
+      @content
+    }
+  };
+
+  // screen ≥ 1600px
+  @if $breakpoint==xxl-screen {
+    @media only screen and (min-width: 1600px) {
+      @content
+    }
+  };
+
+}
+
+@mixin sideMenuCss($color){
+    p{
+        color: $color;
+    }
+    .line{
+        background-color:$color;
+    }
+    &:hover,
+    &.active{
+        background-color:$color;
+        .line{
+            background-color: #FFFFFF;
+        }
+        p{
+            color: #FFFFFF;
+        }
+    }
+    .ant-card-head-title{
+      color: $color;
+  }
+}
+
+
+@mixin respondRelatedHeight($breakpoint) {
+
+  // screen < 568px
+  @if $breakpoint==sm-screen {
+    @media only screen and (max-height: 568px) {
+      @content
+    }
+  };
+
+  // screen < 768px
+  @if $breakpoint==md-screen {
+    @media only screen and (max-height: 768px) {
+      @content
+    }
+  };
+}

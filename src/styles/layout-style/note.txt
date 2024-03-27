@@ -1,0 +1,1 @@
+scss chính cho các layout

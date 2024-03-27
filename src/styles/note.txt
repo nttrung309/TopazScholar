@@ -1,0 +1,6 @@
+Thư mục main-style: Style chính của các trang.
+Thư mục layout-style: Style chính của các layout.
+Thư mục component-style: Style của các component con và shared component.
+
+Thêm font chữ vào body.scss
+Thêm màu vào _variable.scss

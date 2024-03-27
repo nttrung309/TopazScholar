@@ -1,0 +1,7 @@
+@use 'variable' as *;
+@use 'mixin' as *;
+@import './body.scss';
+
+@import './main-style/style_index.scss';
+@import './layout-style/style_index.scss';
+@import './component-style/style_index.scss';

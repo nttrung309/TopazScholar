@@ -1,0 +1,3 @@
+Vào file "mainRouter.js"
+Import các router của trang
+Bỏ router vừa import vào đúng mảng private hoặc public

@@ -1,0 +1,3 @@
+Copy "router.jsx" để dùng cho trang khác
+Sửa path
+Sửa layout, nếu không có để là null
