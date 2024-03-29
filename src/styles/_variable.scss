@@ -1,15 +1,55 @@
 //TEXT COLOR
 
-  //////////////////////////
- //       ORANGE         //
+//////////////////////////
+//       BLUE         //
 //////////////////////////
 
+$blue-100: #cfe2ff;
+$blue-200: #9ec5fe;
+$blue-300: #6ea8fe;
+$blue-400: #3d8bfd;
+$blue-500: #0d6efd;
+$blue-600: #0a58ca;
+$blue-700: #084298;
+$blue-800: #052c65;
+$blue-900: #031633;
 
-
-  //////////////////////////
- //       GRAY           //
+//////////////////////////
+//       GRAY           //
 //////////////////////////
 
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
 
+//TEXT STYLE
 
+$bold-h1: bold 40px Inter;
+$bold-h2: bold 32px Inter;
+$bold-h3: bold 28px Inter;
+$bold-h4: bold 24px Inter;
+$bold-h5: bold 20px Inter;
+$bold-h6: bold 16px Inter;
 
+$semibold-h1: 600 40px Inter;
+$semibold-h2: 600 40px Inter;
+$semibold-h3: 600 28px Inter;
+$semibold-h4: 600 24px Inter;
+$semibold-h5: 600 20px Inter;
+$semibold-h6: 600 16px Inter;
+
+$medium-h1: 500 40px Inter;
+$medium-h2: 500 40px Inter;
+$medium-h3: 500 28px Inter;
+$medium-h4: 500 24px Inter;
+$medium-h5: 500 20px Inter;
+$medium-h6: 500 16px Inter;
+
+$base-text: 400 15px Inter;
+$small: 400 12px Inter;
