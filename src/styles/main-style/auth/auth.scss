@@ -1,8 +1,9 @@
-.auth-login{
+.auth{
     width: 100%;
     height: 100vh;
     display: flex;
     flex-wrap: wrap;
+    row-gap: 0;
 
     font-family: 'Inter';
 
@@ -19,11 +20,19 @@
 
             svg{
                 scale: 2;
+
+                @media only screen and (max-width: 1200px) {
+                    scale: 1.5;
+                }
             }
+        }
+
+        @media only screen and (max-height: 700px) {
+            display: none;
         }
     }
 
-    &__login-form{
+    &__form{
         flex: 1 0 70%;
         height: 100%;
 
@@ -31,8 +40,16 @@
         align-items: center;
         justify-content: center;
 
+        @media only screen and (max-width: 1200px) {
+            height: auto;
+        }
+
         &__container{
             width: 450px;
+
+            @media only screen and (max-width: 500px) {
+                width: 90vw;
+            }
         }
 
         &__header{
@@ -42,20 +59,25 @@
 
             margin-bottom: 70px;
 
-            &__title{
-                font-weight: bold;
-                font-size: 32px;
+            @media only screen and (max-width: 1200px) {
+                margin-bottom: 20px;
+            }
 
-                color: #0A58CA;
+            &__title{
+                font: $bold-h2;
+
+                color: $blue-600;
                 text-align: center;
             }
             &__sub-title{
-                font-size: 15px;
+                font: $base-text;
                 text-align: center;
-                color: #495057;
+                color: $gray-700;
+
+                user-select: none;
 
                 span{
-                    color: #0A58CA;
+                    color: $blue-600;
                     text-decoration: underline;
 
                     cursor: pointer;
@@ -77,17 +99,32 @@
             row-gap: 4px;
             
             &__label{
-                font-size: 15px;
-                color: #031633;
+                font: $base-text;
+                color: $blue-900;
             }
             &__input{
                 height: 36px;
+
+                font: $base-text;
+
+                &::placeholder{
+                    font: $base-text;
+                    color: $gray-500;
+                }
+            }
+            .ant-input{
+                font: $base-text;
+
+                &::placeholder{
+                    font: $base-text;
+                    color: $gray-500;
+                }
             }
         }
 
         &__forgot-password{
-            font-size: 15px;
-            color: #495057;
+            font: $base-text;
+            color: $gray-700;
 
             padding-top: 12px;
             padding-bottom: 40px;
@@ -103,8 +140,8 @@
             row-gap: 10px;
 
             &__divider{
-                font-size: 15px;
-                color: #495057;
+                font: $base-text;
+                color: $gray-700;
 
                 text-align: center;
             }
@@ -117,7 +154,7 @@
             font-size: 16px;
             font-weight: 600;
 
-            &.login{
+            &.primary{
                 color: #FFFFFF;
             }
 
