@@ -1,3 +1,85 @@
-.header{
-    
+@use "../variable" as *;
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid $gray-200;
+  background-color: #fff;
+  gap: 20px;
+  height: 64px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+
+  .collapse {
+    width: 64px;
+    height: 64px;
+    padding: 0px;
+  }
+
+  &__right {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 20px;
+
+    .ant-badge {
+      padding: 10px;
+      border-radius: 6px;
+
+      .ant-badge-count {
+        background-color: $blue-600;
+      }
+
+      .ant-badge-count-sm {
+        font-size: 10px;
+      }
+
+      &:hover {
+        color: $blue-600;
+        cursor: pointer;
+      }
+    }
+
+    .ant-dropdown-trigger {
+      padding: 0px;
+    }
+
+    .ant-btn-default {
+      border: none;
+      box-shadow: none;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: center;
+
+      .image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: $gray-100;
+      }
+
+      .information {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        &__name {
+          font: $bold-h6;
+          color: $blue-900;
+        }
+
+        &__class {
+          font: $small;
+          color: $gray-500;
+        }
+      }
+    }
+  }
 }
