@@ -1,0 +1,73 @@
+@use "../variable" as *;
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  height: 100vh;
+  border-right: 1px solid $gray-200;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+
+  .logo {
+    width: 100%;
+    height: 180px;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    margin: 0px 12px;
+
+    .item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      color: $gray-700;
+      font: $medium-h6;
+      border-radius: 4px;
+
+      &.active {
+        background-color: $hover-button-background;
+        color: $blue-600;
+      }
+
+      &:hover {
+        background-color: $hover-button-background;
+        color: $blue-600;
+        cursor: pointer;
+      }
+    }
+  }
+
+  &.collapsed {
+    width: fit-content;
+
+    .logo {
+      display: none;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      margin-top: 180px;
+
+      .item {
+        .label {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+.bi::before {
+  display: inline-block;
+  //content: "";
+  vertical-align: -0.125em;
+  font-size: 20px;
+}
