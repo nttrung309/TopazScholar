@@ -1,0 +1,82 @@
+.activity-card{
+    display: flex;
+    flex-direction: column;
+
+    width: 360px;
+    height: 380px;
+    
+    border: 1px solid $gray-300;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    
+    border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    -ms-border-radius: 12px;
+    -o-border-radius: 12px;
+    
+    img{
+        width: 100%;
+        max-width: 100%;
+        min-height: 192px;
+        max-height: 192px;
+        
+        border-top-right-radius: 12px;
+        border-top-left-radius: 12px;
+    }
+
+    .content{
+        flex: 1 1;
+        padding: 16px;
+
+        display: flex; 
+        flex-direction: column;
+        justify-content: space-between;
+
+        .info{
+            .activity{
+                &-time{
+                    font: $medium-h6;
+                    color: $gray-800;
+                }
+                &-name{
+                    font: $semibold-h5;
+                    color:  $blue-900;
+                }
+                &-area{
+                    font: $semibold-h6;
+                    color: $gray-700;
+                }
+            }
+        }
+        .card-footer{
+            display: flex;
+            justify-content: space-around;
+
+            .btn{
+                height: 38px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                font: $semibold-h6;
+
+                background-color: $gray-300;
+
+                border-radius: 6px;
+                -webkit-border-radius: 6px;
+                -moz-border-radius: 6px;
+                -ms-border-radius: 6px;
+                -o-border-radius: 6px;
+
+                cursor: pointer;
+            }
+            .view-detail{
+                width: 260px;
+            }
+            .share{
+                width: 46px;
+            }
+        }
+    }
+}

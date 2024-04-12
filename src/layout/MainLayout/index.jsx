@@ -16,7 +16,6 @@ const MainLayout = ({ children }) => {
       <div className={`main-container${collapsed ? " collapsed" : ""}`}>
         <Header collapsed={collapsed} handleCollapsed={handleCollapsed} />
         {children}
-        <Footer />
       </div>
     </div>
   );
