@@ -13,8 +13,41 @@
   margin-left: 240px;
   padding-top: 64px;
   max-height: calc(100vh - 64px);
+  max-width: calc(100vw - 240px);
 
   &.collapsed {
     margin-left: 84px;
+    max-width: calc(100vw - 84px);
+  }
+}
+
+.page-title{
+  display: flex;
+  column-gap: 20px;
+
+  align-items: center;
+
+  .title-icon{
+    width: 28px;
+    height: 28px;
+
+    background-color: $blue-600;
+
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    -o-border-radius: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+  }
+  .title-name{
+    font: $bold-h3;
+
+    color: $blue-900;
   }
 }

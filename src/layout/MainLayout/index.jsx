@@ -3,7 +3,7 @@ import Header from "../Header";
 import Footer from "../Footer";
 import SideBar from "../SideBar";
 
-const MainLayout = ({ children }) => {
+const MainLayout = ({ children}) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleCollapsed = (value) => {
