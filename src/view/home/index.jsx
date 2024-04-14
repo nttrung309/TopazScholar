@@ -28,7 +28,7 @@ const Home = () => {
           <div className="section__title">
             Sự kiện sắp đến
           </div>
-          {/* <div className="section__content">
+          <div className="section__content">
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
@@ -36,13 +36,7 @@ const Home = () => {
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
-            
-          </div> */}
-          <Flex wrap="wrap" gap="small">
-            {Array.from({ length: 23 }, (_, i) => (
-              <ActivityCard variant='vertical'/>
-            ))}
-          </Flex>
+          </div>
         </div>
       </div>
     </div>

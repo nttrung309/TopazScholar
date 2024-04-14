@@ -1,7 +1,11 @@
 .activity-card{
     display: flex;
     flex-direction: column;
-
+    
+    flex-grow: 1;
+    max-width: 360px;
+    min-width: 240px;
+    width: 20%;
     height: 380px;
     
     border: 1px solid $gray-300;
