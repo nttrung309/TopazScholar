@@ -1,4 +1,3 @@
-import SideBar from "layout/SideBar";
 import React from "react";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";

@@ -1,4 +1,4 @@
-.activity-registered {
+.activity-hosting {
   display: flex;
   flex-direction: row;
   //   min-height: 100vh;
@@ -10,8 +10,26 @@
     padding: 20px;
     height: 100%;
 
-    .page-title {
-      margin-bottom: 40px;
+    .top {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .page-title {
+        margin-bottom: 40px;
+      }
+
+      .ant-radio-button-wrapper {
+        font: $medium-h6;
+        color: black;
+        padding: 10px 16px;
+        height: fit-content;
+        border: 1px solid $gray-300;
+      }
+
+      .ant-radio-button-wrapper-checked {
+        background-color: $gray-300;
+      }
     }
 
     .flex-column {
