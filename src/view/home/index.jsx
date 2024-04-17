@@ -3,7 +3,7 @@ import React from "react";
 import ActivityCard from "shared/components/ActivityCard";
 
 import { BsHouseFill } from "react-icons/bs";
-import { Flex } from 'antd';
+import Calendar from "./components/Calendar";
 
 const Home = () => {
   return (
@@ -21,7 +21,6 @@ const Home = () => {
           </div>
           <div className="section__content">
             <ActivityCard variant='horizontal'/>
-            <ActivityCard variant='horizontal'/>
           </div>
         </div>
         <div className="upcoming-activity section vertical">
@@ -32,11 +31,15 @@ const Home = () => {
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
             <ActivityCard variant='vertical'/>
-            <ActivityCard variant='vertical'/>
-            <ActivityCard variant='vertical'/>
-            <ActivityCard variant='vertical'/>
-            <ActivityCard variant='vertical'/>
           </div>
+        </div>
+        <div className="my-calender section">
+          <div className="section__title">
+              Sự kiện của bạn
+            </div>
+            <div className="section__content">
+              <Calendar/>
+            </div>
         </div>
       </div>
     </div>
