@@ -6,10 +6,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
 body {
-  margin: 0;
+  margin: 0px;
   padding: 0px;
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+a:visited {
+  text-decoration: none;
+  color: inherit;
 }
