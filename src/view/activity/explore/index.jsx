@@ -21,7 +21,7 @@ const items = [
   },
 ];
 
-const ActivyExplore = () => {
+const ActivityExplore = () => {
   return (
     <div className="activity-explore">
       <SubSidebar />
@@ -70,4 +70,4 @@ const ActivyExplore = () => {
   );
 };
 
-export default ActivyExplore;
+export default ActivityExplore;

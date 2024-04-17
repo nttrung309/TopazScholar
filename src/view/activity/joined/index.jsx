@@ -2,9 +2,9 @@ import React from "react";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 
-const ActivityyRegistered = () => {
+const ActivityJoined = () => {
   return (
-    <div className="activity-registered">
+    <div className="activity-joined">
       <SubSidebar />
 
       <div className="main">
@@ -12,7 +12,7 @@ const ActivityyRegistered = () => {
           <div className="title-icon">
             <i className="bi bi-lightning-fill" />
           </div>
-          <div className="title-name">Hoạt động bạn đã đăng ký tham gia</div>
+          <div className="title-name">Hoạt động bạn đã tham gia</div>
         </div>
 
         <div className="flex-column">
@@ -33,4 +33,4 @@ const ActivityyRegistered = () => {
   );
 };
 
-export default ActivityyRegistered;
+export default ActivityJoined;

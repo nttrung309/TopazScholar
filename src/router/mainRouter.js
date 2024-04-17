@@ -5,6 +5,7 @@ import { routerSignUp } from "../view/auth/SignUp/router.jsx";
 import { routerExplore } from "view/activity/explore/router.jsx";
 import { routerRegistered } from "view/activity/registered/router.jsx";
 import { routerHosting } from "view/activity/hosting/router.jsx";
+import { routerJoined } from "view/activity/joined/router.jsx";
 
 //Private Routes
 
@@ -17,4 +18,5 @@ export const publicPage = [
   routerExplore,
   routerRegistered,
   routerHosting,
+  routerJoined,
 ];

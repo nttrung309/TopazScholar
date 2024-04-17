@@ -14,7 +14,7 @@ const options = [
   },
 ];
 
-const ActivyHosting = () => {
+const ActivityHosting = () => {
   const [value1, setValue1] = useState("Sắp diễn ra");
   return (
     <div className="activity-hosting">
@@ -54,4 +54,4 @@ const ActivyHosting = () => {
   );
 };
 
-export default ActivyHosting;
+export default ActivityHosting;
