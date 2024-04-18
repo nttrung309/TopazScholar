@@ -1,0 +1,193 @@
+.column-2 {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+
+  .cell {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    gap: 20px;
+
+    &.left {
+      flex: 3;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .ant-radio-button-wrapper {
+      font: $semibold-h6;
+      color: black;
+      padding: 10px 16px;
+      height: fit-content;
+      border: 1px solid $gray-300;
+    }
+
+    .ant-radio-button-wrapper-checked {
+      background-color: $gray-300;
+    }
+
+    .information {
+      padding: 20px;
+      background-color: $gray-100;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      .button-wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 12px;
+
+        .ant-btn-primary {
+          background-color: $gray-300;
+          color: black;
+          box-shadow: none;
+          font: $semibold-h6;
+          flex: 1;
+        }
+
+        .activity-tag {
+          text-transform: uppercase;
+          font-size: $medium-h6;
+          padding: 8px 12px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex: 1;
+
+          &.finished {
+            background-color: $gray-400;
+            color: $gray-600;
+          }
+        }
+      }
+
+      .infor-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        font: $semibold-h6;
+        color: $gray-700;
+
+        .row {
+          display: flex;
+          flex-direction: row;
+          gap: 8px;
+          align-items: center;
+
+          &:first-child {
+            color: $gray-800;
+            text-transform: uppercase;
+          }
+
+          &.content-2 {
+            align-items: flex-start;
+            font: $medium-h6;
+            color: $gray-800;
+
+            span {
+              white-space: nowrap;
+              font: $semibold-h6;
+              color: $gray-700;
+            }
+          }
+        }
+      }
+
+      .label {
+        font: $semibold-h5;
+        color: $gray-900;
+      }
+
+      .number {
+        font: $bold-h2;
+        color: $blue-900;
+        margin: auto;
+      }
+
+      .sub-text {
+        margin: auto;
+        font: $base-text;
+        color: $gray-700;
+      }
+    }
+
+    .suggest-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+
+      .title {
+        color: $gray-900;
+        font: $semibold-h5;
+      }
+
+      .suggest-card {
+        padding: 4px;
+        padding-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        border-bottom: 1px solid $gray-200;
+
+        .content {
+          display: flex;
+          flex-direction: row;
+          gap: 12px;
+
+          img {
+            max-width: 30%;
+            border-radius: 8px;
+            margin-bottom: 0px;
+          }
+
+          &__wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font: $semibold-h6;
+            span {
+              color: $blue-900;
+
+              &:first-child {
+                color: $gray-800;
+                font: $small;
+              }
+
+              &:last-child {
+                color: $gray-700;
+                font: $medium-h6;
+              }
+            }
+          }
+        }
+
+        .button-wrapper {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          gap: 20px;
+
+          .ant-btn-primary {
+            background-color: $gray-300;
+            color: black;
+            box-shadow: none;
+            font: $semibold-h6;
+
+            &:first-child {
+              flex: 1;
+            }
+          }
+        }
+      }
+    }
+  }
+}

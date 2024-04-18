@@ -4,8 +4,6 @@ import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
 
-const activityTitles = ["Khám phá"];
-
 const options = [
   {
     label: "Sắp diễn ra",
