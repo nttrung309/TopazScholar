@@ -1,0 +1,46 @@
+.sub-sidebar {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+
+  .ant-input-suffix i {
+    font-size: 12px;
+    color: $gray-600;
+  }
+
+  .sub-menu {
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+
+    a {
+      border-radius: 4px;
+      color: $gray-700;
+      font: $semibold-h6;
+      padding: 12px 20px;
+
+      &.active {
+        background-color: $gray-200;
+        color: $blue-900;
+
+        &:hover {
+          background-color: $gray-200;
+        }
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: $gray-100;
+        color: black;
+      }
+    }
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

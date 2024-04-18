@@ -39,9 +39,9 @@ const Header = ({ collapsed, handleCollapsed }) => {
         type="text"
         icon={
           collapsed ? (
-            <i class="bi bi-arrow-bar-right" />
+            <i className="bi bi-arrow-bar-right" />
           ) : (
-            <i class="bi bi-arrow-bar-left" />
+            <i className="bi bi-arrow-bar-left" />
           )
         }
         onClick={() => handleCollapsed(!collapsed)}
