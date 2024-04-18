@@ -2,10 +2,13 @@
 import { routerHome } from "../view/home/router.jsx";
 import { routerLogin } from "../view/auth/Login/router.jsx";
 import { routerSignUp } from "../view/auth/SignUp/router.jsx";
-import { routerExplore } from "view/activity/explore/router.jsx";
-import { routerRegistered } from "view/activity/registered/router.jsx";
-import { routerHosting } from "view/activity/hosting/router.jsx";
-import { routerJoined } from "view/activity/joined/router.jsx";
+import {
+  routerExplore,
+  routerHosting,
+  routerJoined,
+  routerRegistered,
+} from "view/activity/router.jsx";
+import { routerDetail } from "view/detail/router.jsx";
 
 //Private Routes
 
@@ -19,4 +22,5 @@ export const publicPage = [
   routerRegistered,
   routerHosting,
   routerJoined,
+  routerDetail,
 ];
