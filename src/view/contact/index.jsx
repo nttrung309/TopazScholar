@@ -2,8 +2,8 @@ import React from "react";
 
 import ActivityCard from "shared/components/ActivityCard";
 
-import { BsCursorFill } from "react-icons/bs";
-import { Input } from "antd";
+import { BsCursorFill, BsListUl, BsTelephoneFill } from "react-icons/bs";
+import { Avatar, Input } from "antd";
 
 const Contact = () => {
   return (
@@ -35,7 +35,14 @@ const Contact = () => {
       </div>
       <div className="chat-window">
         <div className="chat-header">
-
+          <div className="chat-header__user-info">
+            <Avatar size={52} src={require('../../shared/asset/image/contact/temp_avatar.jpg')}/>
+            <div className="username">Nguyễn Thành Trung</div>
+          </div>
+          <div className="chat-header__control-group">
+            <div className="control-item"><BsTelephoneFill className="phone" /></div>
+            <div className="control-item"><BsListUl className="more-option"/></div>
+          </div>
         </div>
         <div className="chat-content">
 
