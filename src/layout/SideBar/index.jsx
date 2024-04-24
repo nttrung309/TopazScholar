@@ -20,12 +20,12 @@ const SideBar = ({ collapsed }) => {
           <span className="label">Hoạt động</span>
         </Link>
 
-        <Link to="/">
+        <Link to="/calendar">
           <i className="bi bi-table" />
           <span className="label">Lịch</span>
         </Link>
 
-        <Link to="/">
+        <Link to="/contact">
           <i className="bi bi-cursor" />
           {/* <i class="bi bi-cursor-fill"/> */}
           <span className="label">Trò chuyện</span>

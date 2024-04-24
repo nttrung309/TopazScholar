@@ -1,9 +1,55 @@
 .contact {
   height: 100%;
-  padding: 20px;
   background-color: #fbfbfb;
   overflow-y: scroll;
 
   display: flex;
   
+  .contact-sidebar {
+    width: 300px;
+    padding: 20px;  
+
+    display: flex;
+    flex-direction: column;
+    
+
+    .chat-search-bar {
+      margin: 40px 0 12px 0;
+    }
+    
+    .users-group {
+      width: 100%;
+      height: 100%;
+      
+      .contact-user-item {
+        
+      }
+    }
+  }
+  
+  .chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    
+    .chat-header {
+      height: 80px;
+    }
+    
+    .chat-content {
+      width: 100%;
+      height: 100%;
+      padding: 30px;
+
+      
+    }
+    
+    .chat-input {
+      width: 100%;
+      height: 42px;
+
+      margin-bottom: 40px;
+    }
+  }
 }
+

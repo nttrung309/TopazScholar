@@ -4,8 +4,7 @@
 
     const ActivityCard = ({variant}) => {
         const cardVariant = ['horizontal', 'vertical'].includes(variant) ? variant : 'vertical';
-        
-        console.log(variant, cardVariant);
+
         return (
             <div className={'activity-card ' + cardVariant}>
                 <img src={require('../asset/image/temp/card-img.png')} alt="" />

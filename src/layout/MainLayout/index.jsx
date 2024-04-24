@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
 import SideBar from "../SideBar";
 
-const MainLayout = ({ children}) => {
+const MainLayout = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleCollapsed = (value) => {
