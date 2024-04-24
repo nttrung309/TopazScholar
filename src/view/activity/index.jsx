@@ -4,6 +4,24 @@ import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
 
+const items = [
+  {
+    label: "1st menu item",
+    key: "0",
+  },
+  {
+    label: "2nd menu item",
+    key: "1",
+  },
+  {
+    type: "divider",
+  },
+  {
+    label: "3rd menu item",
+    key: "3",
+  },
+];
+
 const options = [
   {
     label: "Sắp diễn ra",
@@ -48,7 +66,7 @@ const Activity = () => {
         {type === "explore" ? (
           <>
             <div className="dropdown-wrapper">
-              <Dropdown trigger={["click"]}>
+              <Dropdown menu={{ items }} trigger={["click"]}>
                 <div>
                   <i
                     className="bi bi-geo-alt-fill"
@@ -61,7 +79,7 @@ const Activity = () => {
                   />
                 </div>
               </Dropdown>
-              <Dropdown trigger={["click"]}>
+              <Dropdown menu={{ items }} trigger={["click"]}>
                 <div>
                   <i className="bi bi-table" style={{ fontSize: "12px" }} />
                   Ngày bất kỳ

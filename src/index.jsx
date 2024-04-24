@@ -1,14 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import './styles/styles.scss';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import "./styles/styles.scss";
+import { ConfigProvider } from "antd";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider
+      theme={{
+        components: {
+          Radio: {
+            buttonSolidCheckedHoverBg: "#ced4da",
+            buttonSolidCheckedColor: "black",
+            buttonSolidCheckedActiveBg: "#dee2e6",
+          },
+        },
+      }}
+    >
+      <App />
+    </ConfigProvider>
   </React.StrictMode>
 );
 
