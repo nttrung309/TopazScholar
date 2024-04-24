@@ -1,0 +1,62 @@
+.suggest-card {
+  padding: 4px;
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-bottom: 1px solid $gray-200;
+
+  &:last-child {
+    border: none;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+
+    img {
+      max-width: 30%;
+      border-radius: 8px;
+      margin-bottom: 0px;
+    }
+
+    &__wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font: $semibold-h6;
+      span {
+        color: $blue-900;
+
+        &:first-child {
+          color: $gray-800;
+          font: $small;
+        }
+
+        &:last-child {
+          color: $gray-700;
+          font: $medium-h6;
+        }
+      }
+    }
+  }
+
+  .button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+
+    .ant-btn {
+      background-color: $gray-300;
+      color: black;
+      box-shadow: none;
+      font: $semibold-h6;
+
+      &:first-child {
+        flex: 1;
+      }
+    }
+  }
+}
