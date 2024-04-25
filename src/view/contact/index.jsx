@@ -4,6 +4,7 @@ import ActivityCard from "shared/components/ActivityCard";
 
 import { BsCursorFill, BsListUl, BsTelephoneFill } from "react-icons/bs";
 import { Avatar, Input } from "antd";
+import ChatInput from "./components/ChatInput";
 
 const Contact = () => {
   return (
@@ -47,9 +48,7 @@ const Contact = () => {
         <div className="chat-content">
 
         </div>
-        <div className="chat-input">
-
-        </div>
+        <ChatInput/>
       </div>
 
     </div>
