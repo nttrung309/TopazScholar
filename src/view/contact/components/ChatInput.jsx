@@ -6,6 +6,13 @@ const { TextArea } = Input;
 
 
 const ChatInput = () => {
+    const HandleSendMsg = (event) => {
+        if (!event.shiftKey && event.keyCode == 13) {
+            event.preventDefault();
+            //Send msg here
+        }
+    }
+
     return(
         <div className="chat-input">
             <div className="left-group">
@@ -16,6 +23,7 @@ const ChatInput = () => {
                     variant="borderless"
                     placeholder="Nhắn tin"
                     autoSize={{ minRows: 1, maxRows: 4 }}
+                    onKeyDown={HandleSendMsg}
                 />
             </div>
             <BsCursorFill className="send-message-btn"/>

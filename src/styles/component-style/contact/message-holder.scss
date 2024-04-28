@@ -1,0 +1,43 @@
+.message-holder{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+
+    .sender-avatar{
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+    }
+
+    .content{
+        padding: 10px;
+        
+        background-color: $gray-200;
+        
+        border-radius: 4px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -o-border-radius: 4px;
+
+        font: $base-text;
+        color: $blue-900;
+    }
+
+    &.my-msg{
+        flex-direction: row-reverse;
+
+        .content{
+            background-color: $blue-100;
+        }
+    }
+
+    .send-time{
+        font: $small;
+        color: $blue-900;
+        align-self: flex-end;
+
+        min-width: fit-content;
+    }
+}
