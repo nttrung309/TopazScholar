@@ -1,4 +1,5 @@
-import React from "react";
+// @ts-nocheck
+import React, { useState } from "react";
 
 import { ReactSVG } from 'react-svg';
 
@@ -9,8 +10,25 @@ import { GoogleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { routerSignUp } from "../SignUp/router";
 
+import { useDispatch } from "react-redux";
+import { AuthLogin } from "../../../redux/auth/userThunk";
+
 const Login = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+
+    const HandleLogin = async () => {
+        try {
+            // Dispatch action 'login' với username và password
+            await dispatch(AuthLogin({ email, password }));
+        } catch (error) {
+            // Xử lý lỗi nếu có
+            console.error('Đăng nhập thất bại:', error.message);
+        }
+    };
+
 
     return(
         <div className="auth">
@@ -32,16 +50,25 @@ const Login = () => {
                         <div className="auth__form__body__input-containter">
                             <div className="auth__form__input-item">
                                 <div className="auth__form__input-item__label">Email</div>
-                                <Input className="auth__form__input-item__input" placeholder="Email" />
+                                <Input onChange={(event) => setEmail(event.target.value)} className="auth__form__input-item__input" placeholder="Email" />
                             </div>
                             <div className="auth__form__input-item">
                                 <div className="auth__form__input-item__label">Mật khẩu</div>
-                                <Input.Password className="auth__form__input-item__input" placeholder="Mật khẩu" />
+                                <Input.Password 
+                                    className="auth__form__input-item__input" 
+                                    placeholder="Mật khẩu" 
+                                    onChange={(event) => setPassword(event.target.value)}
+                                />
                             </div>
                         </div>
                         <div className="auth__form__forgot-password">Quên mật khẩu?</div>
                         <div className="auth__form__control-group">
-                            <Button className="auth__form__btn primary" type='primary'>Đăng nhập</Button>
+                            <Button 
+                                className="auth__form__btn primary" 
+                                type='primary'
+                                onClick={HandleLogin}>
+                                    Đăng nhập
+                            </Button>
                             <div className="auth__form__control-group__divider">Hoặc</div>
                                 <Button
                                     className="auth__form__btn gg-login"

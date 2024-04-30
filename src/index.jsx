@@ -5,23 +5,28 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/styles.scss";
 import { ConfigProvider } from "antd";
+import { Provider } from 'react-redux';
+import store from './redux/index';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <ConfigProvider
-      theme={{
-        components: {
-          Radio: {
-            buttonSolidCheckedHoverBg: "#ced4da",
-            buttonSolidCheckedColor: "black",
-            buttonSolidCheckedActiveBg: "#dee2e6",
+    <Provider store={store}>
+      <ConfigProvider
+        theme={{
+          components: {
+            Radio: {
+              buttonSolidCheckedHoverBg: "#ced4da",
+              buttonSolidCheckedColor: "black",
+              buttonSolidCheckedActiveBg: "#dee2e6",
+            },
           },
-        },
-      }}
-    >
-      <App />
-    </ConfigProvider>
+        }}
+      >
+        <App />
+      </ConfigProvider>
+    </Provider>
+    
   </React.StrictMode>
 );
 

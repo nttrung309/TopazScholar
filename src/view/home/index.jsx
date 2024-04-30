@@ -4,8 +4,15 @@ import ActivityCard from "shared/components/ActivityCard";
 
 import { BsHouseFill } from "react-icons/bs";
 import Calendar from "./components/Calendar";
+import { useSelector } from "react-redux";
+import { UserDataSelector } from "../../redux/auth/userSelector";
 
 const Home = () => {
+  const userData = useSelector(UserDataSelector);
+
+  console.log(userData);
+  
+
   return (
     <div className="home">
       <div className="page-title">

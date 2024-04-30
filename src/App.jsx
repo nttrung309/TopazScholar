@@ -4,7 +4,11 @@ import PublicPage from './router/components/PublicPages';
 import PrivatePage from './router/components/PrivatePages';
 import {publicPage, privatePage} from './router/mainRouter';
 
+
 import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation} from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+import { StatusLoginSelector } from './redux/auth/userSelector';
 
 const MainView = memo(({ statusLogin })=> {
   const navigate = useNavigate();
@@ -30,10 +34,10 @@ const MainView = memo(({ statusLogin })=> {
 
 
 function App() {
-  //const statusLogin: boolean = useSelector(StatusLoginSelector);
+  const statusLogin = useSelector(StatusLoginSelector);
   return (
     <Router>
-      <MainView statusLogin={true} />
+      <MainView statusLogin={statusLogin} />
     </Router>
   );
 }
