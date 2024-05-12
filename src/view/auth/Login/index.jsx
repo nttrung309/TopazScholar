@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { ReactSVG } from 'react-svg';
 
 import LogoIcon  from'../../../shared/asset/icon/logo.svg';
-import { Button, Input } from "antd";
+import { Alert, Button, Input } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
@@ -12,25 +12,55 @@ import { routerSignUp } from "../SignUp/router";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AuthLogin } from "../../../redux/auth/userThunk";
-
-import { GetAllActivity } from "../../../redux/activity/activityThunk";
-import { ActivityDataSelector } from "redux/activity/activitySelector";
+import { AuthErrorSelector } from "../../../redux/auth/userSelector";
 
 const Login = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [warning, setWarning] = useState(null);
+    const authWarning = useSelector(AuthErrorSelector);
 
     const HandleLogin = async () => {
         try {
-            // Dispatch action 'login' với username và password
-            await dispatch(GetAllActivity());
+            const validation = AuthValidate();
+            if (validation.isValid){
+                // Dispatch action 'login' với username và password
+                await dispatch(AuthLogin({email, password}));
+                setWarning(authWarning);
+            }
+            else{
+                setWarning(validation.msg);
+            }
         } catch (error) {
             // Xử lý lỗi nếu có
             console.error('Đăng nhập thất bại:', error.message);
         }
     };
+
+    const AuthValidate = () => {
+        var checkState = {
+            isValid: false,
+            msg: ''
+        }
+
+        if(email === '' || password === ''){
+            checkState.msg = "Vui lòng nhập đầy đủ thông tin!";
+            return checkState;
+        }
+    
+        // Check email
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(email)) {
+            checkState.msg = "Email không hợp lệ";
+            return checkState;
+        }
+    
+        // Set isValid true when data valid
+        checkState.isValid = true;
+        return checkState;
+    }
     
     return(
         <div className="auth">
@@ -52,16 +82,23 @@ const Login = () => {
                         <div className="auth__form__body__input-containter">
                             <div className="auth__form__input-item">
                                 <div className="auth__form__input-item__label">Email</div>
-                                <Input onChange={(event) => setEmail(event.target.value)} className="auth__form__input-item__input" placeholder="Email" />
+                                <Input onChange={(event) => {setEmail(event.target.value); if(warning != null){setWarning(null);}}} className="auth__form__input-item__input" placeholder="Email" />
                             </div>
                             <div className="auth__form__input-item">
                                 <div className="auth__form__input-item__label">Mật khẩu</div>
                                 <Input.Password 
                                     className="auth__form__input-item__input" 
                                     placeholder="Mật khẩu" 
-                                    onChange={(event) => setPassword(event.target.value)}
+                                    onChange={(event) => {setPassword(event.target.value); if(warning != null){setWarning(null);}}}
                                 />
                             </div>
+                            {(warning != null) ? 
+                                <Alert
+                                description={warning}
+                                type="warning"
+                                showIcon 
+                              /> : null
+                            }
                         </div>
                         <div className="auth__form__forgot-password">Quên mật khẩu?</div>
                         <div className="auth__form__control-group">
