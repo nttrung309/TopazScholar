@@ -10,10 +10,6 @@ const activitySchema = new mongoose.Schema({
 		required: true,
 		unique: true
 	},
-	hostID: {
-		type: String,
-		required: true,
-	},
 	dateCreated: {
 		type: Date,
 		default: Date.now,

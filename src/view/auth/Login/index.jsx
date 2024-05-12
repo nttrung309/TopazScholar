@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ReactSVG } from 'react-svg';
 
@@ -10,8 +10,11 @@ import { GoogleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { routerSignUp } from "../SignUp/router";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AuthLogin } from "../../../redux/auth/userThunk";
+
+import { GetAllActivity } from "../../../redux/activity/activityThunk";
+import { ActivityDataSelector } from "redux/activity/activitySelector";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -22,14 +25,13 @@ const Login = () => {
     const HandleLogin = async () => {
         try {
             // Dispatch action 'login' với username và password
-            await dispatch(AuthLogin({ email, password }));
+            await dispatch(GetAllActivity());
         } catch (error) {
             // Xử lý lỗi nếu có
             console.error('Đăng nhập thất bại:', error.message);
         }
     };
-
-
+    
     return(
         <div className="auth">
             <ReactSVG className="auth__banner" src={LogoIcon}/>

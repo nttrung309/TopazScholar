@@ -48,8 +48,6 @@ ActivityRoute.post("/host", async (req, res) => {
 	//Add new Activity
 	const newAct = new Activity({
 		hostID: hostData.hostID,
-		dateCreated: actData.dateCreated,
-		lastModified: actData.lastModified,
 		name: actData.name,
 		content: actData.content,
 		category: actData.category,
@@ -58,8 +56,8 @@ ActivityRoute.post("/host", async (req, res) => {
 		entryFee: actData.entryFee,
 		topic: actData.topic,
 		mediaContent: {
-			images: [...actData.mediaContent?.images],
-			videos: [...actData.mediaContent?.videos],
+			images: [...(actData.mediaContent?.images || [])],
+			videos: [...(actData.mediaContent?.videos || [])],
 		},
 		form: actData.form,
 		rule: actData.rule,

@@ -5,7 +5,7 @@ import { setStatusLogin } from './userAction';
 import { AuthLogin } from './userThunk';
 
 const initialState = {
-    statusLogin: true,
+    statusLogin: false,
     userData: {},
     dataLoadingState: 'idle',
     error: null,
@@ -16,6 +16,7 @@ const userStore = createReducer(initialState, (builder) => {
         .addCase(setStatusLogin, (state, action) => {
             state.statusLogin = action.payload;
         })
+        //Login
         .addCase(AuthLogin.pending, (state, action) => {
             state.dataLoadingState = 'loading';
         })
