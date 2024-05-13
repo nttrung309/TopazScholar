@@ -1,6 +1,5 @@
 // @ts-nocheck
 import React, { useState } from "react";
-import React, { useState } from "react";
 
 import { ReactSVG } from "react-svg";
 
@@ -11,8 +10,9 @@ import { GoogleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { routerSignUp } from "../SignUp/router";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AuthLogin } from "../../../redux/auth/userThunk";
+import { AuthErrorSelector } from "../../../redux/auth/userSelector";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -132,4 +132,3 @@ const Login = () => {
 };
 
 export default Login;
-
