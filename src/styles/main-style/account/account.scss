@@ -1,0 +1,75 @@
+.account {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: white;
+  padding: 20px;
+
+  .page-title {
+    .title-name {
+      display: flex;
+      flex: 1;
+    }
+
+    .ant-btn-primary {
+      padding: 10px 16px;
+      height: fit-content;
+      width: fit-content;
+      font: $semibold-h6;
+      display: flex;
+      align-items: center;
+      background-color: $blue-600;
+      color: white;
+    }
+  }
+
+  .action-group {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+
+    .ant-btn {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
+    .edit {
+      color: $blue-600;
+    }
+
+    .delete {
+      color: $danger;
+    }
+  }
+}
+
+.ant-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .ant-input-suffix {
+    .ant-btn-default {
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      height: fit-content;
+    }
+  }
+}
+
+.ant-modal-footer {
+  .ant-btn-primary {
+    background-color: $blue-600;
+  }
+
+  .ant-btn-default {
+    border-color: $blue-600;
+    color: $blue-600;
+  }
+}

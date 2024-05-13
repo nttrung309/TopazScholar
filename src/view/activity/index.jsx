@@ -43,7 +43,6 @@ const Activity = () => {
     <div className="activity">
       <SubSidebar />
 
-      {/* Thẻ main chưa che hết height */}
       <div className="main">
         <div className="top">
           <div className="page-title">

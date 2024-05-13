@@ -2,7 +2,6 @@
 import { routerLogin } from "../view/auth/Login/router.jsx";
 import { routerSignUp } from "../view/auth/SignUp/router.jsx";
 
-
 //Private Routes
 import {
   routerExplore,
@@ -13,6 +12,8 @@ import {
 import { routerDetail } from "view/detail/router.jsx";
 import { routerContact } from "view/contact/router.jsx";
 import { routerHome } from "../view/home/router.jsx";
+import { routerAccount } from "view/account/router.jsx";
+import { routerActivytyAdmin } from "view/admin/activty/router.jsx";
 
 export const privatePage = [
   routerHome,
@@ -21,10 +22,9 @@ export const privatePage = [
   routerHosting,
   routerJoined,
   routerDetail,
-  routerContact
+  routerContact,
+  routerAccount,
+  routerActivytyAdmin,
 ];
 
-export const publicPage = [
-  routerLogin,
-  routerSignUp
-];
+export const publicPage = [routerLogin, routerSignUp, routerActivytyAdmin];
