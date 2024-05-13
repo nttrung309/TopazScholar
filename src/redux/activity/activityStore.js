@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
-import { RootState } from '..';
 import { GetAllActivity } from './activityThunk';
 
 const initialState = {

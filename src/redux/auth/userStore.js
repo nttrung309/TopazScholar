@@ -1,6 +1,5 @@
 // @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
-import { RootState } from '..';
 import { setStatusLogin } from './userAction';
 import { AuthLogin, AuthSignUp } from './userThunk';
 
