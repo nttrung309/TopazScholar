@@ -122,6 +122,15 @@
             }
         }
 
+        &__warning-lable{
+            margin: 0;
+            color: red;
+        }
+
+        .ant-alert{
+            padding: 8px;
+        }
+
         &__forgot-password{
             font: $base-text;
             color: $gray-700;

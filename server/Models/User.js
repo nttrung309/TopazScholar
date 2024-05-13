@@ -19,16 +19,17 @@ const userSchema = new mongoose.Schema({
         require: true
     },
     avatar: {
-        type: String,
-        require: true
+        type: String
     },
     phone: {
         type: String,
-        require: true
+        require: true,
+        default: "Chưa có"
     },
     dob: {
         type: Date,
-        require: true
+        require: true,
+        default: new Date("12/12/1990")
     },
     school: {
         type: String,
@@ -44,7 +45,8 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        require: true
+        require: true,
+        default: 'student'
     },
     bio: {
         type: String,

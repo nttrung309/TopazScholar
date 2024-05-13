@@ -383,12 +383,7 @@ UserRoute.post('/sign-up', async (req, res) => {
 					password: hashedPass.hash,
 					email: userData.email,
 					avatar: userData.avatar || '',
-					phone: userData.phone,
-					dob: new Date(userData.dob),
-					school: userData.school,
-					class: userData.class,	
-					gender: userData.gender,
-					role: userData.role,
+					role: userData?.role,
 					bio: userData.bio || 'Chưa có gì để viết',
 					favorActivitiesID: userData.favorActivitiesID || [],
 					commentsID: userData.commentsID || [],
@@ -401,7 +396,7 @@ UserRoute.post('/sign-up', async (req, res) => {
 				try{
 				newUser.save({}).then((result) => {
 					console.log("User added:", result);
-					res.status(500).json(result);
+					res.status(200).json(result);
 				});
 				}
 				catch{
@@ -419,14 +414,14 @@ UserRoute.post('/login', async (req, res) => {
 	const data = await User.findOne({ email: email });
 
 	if(!data){
-		return res.status(404).json({ message: 'Tài khoản không tồn tại'});
+		return res.status(200).json({ message: 'Tài khoản không tồn tại'});
 	}
 
 	const isPasswordCorrect = await CheckPassword(data, email, password);
 	if(isPasswordCorrect){
 		return res.status(200).json({ message: 'Đăng nhập thành công', data: data});
 	} else {
-		return res.status(404).json({ message: 'Mật khẩu không đúng'});
+		return res.status(200).json({ message: 'Mật khẩu không đúng'});
 	}
 });
 
@@ -475,13 +470,6 @@ const CheckValidForSignUp = (data) => {
 	const emailRegex = /\S+@\S+\.\S+/;
 	if (!emailRegex.test(data.email)) {
 		checkState.msg = "Email không hợp lệ";
-		return checkState;
-	}
-
-	// Check phone number
-	const phoneRegex = /^0\d{9}$/;
-	if (!phoneRegex.test(data.phone)) {
-		checkState.msg = "Số điện thoại không hợp lệ";
 		return checkState;
 	}
 
