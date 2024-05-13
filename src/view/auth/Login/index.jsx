@@ -22,7 +22,7 @@ const Login = () => {
   const HandleLogin = async () => {
     try {
       // Dispatch action 'login' với username và password
-      await dispatch(AuthLogin());
+      await dispatch(AuthLogin({ email, password }));
     } catch (error) {
       // Xử lý lỗi nếu có
       console.error("Đăng nhập thất bại:", error.message);

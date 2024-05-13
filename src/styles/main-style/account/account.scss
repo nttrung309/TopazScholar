@@ -52,4 +52,24 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  .ant-input-suffix {
+    .ant-btn-default {
+      border: none;
+      padding: 0;
+      box-shadow: none;
+      height: fit-content;
+    }
+  }
+}
+
+.ant-modal-footer {
+  .ant-btn-primary {
+    background-color: $blue-600;
+  }
+
+  .ant-btn-default {
+    border-color: $blue-600;
+    color: $blue-600;
+  }
 }
