@@ -40,5 +40,5 @@ app.use("/api/comment", CommentRoute);
 app.use("/api/notify", NotifyRoute);
 
 app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}/user`);
+    console.log(`Server is running at http://localhost:${port}`);
 });

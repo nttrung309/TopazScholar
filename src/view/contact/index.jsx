@@ -29,18 +29,19 @@ const Contact = () => {
       isMyMessage: false,
       content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent semper feugiat rutrum. Morbi at mauris quis dui egestas euismod. Donec hendrerit sagittis arcu eget pellentesque. Phasellus tortor leo, egestas eget enim in, iaculis ornare felis. Cras porttitor eleifend nibh eget vestibulum. Nulla a sapien id nulla aliquam efficitur vel quis nulla. Vestibulum massa ligula, hendrerit a mollis non, scelerisque dignissim leo. Suspendisse mattis eleifend lectus. Donec neque sem, placerat non sagittis a, accumsan eu est. Nam vel enim sit amet ipsum pretium egestas id et augue. Pellentesque nisl libero, cursus vel ante ut, cursus molestie velit. Aliquam erat volutpat. Pellentesque eleifend eget justo sed imperdiet. Cras tempus vel purus eget tincidunt. Etiam fringilla id justo sed aliquet. Praesent at dolor condimentum, blandit nisl a, semper ex.',
       sendTime: '15h04 25/4'
-    },
-    {
-      isMyMessage: true,
-      content: '😑😑😑 ??',
-      sendTime: '15h05 25/4'
-    },
-    {
-      isMyMessage: true,
-      content: '',
-      file: '.',
-      sendTime: '15h06 25/4'
     }
+    // ,
+    // {
+    //   isMyMessage: true,
+    //   content: '😑😑😑 ??',
+    //   sendTime: '15h05 25/4'
+    // },
+    // {
+    //   isMyMessage: true,
+    //   content: '',
+    //   file: '.',
+    //   sendTime: '15h06 25/4'
+    // }
   ]);
 
   return (

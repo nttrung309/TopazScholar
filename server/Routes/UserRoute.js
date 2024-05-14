@@ -8,6 +8,8 @@ const Activity = require("../Models/Activity");
 const Host = require("../Models/Host");
 const Comment = require("../Models/Comment");
 const Notify = require("../Models/Notify");
+const { CreateToken, AuthenticateToken } = require("../Auth/TokenHelper");
+const secretKey = process.env.ACCESS_TOKEN_SECRET;
 
 //Get a user by uid
 UserRoute.get("/get-by-uid/:uid", (req, res) => {
@@ -419,9 +421,21 @@ UserRoute.post('/login', async (req, res) => {
 
 	const isPasswordCorrect = await CheckPassword(data, email, password);
 	if(isPasswordCorrect){
-		return res.status(200).json({ message: 'Đăng nhập thành công', data: data});
+		const token = CreateToken(data.uid, secretKey);
+		return res.status(200).json({ message: 'Đăng nhập thành công', data: data, token: token});
 	} else {
 		return res.status(200).json({ message: 'Mật khẩu không đúng'});
+	}
+});
+
+//Stay logged in
+UserRoute.post('/check-auto-login', async (req, res) => {
+	const auth = await AuthenticateToken(req.body.token, secretKey);
+	const userData = await User.findOne({ uid: req.body.uid }); 
+	if(auth){
+		return res.status(200).json({authState: true, userData: userData});
+	} else {
+		return res.status(200).json({authState: false});
 	}
 });
 

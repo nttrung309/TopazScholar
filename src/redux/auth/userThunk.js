@@ -33,3 +33,22 @@ export const AuthSignUp = createAsyncThunk(
     }
   }
 );
+
+export const AutoLogin = createAsyncThunk(
+  'userStore/AutoLogin',
+  async () => {
+    try {
+      const req = {
+        token : localStorage.getItem('token'),
+        uid : localStorage.getItem('uid'),
+      }
+      
+      const response = await axios.post('http://localhost:5000/api/user/check-auto-login', req);
+
+      return response;
+    } catch (error) {
+      
+      throw new Error(error.message);
+    }
+  }
+);
