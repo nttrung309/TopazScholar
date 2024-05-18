@@ -1,56 +1,67 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import PublicPage from './router/components/PublicPages';
 import PrivatePage from './router/components/PrivatePages';
-import {publicPage, privatePage} from './router/mainRouter';
+import AdminPage from 'router/components/AdminPages';
+
+import {publicPage, privatePage, adminPage} from './router/mainRouter';
 
 
 import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation} from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { StatusLoginSelector } from './redux/auth/userSelector';
+import { AuthDataLoadingStateSelector, AuthRoleSelector, StatusLoginSelector } from './redux/auth/userSelector';
 import { AutoLogin } from './redux/auth/userThunk';
 
-const MainView = memo(({ statusLogin })=> {
+const MainView = memo(()=> {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const publicRoutes = publicPage.map((page) => page.path);
   const privateRoutes = privatePage.map((page) => page.path);
+  const adminRoutes = adminPage.map((page) => page.path);
+  const statusLogin = useSelector(StatusLoginSelector);
+  const authDataLoadingState = useSelector(AuthDataLoadingStateSelector); 
+  const authRole = useSelector(AuthRoleSelector);
+  
+  const [authState, setAuthState] = useState(authDataLoadingState);
 
   useEffect(() => {
-    
-    async function GetAuth() {
-      try {
-          // Dispatch action 'login' với username và password
-          await dispatch(AutoLogin());
-      } catch (error) {
-          // Xử lý lỗi nếu có
-          console.error('Error occurred:', error.message);
-      }
-    };
     GetAuth();
-    if (!statusLogin && !publicRoutes.includes(location.pathname)) {
-        navigate('/auth/login');
+    if (!statusLogin && authDataLoadingState == 'succeeded' && !publicRoutes.includes(location.pathname)) {
+      navigate('/auth/login');
     }
-    else if(statusLogin && !privateRoutes.includes(location.pathname)){
+    else if(statusLogin && authRole === 'student' && !privateRoutes.includes(location.pathname)){
         navigate('/');
+    }
+    else if(statusLogin && authRole === 'admin' && !adminRoutes.includes(location.pathname)){
+      navigate('admin/activity');
     }
   }, [statusLogin, navigate]);
 
+  const GetAuth = async () => {
+    try {
+        // Dispatch action 'login' với username và password
+        await dispatch(AutoLogin());
+    } catch (error) {
+        // Xử lý lỗi nếu có
+        console.error('Error occurred:', error.message);
+    }
+  };
+
   return(
     <>
-      {statusLogin ? <PrivatePage /> : <PublicPage />}
+      {(statusLogin && authRole != 'admin') ? <PrivatePage /> : <PublicPage />}
+      {(statusLogin && authRole == 'admin') ? <AdminPage/> : null}
     </>
   );
 });
 
 
 function App() {
-  const statusLogin = useSelector(StatusLoginSelector);
   return (
     <Router>
-      <MainView statusLogin={statusLogin} />
+      <MainView/>
     </Router>
   );
 }

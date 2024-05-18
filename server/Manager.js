@@ -1,10 +1,14 @@
 const express = require('express');
-const morgan = require('morgan')
+const morgan = require('morgan');
+const http = require('http');
+const socketIo = require('socket.io');
 const mongoose = require("mongoose");
 const cors = require('cors'); // Import the cors middleware
 const dotenv = require("dotenv").config();
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 const port = process.env.PORT; // Port 5000
 const dbUrl = process.env.MONGO_URL; 

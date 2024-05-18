@@ -9,3 +9,11 @@ export const UserDataSelector = state => {
 export const AuthErrorSelector = state => {
     return state.user.error;
 }
+
+export const AuthDataLoadingStateSelector = state => {
+    return state.user.dataLoadingState;
+}
+
+export const AuthRoleSelector = state => {
+    return state.user.userData?.role;
+}
