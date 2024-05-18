@@ -59,11 +59,13 @@ const userStore = createReducer(initialState, (builder) => {
       state.dataLoadingState = "loading";
     })
     .addCase(AutoLogin.fulfilled, (state, action) => {
-      state.dataLoadingState = "succeeded";
       if (action.payload.data.authState) {
+        state.dataLoadingState = "succeeded";
         state.statusLogin = true;
         state.userData = action.payload.data.userData;
       } else {
+        state.dataLoadingState = "failed";
+        console.log({insideRedux: [state.dataLoadingState, state.statusLogin]});
         state.error = action.payload.data.message;
       }
     })

@@ -23,12 +23,13 @@ const MainView = memo(()=> {
   const statusLogin = useSelector(StatusLoginSelector);
   const authDataLoadingState = useSelector(AuthDataLoadingStateSelector); 
   const authRole = useSelector(AuthRoleSelector);
-  
-  const [authState, setAuthState] = useState(authDataLoadingState);
 
   useEffect(() => {
     GetAuth();
-    if (!statusLogin && authDataLoadingState == 'succeeded' && !publicRoutes.includes(location.pathname)) {
+  }, []);
+  
+  useEffect(() => {
+    if (!statusLogin && (authDataLoadingState === 'succeeded' || authDataLoadingState === 'failed') && !publicRoutes.includes(location.pathname)) {
       navigate('/auth/login');
     }
     else if(statusLogin && authRole === 'student' && !privateRoutes.includes(location.pathname)){
@@ -37,7 +38,7 @@ const MainView = memo(()=> {
     else if(statusLogin && authRole === 'admin' && !adminRoutes.includes(location.pathname)){
       navigate('admin/activity');
     }
-  }, [statusLogin, navigate]);
+  }, [authDataLoadingState, authRole, navigate]);
 
   const GetAuth = async () => {
     try {
