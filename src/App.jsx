@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useEffect } from "react";
 
 import PublicPage from "./router/components/PublicPages";
 import PrivatePage from "./router/components/PrivatePages";
@@ -8,8 +8,6 @@ import { publicPage, privatePage, adminPage } from "./router/mainRouter";
 
 import {
   BrowserRouter as Router,
-  Route,
-  Routes,
   useNavigate,
   useLocation,
 } from "react-router-dom";
@@ -58,9 +56,6 @@ const MainView = memo(() => {
     ) {
       navigate("admin/activity");
     }
-
-    console.log(statusLogin);
-    console.log(authRole);
   }, [authDataLoadingState, authRole, navigate]);
 
   const GetAuth = async () => {

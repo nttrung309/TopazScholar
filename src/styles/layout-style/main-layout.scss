@@ -10,10 +10,10 @@
   flex-direction: column;
   flex: 1;
   position: relative;
-  margin-left: 240px;
+  margin-left: $SIDEBAR_WIDTH;
   padding-top: 64px;
   max-height: 100vh;
-  max-width: calc(100vw - 240px);
+  max-width: calc(100vw - $SIDEBAR_WIDTH);
 
   &.collapsed {
     margin-left: 84px;
