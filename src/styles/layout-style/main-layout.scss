@@ -21,13 +21,13 @@
   }
 }
 
-.page-title{
+.page-title {
   display: flex;
   column-gap: 20px;
 
   align-items: center;
 
-  .title-icon{
+  .title-icon {
     width: 28px;
     height: 28px;
 
@@ -45,7 +45,7 @@
 
     color: white;
   }
-  .title-name{
+  .title-name {
     font: $bold-h3;
 
     color: $blue-900;
