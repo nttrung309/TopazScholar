@@ -85,7 +85,8 @@ const activitySchema = new mongoose.Schema({
 		type: Number,
 	},
 	commentsID: {
-		type: String,
+		type: Array,
+		default: [],
 	},
 	activityStatus: {
 		type: String,

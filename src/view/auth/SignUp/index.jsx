@@ -15,6 +15,7 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
@@ -25,7 +26,7 @@ const SignUp = () => {
       // Dispatch action 'login' với username và password
       const validation = AuthValidate();
       if (validation.isValid) {
-        await dispatch(AuthSignUp({ email, password }));
+        await dispatch(AuthSignUp({ email, password, name }));
       } else {
         setWarning(validation.msg);
       }
@@ -79,6 +80,19 @@ const SignUp = () => {
           </div>
           <div className="auth__form__body">
             <div className="auth__form__body__input-containter">
+              <div className="auth__form__input-item">
+                <div className="auth__form__input-item__label">Họ tên</div>
+                <Input
+                  className="auth__form__input-item__input"
+                  placeholder="Họ tên"
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    if (warning != null) {
+                      setWarning(null);
+                    }
+                  }}
+                />
+              </div>
               <div className="auth__form__input-item">
                 <div className="auth__form__input-item__label">Email</div>
                 <Input

@@ -1,100 +1,46 @@
 import { Button, Input, Modal, Switch, Table } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const data = [
-  {
-    key: "1",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "2",
-    name: "John",
-    email: "admin@gmail.com",
-    active: false,
-  },
-  {
-    key: "3",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "4",
-    name: "John",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "5",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: false,
-  },
-  {
-    key: "6",
-    name: "John",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "7",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "8",
-    name: "John",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "9",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "10",
-    name: "John",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "11",
-    name: "Mike",
-    email: "admin@gmail.com",
-    active: true,
-  },
-  {
-    key: "12",
-    name: "John",
-    email: "admin@gmail.com",
-    active: true,
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { AccountManageDataSelector } from "../../../redux/admin/account/accountManageSelector";
+import { GetAllUsersData } from "../../../redux/admin/account/accountManageThunk";
 
 const { Column } = Table;
 
 const Account = () => {
+  const dispatch = useDispatch();
+
   const [isOpenCreationModal, setIsOpenCreationModal] = useState(false);
   const [isOpenDeletionModal, setIsOpenDeletionModal] = useState(false);
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const userData = useSelector(AccountManageDataSelector);
+
+  useEffect(() => {
+    LoadUsersData();
+  }, []);
+
+  const LoadUsersData = async () => {
+    try {
+      // Dispatch action 'login' với username và password
+      await dispatch(GetAllUsersData());
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      console.error("Error occurred:", error.message);
+    }
+  }
 
   const selectRow = (record) => {
-    if (record.key >= 0) {
-      setSelectedItemId(record);
+    if (record) {
+      setSelectedItem(record);
     } else {
-      setSelectedItemId(null);
+      setSelectedItem(null);
     }
   };
 
   // Handle close creating modal
   const handleCloseCreatingModal = () => {
     setIsOpenCreationModal(false);
-    selectedItemId && setSelectedItemId(null);
+    selectedItem && setSelectedItem(null);
   };
 
   // Handle submit creating modal
@@ -105,13 +51,13 @@ const Account = () => {
   // Handle close deleting modal
   const handleCloseDeletionModal = () => {
     setIsOpenDeletionModal(false);
-    setSelectedItemId(null);
+    setSelectedItem(null);
   };
 
   // Handle submit deleting modal
   const handleSubmitDeleting = async () => {
     try {
-      if (!selectedItemId) return;
+      if (!selectedItem) return;
       handleCloseDeletionModal();
     } catch (error) {}
   };
@@ -133,7 +79,7 @@ const Account = () => {
       </div>
       <div className="main-content" style={{ marginTop: 40 }}></div>
       <Table
-        dataSource={data}
+        dataSource={userData}
         onRow={(record) => ({
           onClick: () => {
             selectRow(record);
@@ -178,6 +124,7 @@ const Account = () => {
       <Modal
         title="Thông tin tài khoản"
         open={isOpenCreationModal}
+        onCancel={handleCloseCreatingModal}
         footer={[
           <Button key="back" onClick={handleCloseCreatingModal}>
             Hủy
@@ -189,19 +136,19 @@ const Account = () => {
       >
         <div>
           <div>Tên tài khoản</div>
-          <Input value={selectedItemId?.name} />
+          <Input defaultValue={selectedItem?.name} />
         </div>
         <div>
           <div>Email</div>
-          <Input value={selectedItemId?.email} />
+          <Input defaultValue={selectedItem?.email} />
         </div>
         <div>
           <div>Mật khẩu</div>
-          <Input.Password value={selectedItemId && "123456"} />
+          <Input.Password defaultValue={selectedItem && "123456"}/>
         </div>
         <div>
           <div>Xác nhận mật khẩu</div>
-          <Input.Password value={selectedItemId && "123456"} />
+          <Input.Password defaultValue={selectedItem && "123456"} />
         </div>
       </Modal>
 

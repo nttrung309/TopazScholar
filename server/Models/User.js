@@ -76,6 +76,10 @@ const userSchema = new mongoose.Schema({
     salt: {
         type: String,
         require: true
+    },
+    active: {
+        type: Boolean,
+        default: true
     }
 });
 

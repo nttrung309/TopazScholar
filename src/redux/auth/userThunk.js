@@ -20,11 +20,12 @@ export const AuthLogin = createAsyncThunk(
 
 export const AuthSignUp = createAsyncThunk(
   'userStore/AuthSignUp',
-  async ({email, password}) => {
+  async ({email, password, name}) => {
     try {
       const response = await axios.post('http://localhost:5000/api/user/sign-up', {
         email,
-        password
+        password,
+        name
       });
       return response;
     } catch (error) {
