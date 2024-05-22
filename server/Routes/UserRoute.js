@@ -9,6 +9,7 @@ const Host = require("../Models/Host");
 const Comment = require("../Models/Comment");
 const Notify = require("../Models/Notify");
 const { CreateToken, AuthenticateToken } = require("../Auth/TokenHelper");
+const { default: axios } = require("axios");
 const secretKey = process.env.ACCESS_TOKEN_SECRET;
 
 //Get a user by uid
@@ -82,40 +83,41 @@ UserRoute.get("/", (req, res) => {
 //Update user infor
 UserRoute.post('/update', async (req, res) => {
 	try {
-	  const { uid } = req.body;
-	  const updatedUser = await User.findOneAndUpdate(
-		{ uid: uid },
-		{
-		  $set: {
-			name: req.body.name,
-			password: req.body.password,
-			email: req.body.email,
-			avatar: req.body.avatar,
-			phone: req.body.phone,
-			dob: new Date(req.body.dob),
-			school: req.body.school,
-			class: req.body.class,
-			gender: req.body.gender,
-			role: req.body.role,
-			bio: req.body.bio,
-			favorActivitiesID: req.body.favorActivitiesID,
-			commentsID: req.body.commentsID,
-			reviewsID: req.body.reviewsID,
-			hostsID: req.body.hostsID,
-			messagesID: req.body.messagesID,
-		  },
-		},
-		{ new: true, upsert: true }
-	  );
-
-	  if (!updatedUser) {
-		return res.status(404).json({ message: 'User not found' });
-	  }
-
-	  res.json(updatedUser);
+		const { email } = req.body;
+		const updatedUser = await User.findOneAndUpdate(
+			{ email: email },
+			{
+			$set: {
+				name: req.body.name,
+				password: req.body.password,
+				email: req.body.email,
+				avatar: req.body.avatar,
+				phone: req.body.phone,
+				dob: new Date(req.body.dob || '1990-01-01'),
+				school: req.body.school,
+				class: req.body.class,
+				gender: req.body.gender,
+				role: req.body.role,
+				bio: req.body.bio,
+				favorActivitiesID: req.body.favorActivitiesID,
+				commentsID: req.body.commentsID,
+				reviewsID: req.body.reviewsID,
+				hostsID: req.body.hostsID,
+				messagesID: req.body.messagesID,
+				active: req.body.active
+			},
+			},
+			{ new: true, upsert: true }
+	  	);
+		res.json(updatedUser);
+	  	
 	} catch (error) {
-	  console.error(error);
-	  res.status(500).json({ message: 'Internal Server Error' });
+		console.log('hmmmmm');
+		const signUpResponse = await axios.post('http://localhost:5000/api/user/sign-up', req.body);
+		if(signUpResponse){
+			return res.json(signUpResponse.data);
+		}
+		return res.status(404).json({ message: 'User not found' });
 	}
 });
 

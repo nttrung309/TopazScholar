@@ -1,23 +1,38 @@
-import { Button, Input, Modal, Switch, Table } from "antd";
+import { Button, Input, Modal, Switch, Table, Divider, notification, Space } from "antd";
 import React, { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AccountManageDataSelector } from "../../../redux/admin/account/accountManageSelector";
-import { GetAllUsersData } from "../../../redux/admin/account/accountManageThunk";
+import { ChangeActiveState, GetAllUsersData, UpdateUserData } from "../../../redux/admin/account/accountManageThunk";
+import { CheckCircleFilled } from "@ant-design/icons";
 
 const { Column } = Table;
 
 const Account = () => {
   const dispatch = useDispatch();
 
+  const [api, contextHolder] = notification.useNotification();
+  
+
   const [isOpenCreationModal, setIsOpenCreationModal] = useState(false);
   const [isOpenDeletionModal, setIsOpenDeletionModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [userInput, setUserInput] = useState(null);
+  const [isClickChangeActiveState, setIsClickChangeActiveState] = useState(false);
   const userData = useSelector(AccountManageDataSelector);
 
   useEffect(() => {
     LoadUsersData();
   }, []);
+
+  const openNotification = (msg) => {
+    api.info({
+      message: msg,
+      placement: 'bottomRight',
+      icon: <CheckCircleFilled style={{ fontSize: '24px', color: 'green' }}/>,
+      duration: 3
+    });
+  };
 
   const LoadUsersData = async () => {
     try {
@@ -32,6 +47,7 @@ const Account = () => {
   const selectRow = (record) => {
     if (record) {
       setSelectedItem(record);
+      setUserInput(record);
     } else {
       setSelectedItem(null);
     }
@@ -41,11 +57,15 @@ const Account = () => {
   const handleCloseCreatingModal = () => {
     setIsOpenCreationModal(false);
     selectedItem && setSelectedItem(null);
+    userInput && setUserInput(null);
   };
 
   // Handle submit creating modal
-  const handleSubmitCreating = () => {
+  const handleSubmitCreating = async () => {
+    console.log(userInput);
+    await dispatch(UpdateUserData(userInput));
     handleCloseCreatingModal();
+    openNotification('Cập nhật thành công');
   };
 
   // Handle close deleting modal
@@ -58,9 +78,35 @@ const Account = () => {
   const handleSubmitDeleting = async () => {
     try {
       if (!selectedItem) return;
+         
       handleCloseDeletionModal();
     } catch (error) {}
   };
+
+  const HandleUserInput = (event, field) => {
+    setUserInput(prevState => ({
+      ...prevState,
+      [field]: event.target.value
+    }));
+  };
+
+  const HandleChangeActiveState = async () => {
+    setIsClickChangeActiveState(true);
+  };
+
+  const FetchChangeActiveState = async () => {
+    console.log(userInput);
+    await dispatch(ChangeActiveState(userInput));
+  }
+
+  useEffect(() => {
+    if(isClickChangeActiveState && userInput){
+      FetchChangeActiveState();
+      handleCloseDeletionModal();
+      openNotification('Cập nhật thành công');
+      setIsClickChangeActiveState(false);
+    }
+  }, [userInput, isClickChangeActiveState])
 
   return (
     <div className="account">
@@ -83,17 +129,19 @@ const Account = () => {
         onRow={(record) => ({
           onClick: () => {
             selectRow(record);
+            console.log(record);
           },
         })}
       >
-        <Column title="#" dataIndex="key" key="key" />
         <Column title="Tên tài khoản" dataIndex="name" key="name" />
         <Column title="Email" dataIndex="email" key="email" />
+        <Column title="Ngày tạo" dataIndex="createdDate" key="createdDate" />
+        <Column title="Số điện thoại" dataIndex="phone" key="phone" />
         <Column
           title="Hoạt động"
           dataIndex="active"
           key="active"
-          render={(active) => <Switch checked={active} />}
+          render={(active) => <Switch checked={active} onClick={() => {HandleChangeActiveState()}}/>}
         />
         <Column
           title=""
@@ -104,9 +152,11 @@ const Account = () => {
               <Button
                 icon={<i className="bi bi-pencil-square" />}
                 className="edit"
-                onClick={() => setIsOpenCreationModal(true)}
+                onClick={() => {
+                  setIsOpenCreationModal(true);
+                }}
               />
-              <Button
+              {/* <Button
                 icon={
                   <i
                     className="bi bi-trash"
@@ -114,7 +164,7 @@ const Account = () => {
                   />
                 }
                 className="delete"
-              />
+              /> */}
             </div>
           )}
         />
@@ -123,7 +173,9 @@ const Account = () => {
       {/* Creation modal */}
       <Modal
         title="Thông tin tài khoản"
+        centered
         open={isOpenCreationModal}
+        key={isOpenCreationModal ? 'open' : 'closed'}
         onCancel={handleCloseCreatingModal}
         footer={[
           <Button key="back" onClick={handleCloseCreatingModal}>
@@ -136,19 +188,23 @@ const Account = () => {
       >
         <div>
           <div>Tên tài khoản</div>
-          <Input defaultValue={selectedItem?.name} />
+          <Input defaultValue={selectedItem?.name} onChange={(event) => {HandleUserInput(event,'name')}}/>
         </div>
         <div>
           <div>Email</div>
-          <Input defaultValue={selectedItem?.email} />
+          <Input defaultValue={selectedItem?.email} onChange={(event) => {HandleUserInput(event,'email')}}/>
+        </div>
+        <div>
+          <div>Số điện thoại</div>
+          <Input defaultValue={selectedItem?.phone == 'Chưa có' ? '' : selectedItem?.phone} onChange={(event) => {HandleUserInput(event,'phone')}}/>
         </div>
         <div>
           <div>Mật khẩu</div>
-          <Input.Password defaultValue={selectedItem && "123456"}/>
+          <Input.Password defaultValue={selectedItem && "123456"} onChange={(event) => {HandleUserInput(event,'password')}}/>
         </div>
         <div>
           <div>Xác nhận mật khẩu</div>
-          <Input.Password defaultValue={selectedItem && "123456"} />
+          <Input.Password defaultValue={selectedItem && "123456"} onChange={(event) => {HandleUserInput(event,'rePassword')}}/>
         </div>
       </Modal>
 
@@ -156,6 +212,8 @@ const Account = () => {
       <Modal
         title="Xác nhận"
         open={isOpenDeletionModal}
+        onCancel={handleCloseDeletionModal}
+        centered
         footer={[
           <Button key="submit" type="primary" onClick={handleSubmitDeleting}>
             Xóa
@@ -165,8 +223,9 @@ const Account = () => {
           </Button>,
         ]}
       >
-        Bạn có chắc chắc muốn xóa nội dung này?
+        Bạn có chắc chắc muốn xóa người dùng này?
       </Modal>
+      {contextHolder}
     </div>
   );
 };
