@@ -20,6 +20,7 @@ const ActivityRoute = require("./Routes/ActivityRoute");
 const HostRoute = require("./Routes/HostRoute");
 const CommentRoute = require("./Routes/CommentRoute");
 const NotifyRoute = require("./Routes/NotifyRoute");
+const MessageRoute = require("./Routes/MessageRoute");
 
 app.use(express.json());
 app.use(morgan('combined'))
@@ -43,6 +44,7 @@ app.use("/api/activity", ActivityRoute);
 app.use("/api/host", HostRoute);
 app.use("/api/comment", CommentRoute);
 app.use("/api/notify", NotifyRoute);
+app.use("/api/notify", MessageRoute);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

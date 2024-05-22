@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AccountManageDataSelector } from "../../../redux/admin/account/accountManageSelector";
 import { ChangeActiveState, GetAllUsersData, UpdateUserData } from "../../../redux/admin/account/accountManageThunk";
-import { CheckCircleFilled } from "@ant-design/icons";
+import { CheckCircleFilled, SearchOutlined } from "@ant-design/icons";
 
 const { Column } = Table;
 
@@ -28,7 +28,7 @@ const Account = () => {
   const openNotification = (msg) => {
     api.info({
       message: msg,
-      placement: 'bottomRight',
+      placement: 'bottomLeft',
       icon: <CheckCircleFilled style={{ fontSize: '24px', color: 'green' }}/>,
       duration: 3
     });
@@ -123,7 +123,15 @@ const Account = () => {
           Thêm tài khoản
         </Button>
       </div>
-      <div className="main-content" style={{ marginTop: 40 }}></div>
+      <div className="main-content">
+        <Input 
+          className="user-search-bar"
+          placeholder="Nhập thông tin người dùng"
+          prefix={<SearchOutlined />}
+          style={{margin: '20px 0', maxWidth: '300px'}}
+        >
+        </Input>
+      </div>
       <Table
         dataSource={userData}
         onRow={(record) => ({
