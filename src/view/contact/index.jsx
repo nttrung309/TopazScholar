@@ -1,48 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ActivityCard from "shared/components/ActivityCard";
 
 import { BsCursorFill, BsListUl, BsTelephoneFill } from "react-icons/bs";
 import { Avatar, Input } from "antd";
+
 import ChatInput from "./components/ChatInput";
 import ContactItem from "./components/ContactItem";
 import MessageHolder from "./components/MessageHolder";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import { AuthUIDSelector } from "../../redux/auth/userSelector";
+import { MessageDataSelector } from "../../redux/contact/contactSelector";
+import { ContactGetAllMessage } from "../../redux/contact/contactThunk";
+
 const Contact = () => {
-  const [testChatContent, setTestChatContent] = useState([
-    {
-      isMyMessage: false, //So sánh id với currentUserId
-      content: 'Chào bạn',
-      sendTime: '15h00 25/4'
-    },
-    {
-      isMyMessage: true,
-      content: 'Mình có thể giúp gì cho bạn?',
-      sendTime: '15h02 25/4'
-    },
-    {
-      isMyMessage: false,
-      content: 'Không có gì',
-      sendTime: '15h04 25/4'
-    },
-    {
-      isMyMessage: false,
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent semper feugiat rutrum. Morbi at mauris quis dui egestas euismod. Donec hendrerit sagittis arcu eget pellentesque. Phasellus tortor leo, egestas eget enim in, iaculis ornare felis. Cras porttitor eleifend nibh eget vestibulum. Nulla a sapien id nulla aliquam efficitur vel quis nulla. Vestibulum massa ligula, hendrerit a mollis non, scelerisque dignissim leo. Suspendisse mattis eleifend lectus. Donec neque sem, placerat non sagittis a, accumsan eu est. Nam vel enim sit amet ipsum pretium egestas id et augue. Pellentesque nisl libero, cursus vel ante ut, cursus molestie velit. Aliquam erat volutpat. Pellentesque eleifend eget justo sed imperdiet. Cras tempus vel purus eget tincidunt. Etiam fringilla id justo sed aliquet. Praesent at dolor condimentum, blandit nisl a, semper ex.',
-      sendTime: '15h04 25/4'
+  const dispatch = useDispatch();
+  const currentUserId = useSelector(AuthUIDSelector);
+  const messages = useSelector(MessageDataSelector);
+  
+  useEffect(() => {
+    if(currentUserId){
+      GetMessageData();
     }
-    // ,
-    // {
-    //   isMyMessage: true,
-    //   content: '😑😑😑 ??',
-    //   sendTime: '15h05 25/4'
-    // },
-    // {
-    //   isMyMessage: true,
-    //   content: '',
-    //   file: '.',
-    //   sendTime: '15h06 25/4'
-    // }
-  ]);
+  }, [currentUserId])
+
+  const GetMessageData = async () => {
+    await dispatch(ContactGetAllMessage({ id: currentUserId }))
+  }
 
   return (
     <div className="contact">
@@ -80,8 +66,8 @@ const Contact = () => {
           </div>
         </div>
         <div className="chat-content">
-          {testChatContent.map(item => (
-            <MessageHolder isMyMessage={item.isMyMessage} content={item.content} sendTime={item.sendTime} file={item.file}/>
+          {messages?.map(msg => (
+            <MessageHolder isMyMessage={(msg.senderID === currentUserId)} content={msg.content} sendTime={msg.sendTime}/>
           ))}
         </div>
         <ChatInput/>

@@ -44,7 +44,7 @@ app.use("/api/activity", ActivityRoute);
 app.use("/api/host", HostRoute);
 app.use("/api/comment", CommentRoute);
 app.use("/api/notify", NotifyRoute);
-app.use("/api/notify", MessageRoute);
+app.use("/api/message", MessageRoute);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

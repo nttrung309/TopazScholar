@@ -17,7 +17,7 @@ HostRoute.get("/", (req, res) => {
 
 //Update host info
 HostRoute.post("/update", async (req, res) => {
-	hostData = req.body;
+	const hostData = req.body;
 
 	const result = await Host.findOneAndUpdate(
 		{hostID: hostData.hostID},

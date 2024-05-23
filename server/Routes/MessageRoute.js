@@ -11,22 +11,36 @@ const Message = require("../Models/Message");
 
 const { json } = require("express");
 
-//Get notify by uid
-MessageRoute.get("/:id", (req, res) => {
-	Notify.find({notifyID: req.params.id}).then(data => {
-		res.json(data);
-	});
-});
+//Get all messages
+MessageRoute.get("/:uid", async (req, res) => {
+	const uid = req.params.uid;
+	Message.find({
+        $or: [
+            { senderID: uid },
+            { recvID: uid }
+        ]
+    })
+    .sort({ sendTime: 1 })  // Sắp xếp tăng dần theo sendTime
+    .then(data => {
+        res.json(data);
+    })
+    .catch(err => {
+        res.status(500).json({ error: err.message });
+    });
+})
 
-//Send notify
+//Send message
 MessageRoute.post("/send", async (req, res) => {
-	const notifyData = req.body;
+	const msgData = req.body;
 
-	const newNotify = new Notify(notifyData);
+	const newMessage = new Message(msgData);
 
-	newNotify.save({}).then(data => {
+	newMessage.save({}).then(data => {
 		res.send(data);
 	})
 })
+
+
+
 
 module.exports = MessageRoute;

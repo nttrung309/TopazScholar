@@ -17,3 +17,7 @@ export const AuthDataLoadingStateSelector = state => {
 export const AuthRoleSelector = state => {
     return state.user.userData?.role;
 }
+
+export const AuthUIDSelector = state => {
+    return state.user.userData?.uid;
+}
