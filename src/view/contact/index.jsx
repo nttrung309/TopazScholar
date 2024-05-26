@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import ActivityCard from "shared/components/ActivityCard";
 
@@ -29,6 +29,8 @@ const Contact = () => {
   const contactData = useSelector(ContactDataSelector);
   const selectedContactID = useSelector(SelectedContactIDDataSelector);
   const allContactData = useSelector(AllContactDataSelector);
+  const [resetSelect, setResetSelect] = useState(0);
+  const inputRef = useRef(null);
   
   useEffect(() => {
     if(currentUserId){
@@ -61,14 +63,22 @@ const Contact = () => {
           <div className="title-name">Trò chuyện</div>
         </div>
         <Select
+          key={resetSelect}
           className="chat-search-bar"
           showSearch
+          autoClearSearchValue
           placeholder="Tìm kiếm trong trò truyện"
           optionFilterProp="children"
           filterOption={(input, option) => (option?.label ?? '').includes(input)}
           filterSort={(optionA, optionB) =>
             (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
           }
+          onChange={(newSelectContactID) => {
+            dispatch(updateSelectedContactID(newSelectContactID));
+            console.log(allContactData, selectedContactID);
+            setResetSelect(resetSelect == 0 ? 1 : 0);
+            inputRef.current.focus();
+          }}
           suffixIcon={<SearchOutlined />}
         >
           {allContactData.map((data) => (
@@ -87,7 +97,7 @@ const Contact = () => {
         </Select>
         <div className="users-contact-group">
           {contactData.map(data => (
-            <ContactItem recvID={data.recvID} content={data.lastestMsg} sendTime={data.sendTime}/>
+            <ContactItem recvID={data.recvID} content={data.lastestMsg} sendTime={data.sendTime} name={allContactData.find(contact => contact.uid == data.recvID)?.name}/>
           ))}
         </div>
       </div>
@@ -95,7 +105,7 @@ const Contact = () => {
         <div className="chat-header">
           <div className="chat-header__user-info">
             <Avatar size={52} src={require('../../shared/asset/image/contact/temp_avatar.jpg')}/>
-            <div className="username">Nguyễn Thành Trung</div>
+            <div className="username">{allContactData.find(contact => contact.uid === selectedContactID)?.name}</div>
           </div>
           <div className="chat-header__control-group">
             <div className="control-item"><BsTelephoneFill className="phone" /></div>
@@ -112,7 +122,7 @@ const Contact = () => {
             />
           ))}
         </div>
-        <ChatInput/>
+        <ChatInput ref={inputRef}/>
       </div>
 
     </div>

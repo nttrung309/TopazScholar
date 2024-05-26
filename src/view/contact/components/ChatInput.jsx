@@ -1,5 +1,5 @@
 import { Input } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import { BsCursorFill, BsEmojiSmile, BsPaperclip } from "react-icons/bs";
 import io from 'socket.io-client';
 
@@ -11,7 +11,7 @@ import { SelectedContactIDDataSelector } from "../../../redux/contact/contactSel
 
 const { TextArea } = Input;
 
-const ChatInput = () => {
+const ChatInput = forwardRef((props, ref) => {
     const dispatch = useDispatch();
     const [userInput, setUserInput] = useState('');
     const [contentType, setContentType] = useState('text');
@@ -52,6 +52,7 @@ const ChatInput = () => {
                 <BsEmojiSmile className="chat-input-icon"/>
                 <BsPaperclip className="chat-input-icon"/>
                 <TextArea
+                    ref={ref}
                     className="user-message-input"
                     variant="borderless"
                     placeholder="Nhắn tin"
@@ -64,7 +65,7 @@ const ChatInput = () => {
             <BsCursorFill className="send-message-btn"/>
         </div>
     );
-};
+});
 
 export default ChatInput;
 
