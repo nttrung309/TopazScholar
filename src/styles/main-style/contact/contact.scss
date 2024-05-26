@@ -17,6 +17,11 @@
 
     .chat-search-bar {
       margin: 40px 0 12px 0;
+      height: fit-content;
+
+      .chat-search-bar-option{
+        display: flex;
+      }
     }
     
     .users-contact-group {
@@ -109,5 +114,16 @@
       margin: 0 20px 40px 20px;
     }
   }
+}
+
+.chat-search-bar-option, .ant-select-item.ant-select-item-option{
+  display: flex;
+  align-items: center;
+  column-gap: 4px
+}
+
+.ant-select-selector{
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }
 

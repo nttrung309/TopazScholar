@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import ActivityCard from "shared/components/ActivityCard";
 
 import { BsCursorFill, BsListUl, BsTelephoneFill } from "react-icons/bs";
-import { Avatar, Input } from "antd";
+import { Avatar, Input, Select } from "antd";
 
 import ChatInput from "./components/ChatInput";
 import ContactItem from "./components/ContactItem";
@@ -12,22 +12,43 @@ import MessageHolder from "./components/MessageHolder";
 import { useDispatch, useSelector } from "react-redux";
 
 import { AuthUIDSelector } from "../../redux/auth/userSelector";
-import { MessageDataSelector } from "../../redux/contact/contactSelector";
-import { ContactGetAllMessage } from "../../redux/contact/contactThunk";
+import { AllContactDataSelector, ContactDataSelector, MessageDataSelector, SelectedContactIDDataSelector } from "../../redux/contact/contactSelector";
+import { ContactGetAllMessage, ContactGetAllUserData } from "../../redux/contact/contactThunk";
+import { updateSelectedContactID } from "../../redux/contact/contactAction";
+
+import socket from "../../shared/helper/Socket";
+import { SearchOutlined } from "@ant-design/icons";
+
+const { Option } = Select;
+
 
 const Contact = () => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(AuthUIDSelector);
   const messages = useSelector(MessageDataSelector);
+  const contactData = useSelector(ContactDataSelector);
+  const selectedContactID = useSelector(SelectedContactIDDataSelector);
+  const allContactData = useSelector(AllContactDataSelector);
   
   useEffect(() => {
     if(currentUserId){
       GetMessageData();
+      GetAllUserData();
     }
   }, [currentUserId])
 
+  useEffect(() => {
+    if(selectedContactID == '' && contactData.length != 0){
+      dispatch(updateSelectedContactID(contactData[0].recvID));
+    }
+  }, [contactData]);
+
   const GetMessageData = async () => {
     await dispatch(ContactGetAllMessage({ id: currentUserId }))
+  }
+
+  const GetAllUserData = async () => {
+    await dispatch(ContactGetAllUserData());
   }
 
   return (
@@ -39,19 +60,35 @@ const Contact = () => {
           </div>
           <div className="title-name">Trò chuyện</div>
         </div>
-        <Input
+        <Select
           className="chat-search-bar"
-          size="large"
+          showSearch
           placeholder="Tìm kiếm trong trò truyện"
-          suffix={<i className="bi bi-search" />}
-        />
+          optionFilterProp="children"
+          filterOption={(input, option) => (option?.label ?? '').includes(input)}
+          filterSort={(optionA, optionB) =>
+            (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+          }
+          suffixIcon={<SearchOutlined />}
+        >
+          {allContactData.map((data) => (
+              <Option key={data.uid} value={data.uid} label={data.name}>
+                  <div className='chat-search-bar-option'>
+                      {data.avatar !== '' ? (
+                        <Avatar src={data.avatar} />
+                      ) : (
+                        <Avatar>{data.name[0].toUpperCase()}</Avatar>
+                      )}
+                      <div>{data.name}</div>
+                  </div>
+              </Option>
+          ))}
+
+        </Select>
         <div className="users-contact-group">
-          <ContactItem selected/>
-          <ContactItem/>
-          <ContactItem/>
-          <ContactItem/>
-          <ContactItem/>
-          <ContactItem/>
+          {contactData.map(data => (
+            <ContactItem recvID={data.recvID} content={data.lastestMsg} sendTime={data.sendTime}/>
+          ))}
         </div>
       </div>
       <div className="chat-window">
@@ -66,8 +103,13 @@ const Contact = () => {
           </div>
         </div>
         <div className="chat-content">
-          {messages?.map(msg => (
-            <MessageHolder isMyMessage={(msg.senderID === currentUserId)} content={msg.content} sendTime={msg.sendTime}/>
+          {messages?.filter(msg => [msg.senderID, msg.recvID].sort().join('-') === [currentUserId, selectedContactID].sort().join('-')).map(filteredMsg => (
+            <MessageHolder 
+              key={filteredMsg.id} // đảm bảo mỗi phần tử có một key duy nhất
+              isMyMessage={filteredMsg.senderID === currentUserId} 
+              content={filteredMsg.content} 
+              sendTime={filteredMsg.sendTime} 
+            />
           ))}
         </div>
         <ChatInput/>
