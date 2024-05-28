@@ -8,8 +8,7 @@ const cors = require('cors'); // Import the cors middleware
 const dotenv = require("dotenv").config();
 
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+
 
 const port = process.env.PORT; // Port 5000
 const dbUrl = process.env.MONGO_URL; 
@@ -22,9 +21,20 @@ const CommentRoute = require("./Routes/CommentRoute");
 const NotifyRoute = require("./Routes/NotifyRoute");
 const MessageRoute = require("./Routes/MessageRoute");
 
+//Import Socket
+const SocketHandler = require('./Socket/SocketHandler');
+
 app.use(express.json());
 app.use(morgan('combined'))
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+      origin: 'http://localhost:3000',
+      credentials: true
+  }
+});
 
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
@@ -46,6 +56,10 @@ app.use("/api/comment", CommentRoute);
 app.use("/api/notify", NotifyRoute);
 app.use("/api/message", MessageRoute);
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+//Socket
+SocketHandler(io);
+
+server.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });
+

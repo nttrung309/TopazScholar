@@ -15,3 +15,16 @@ export const ContactGetAllMessage = createAsyncThunk(
       }
     }
 );
+
+export const ContactGetAllUserData = createAsyncThunk(
+  'contactStore/ContactGetAllUserData',
+  async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/user`);
+      return response;
+    } catch (error) {
+      
+      throw new Error(error.message);
+    }
+  }
+);

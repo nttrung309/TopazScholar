@@ -23,6 +23,7 @@ MessageRoute.get("/:uid", async (req, res) => {
     .sort({ sendTime: 1 })  // Sắp xếp tăng dần theo sendTime
     .then(data => {
         res.json(data);
+        console.log(data)
     })
     .catch(err => {
         res.status(500).json({ error: err.message });
