@@ -1,6 +1,7 @@
-import { Button, Table, Tag } from "antd";
-import React from "react";
-
+import React, { useState } from "react";
+import { Button, DatePicker, Input, Modal, Select, Table, Tag } from "antd";
+import { BsPlus } from "react-icons/bs";
+import dayjs from "dayjs";
 const data = [
   {
     key: "1",
@@ -37,8 +38,17 @@ const data = [
 ];
 
 const { Column } = Table;
+const { TextArea } = Input;
+const { RangePicker } = DatePicker;
 
 const Activity = () => {
+  const [openCreatingModal, setOpenCreatingModal] = useState(false);
+  const [activity, setActivity] = useState(null);
+
+  const handleCloseCreatingModal = () => {
+    setOpenCreatingModal(false);
+  };
+
   return (
     <div className="account">
       <div className="page-title">
@@ -46,7 +56,23 @@ const Activity = () => {
           <i className="bi bi-person-fill" />
         </div>
         <div className="title-name">Quản lý hoạt động</div>
-        <Button icon={<i className="bi bi-plus" />} type="primary">
+        <Button
+          icon={<BsPlus size={24} />}
+          type="primary"
+          onClick={() => {
+            setOpenCreatingModal(true);
+            setActivity({
+              name: "",
+              content: "",
+              type: null,
+              address: "",
+              start: "",
+              end: "",
+              form: "offline",
+              rule: "",
+            });
+          }}
+        >
           Thêm hoạt động
         </Button>
       </div>
@@ -86,6 +112,148 @@ const Activity = () => {
           )}
         />
       </Table>
+
+      <Modal
+        title="Thông tin hoạt động"
+        centered
+        open={openCreatingModal}
+        key={openCreatingModal ? "open" : "closed"}
+        onCancel={handleCloseCreatingModal}
+        footer={[
+          <Button key="back" onClick={handleCloseCreatingModal}>
+            Hủy
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            // onClick={handleSubmitCreating}
+          >
+            Lưu
+          </Button>,
+        ]}
+      >
+        <div>
+          <div>Tên hoạt động</div>
+          <Input
+            size="large"
+            value={activity?.name}
+            onChange={(event) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                name: event.target.value,
+              }));
+            }}
+          />
+        </div>
+        <div>
+          <div>Nội dung</div>
+          <TextArea
+            rows={4}
+            size="large"
+            value={activity?.content}
+            onChange={(event) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                content: event.target.value,
+              }));
+            }}
+          />
+        </div>
+        <div>
+          <div>Loại hoạt động</div>
+          <Select
+            size="large"
+            placeholder="Chọn loại hoạt động"
+            value={activity?.type}
+            options={[
+              {
+                value: "Học thuật",
+                label: "Học thuật",
+              },
+              {
+                value: "Thể thao",
+                label: "Thể thao",
+              },
+              {
+                value: "Việc làm",
+                label: "Việc làm",
+              },
+              {
+                value: "Tình nguyện",
+                label: "Tình nguyện",
+              },
+            ]}
+          />
+        </div>
+        <div>
+          <div>Địa điểm</div>
+          <Input
+            size="large"
+            value={activity?.address}
+            onChange={(event) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                address: event.target.value,
+              }));
+            }}
+          />
+        </div>
+        <div>
+          <div>Thời gian tổ chức</div>
+          <RangePicker
+            showTime={{
+              format: "HH:mm",
+            }}
+            format="DD/MM/YYYY HH:mm"
+            size="large"
+            minDate={dayjs(new Date(), "DD/MM/YYYY HH:mm")}
+            onChange={(_date, dateString) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                start: dateString[0],
+                end: dateString[1],
+              }));
+              console.log(activity);
+            }}
+          />
+        </div>
+        <div>
+          <div>Hình thức</div>
+          <Select
+            size="large"
+            value={activity?.form}
+            onChange={(value) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                form: value,
+              }));
+            }}
+            options={[
+              {
+                value: "offline",
+                label: "Offline",
+              },
+              {
+                value: "online",
+                label: "Online",
+              },
+            ]}
+          />
+        </div>
+        <div>
+          <div>Quy định</div>
+          <Input
+            size="large"
+            value={activity?.rule}
+            onChange={(event) => {
+              setActivity((prevState) => ({
+                ...prevState,
+                rule: event.target.value,
+              }));
+            }}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -5,6 +5,31 @@ import { useSelector } from "react-redux";
 import LogoIcon from "../../shared/asset/icon/logo.svg";
 import { AuthRoleSelector } from "../../redux/auth/userSelector";
 
+const SideBar = ({ collapsed }) => {
+  const path = useLocation().pathname;
+  const authRole = useSelector(AuthRoleSelector);
+
+  return (
+    <div className={`sidebar${collapsed ? " collapsed" : ""}`}>
+      <ReactSVG className="logo" src={LogoIcon} />
+      <div className="menu">
+        {menus
+          .filter((menu) => menu.role === authRole)
+          .map((item, index) => (
+            <Link
+              key={index}
+              to={item.path}
+              className={path === item.path && "active"}
+            >
+              <i className={path === item.path ? item.iconActive : item.icon} />
+              <span className="label">{item.label}</span>
+            </Link>
+          ))}
+      </div>
+    </div>
+  );
+};
+
 const menus = [
   {
     name: "home",
@@ -71,38 +96,13 @@ const menus = [
     role: "admin",
   },
   {
-    name: "user",
+    name: "account",
     label: "Quản lý tài khoản",
     icon: "bi bi-person-circle",
     iconActive: "bi bi-person-circle-fill",
-    path: "/admin/user",
+    path: "/admin/account",
     role: "admin",
   },
 ];
-
-const SideBar = ({ collapsed }) => {
-  const path = useLocation().pathname;
-  const authRole = useSelector(AuthRoleSelector);
-
-  return (
-    <div className={`sidebar${collapsed ? " collapsed" : ""}`}>
-      <ReactSVG className="logo" src={LogoIcon} />
-      <div className="menu">
-        {menus
-          .filter((menu) => menu.role === authRole)
-          .map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              className={path === item.path && "active"}
-            >
-              <i className={path === item.path ? item.iconActive : item.icon} />
-              <span className="label">{item.label}</span>
-            </Link>
-          ))}
-      </div>
-    </div>
-  );
-};
 
 export default SideBar;

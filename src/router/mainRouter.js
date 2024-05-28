@@ -22,7 +22,7 @@ export const privatePage = [
   routerHosting,
   routerJoined,
   routerDetail,
-  routerContact
+  routerContact,
 ];
 
 export const publicPage = [routerLogin, routerSignUp, routerActivityAdmin];
