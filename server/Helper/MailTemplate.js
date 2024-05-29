@@ -1,4 +1,4 @@
-const GenerateEmailTemplate = (activityName) => {
+const GenerateEmailTemplate = (activityData) => {
     return `
     <!DOCTYPE html>
 <html>
@@ -9,7 +9,7 @@ const GenerateEmailTemplate = (activityName) => {
     <!-- <link href="./css/main.css" rel="stylesheet" /> -->
     <title>Document</title>
   </head>
-  <body style="padding: 0; box-sizing: border-box; font-family: Inter;">
+  <body style="padding: 0; box-sizing: border-box; font-family: Inter; max-width: 100%">
     <div class="v2211_1772" 
     style="
         box-sizing: border-box;
@@ -52,7 +52,7 @@ const GenerateEmailTemplate = (activityName) => {
           >Topaz Scholar xin thông báo,
         </div>
         <div class="v2211_1783" style="font-size: 16px; font-weight: 600; color: #031633; padding-left: 20px; margin-top: 2px;">
-            Hoạt động “<span style="font-weight: bolder;">UIT CARRER DAY 2024</span>” sắp bắt đầu!
+            Hoạt động “<span style="font-weight: bolder;">${activityData.name}</span>” sắp bắt đầu!
         </div>
         <div class="v2211_1799" style="border: 1px solid #3D8BFD; 
         width: 380px; 
@@ -65,8 +65,9 @@ const GenerateEmailTemplate = (activityName) => {
         font-size: 16px;
         font-weight: 600;
         color: #0A58CA;
-        text-align: center;">
-            <div class="v2211_1801">Tên hoạt động: <span style="font-weight: bolder;">UIT CARRER DAY 2024</span></div>
+        text-align: center;
+        box-sizing: border-box;">
+            <div class="v2211_1801">Tên hoạt động: <span style="font-weight: bolder;">${activityData.name}</span></div>
             <div class="v2211_1801"> Thời gian: <span style="font-weight: bolder;">26/6/2024 - 14h 26/6/2024</span></div>
             <div class="v2211_1804" style="
             width: 320px;   

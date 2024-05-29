@@ -35,11 +35,21 @@ const ScheduleAutoEmail = async () => {
         const daysDifference = Math.ceil(timeDifference / oneDayInMs);
 
         if (daysDifference === 1) {
-          const users = await User.find({ uid: { $in: activity.registeredParticipants } });
+          const users = await User.find({ attendedActivitiesID: { $in: [activity.actID] } });
           const emails = users.map(user => user.email);
           emails.forEach(email => {
-            SendEmail(email, 'Reminder: Activity Starting Soon',activity);
+            SendEmail(email, 'Lời nhắc tham gia hoạt động', activity);
           })
+          try{
+            const updatedActivity = await Activity.findOneAndUpdate(
+              {actID: activity.actID},
+              { $set: { isAutoMailed: true } },
+              { new: true } // Trả về tài liệu đã cập nhật
+            );
+          }
+          catch (err) {
+            console.error('Error updating activity:', err);
+          }
         }
       });
     });
