@@ -8,6 +8,8 @@ const User = require("../Models/User");
 const Comment = require("../Models/Comment");
 const Notify = require("../Models/Notify");
 
+const { SendEmail } = require("../Cron/AutoMail");
+
 const { json } = require("express");
 
 //Get notify by uid
@@ -26,6 +28,12 @@ NotifyRoute.post("/send", async (req, res) => {
 	newNotify.save({}).then(data => {
 		res.send(data);
 	})
-})
+});
+
+NotifyRoute.post("/test-send-mail", async (req, res) => {
+	SendEmail('yuukina0909@gmail.com', 'Test gửi mail', 'Sắp có hoạt động mới!');
+	res.status(200).send('send rùi');
+});
+
 
 module.exports = NotifyRoute;

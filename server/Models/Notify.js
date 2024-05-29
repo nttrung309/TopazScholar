@@ -13,6 +13,7 @@ const notifySchema = new mongoose.Schema({
   senderID: {
     type: String,
     required: true,
+    default: "system"
   },
   recvID: {
     type: String,
@@ -28,7 +29,7 @@ const notifySchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['NewAct', 'Liked', 'Normal'/*... add other types here */],
+    enum: ['NewAct', 'Liked', 'Normal', 'Upcoming'/*... add other types here */],
   },
   header: {
     type: String,
