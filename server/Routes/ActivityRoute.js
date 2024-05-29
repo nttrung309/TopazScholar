@@ -51,29 +51,23 @@ ActivityRoute.post("/host", async (req, res) => {
     name: actData.name,
     content: actData.content,
     category: actData.category,
-    address: actData.address,
-    ggMap: actData.ggMap,
-    entryFee: actData.entryFee,
-    topic: actData.topic,
-    mediaContent: {
-      images: [...(actData.mediaContent?.images || [])],
-      videos: [...(actData.mediaContent?.videos || [])],
+    time: {
+      startDate: actData.date[0],
+      endDate: actData.date[1],
     },
     form: actData.form,
-    rule: actData.rule,
-    rating: actData.rating,
-    time: {
-      startDate: new Date(actData.time.startDate),
-      endDate: new Date(actData.time.endDate),
-    },
-    event: [...actData.event],
+    address: actData.address,
+    linkJoin: actData.linkJoin,
+    faculty: actData.faculty,
+    participants: actData.participants,
     maxParticipants: actData.maxParticipants,
-    registeredParticipants: actData.registeredParticipants,
-    attendedParticipants: actData.attendedParticipants,
-    commentsID: actData.commentsID,
+    // mediaContent: {
+    //   images: [...(actData.mediaContent?.images || [])],
+    //   videos: [...(actData.mediaContent?.videos || [])],
+    // },
+    rule: actData.rule,
     activityStatus: actData.activityStatus,
     registerStatus: actData.registerStatus,
-    note: actData.note,
   });
 
   try {

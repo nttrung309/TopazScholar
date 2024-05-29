@@ -53,7 +53,7 @@ const activitySchema = new mongoose.Schema({
   },
   form: {
     type: String,
-    enum: ["onl", "off"],
+    enum: ["Trực tiếp", "Online"],
   },
   rule: {
     type: String,
@@ -63,10 +63,10 @@ const activitySchema = new mongoose.Schema({
   },
   time: {
     startDate: {
-      type: Date,
+      type: String,
     },
     endDate: {
-      type: Date,
+      type: String,
     },
   },
   event: {

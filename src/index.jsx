@@ -1,18 +1,20 @@
 import React from "react";
+import locale from "antd/locale/vi_VN";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import "./styles/styles.scss";
 import { ConfigProvider } from "antd";
-import { Provider } from 'react-redux';
-import store from './redux/index';
+import { Provider } from "react-redux";
+import store from "./redux/index";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <ConfigProvider
+        locale={locale}
         theme={{
           components: {
             Radio: {
@@ -26,7 +28,6 @@ root.render(
         <App />
       </ConfigProvider>
     </Provider>
-    
   </React.StrictMode>
 );
 

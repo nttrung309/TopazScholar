@@ -61,6 +61,15 @@
       height: fit-content;
     }
   }
+  .ant-form-item-label {
+    label {
+      height: fit-content !important;
+    }
+  }
+
+  .ant-input-data-count {
+    font-size: 14px;
+  }
 }
 
 .ant-modal-footer {
@@ -72,8 +81,4 @@
     border-color: $blue-600;
     color: $blue-600;
   }
-}
-
-.ant-select-lg {
-  width: 100%;
 }
