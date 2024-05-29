@@ -23,6 +23,7 @@ const MessageRoute = require("./Routes/MessageRoute");
 
 //Import Socket
 const SocketHandler = require('./Socket/SocketHandler');
+const { ScheduleAutoEmail } = require('./Cron/AutoMail');
 
 app.use(express.json());
 app.use(morgan('combined'))
@@ -58,6 +59,9 @@ app.use("/api/message", MessageRoute);
 
 //Socket
 SocketHandler(io);
+
+//Auto Mail
+ScheduleAutoEmail();
 
 server.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
