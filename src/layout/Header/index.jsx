@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Dropdown, Badge } from "antd";
 
-const items = [
+const userDropdownItems = [
   {
     key: "1",
     label: (
@@ -13,7 +13,7 @@ const items = [
   {
     key: "2",
     label: (
-      <a target="_blank" rel="noopener noreferrer" href="">
+      <a onClick={() => {}}>
         2nd menu item
       </a>
     ),
@@ -22,7 +22,7 @@ const items = [
     key: "3",
     label: (
       <a target="_blank" rel="noopener noreferrer" href="">
-        3rd menu item
+        Đăng xuất
       </a>
     ),
   },
@@ -52,7 +52,7 @@ const Header = ({ collapsed, handleCollapsed }) => {
           <i className="bi bi-bell"></i>
         </Badge>
 
-        <Dropdown trigger={["click"]} menu={{ items }} placement="bottomRight">
+        <Dropdown trigger={["click"]} menu={{ items: userDropdownItems } } placement="bottomRight">
           <Button>
             {/* Chèn img vào class image*/}
             <div className="information">

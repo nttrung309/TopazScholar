@@ -25,7 +25,7 @@ const SendEmail = async (to, subject, data) => {
   
 // Kiểm tra và gửi email mỗi phút
 const ScheduleAutoEmail = async () => {
-    cron.schedule('0 * * * *', async () => {
+    cron.schedule('42 * * * *', async () => {
       const activities = await Activity.find();
       const now = new Date();
       const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -54,5 +54,5 @@ const ScheduleAutoEmail = async () => {
       });
     });
 };
-  
+
 module.exports = { SendEmail, ScheduleAutoEmail };

@@ -5,13 +5,14 @@ import userStore from './auth/userStore';
 import activityStore from './activity/activityStore';
 import accountManageStore from './admin/account/accountManageStore';
 import contactStore from './contact/contactStore';
+import notifyStore from './notify/notifyStore';
 
 const rootReducer = combineReducers({
     user: userStore,
     activity: activityStore,
     contact: contactStore,
-    accountManage: accountManageStore
-    
+    accountManage: accountManageStore,
+    notify: notifyStore
 });
 
 export default rootReducer;
