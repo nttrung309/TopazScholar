@@ -83,3 +83,19 @@
     }
   }
 }
+
+.user-dropdown-item{
+  font: $medium-h6;
+
+  display: flex;
+  column-gap: 4px;
+  align-items: center;
+
+
+  height: 30px;
+
+  &.log-out{
+    color: red !important;
+    font-weight: 500;
+  }
+}

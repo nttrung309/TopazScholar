@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
-import { NotifyGetAllData } from './notifyThunk';
+import { NotifyGetAllData, UpdateReadNotify } from './notifyThunk';
 import {  } from './notifyAction';
 
 const initialState = {
@@ -19,6 +19,29 @@ const notifyStore = createReducer(initialState, (builder) => {
       state.data = action.payload.data;
     })
     .addCase(NotifyGetAllData.rejected, (state, action) => {
+      state.dataLoadingState = "failed";
+      state.error = action.error.message;
+    })
+
+    .addCase(UpdateReadNotify.pending, (state, action) => {
+      state.dataLoadingState = "loading";
+    })
+    .addCase(UpdateReadNotify.fulfilled, (state, action) => {
+      state.dataLoadingState = "succeeded";
+      
+      if(action.payload.data.type){
+        state.data = action.payload.data.updatedNotify;
+      }
+      else{
+        const updatedNotifyData = state.data.map(data => 
+          data.notifyID === action.payload.data.notifyID
+            ? { ...data, isRead: true } 
+            : data
+        );
+        state.data = updatedNotifyData;
+      }
+    })
+    .addCase(UpdateReadNotify.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
     })

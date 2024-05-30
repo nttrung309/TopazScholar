@@ -29,7 +29,8 @@ const notifySchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['NewAct', 'Liked', 'Normal', 'Upcoming'/*... add other types here */],
+    enum: ['system', 'activity'],
+    default: 'system'
   },
   header: {
     type: String,

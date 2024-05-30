@@ -25,7 +25,7 @@ const SendEmail = async (to, subject, data) => {
   
 // Kiểm tra và gửi email mỗi phút
 const ScheduleAutoEmail = async () => {
-    cron.schedule('42 * * * *', async () => {
+    cron.schedule('5 * * * *', async () => {
       const activities = await Activity.find();
       const now = new Date();
       const oneDayInMs = 24 * 60 * 60 * 1000;
@@ -34,7 +34,7 @@ const ScheduleAutoEmail = async () => {
         const timeDifference = new Date(activity.time.startDate) - now;
         const daysDifference = Math.ceil(timeDifference / oneDayInMs);
 
-        if (daysDifference === 1) {
+        if (daysDifference === 1 && !activity.isAutoMailed) {
           const users = await User.find({ attendedActivitiesID: { $in: [activity.actID] } });
           const emails = users.map(user => user.email);
           emails.forEach(email => {

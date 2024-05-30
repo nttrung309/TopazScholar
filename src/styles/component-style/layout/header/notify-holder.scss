@@ -1,0 +1,36 @@
+.notify-holder{
+    width: 320px;
+
+    &__header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        box-sizing: border-box;
+        padding: 10px;
+
+        .title{
+            font: $bold-h5;
+            color: $blue-800;
+        }
+        .mark-as-read{
+            font: $base-text;
+            font-weight: 500;
+            color: $blue-500;
+
+            cursor: pointer;
+        }
+    }
+}
+
+.ant-tabs-nav-list{
+    width: 100%;
+    font: $medium-h6;
+}
+
+.ant-tabs-tab{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

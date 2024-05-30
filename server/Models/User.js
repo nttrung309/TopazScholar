@@ -43,7 +43,8 @@ const userSchema = new mongoose.Schema({
     },
     class: {
         type: String,
-        require: true
+        require: true,
+        default: 'KTPM2020'
     },
     gender: {
         type: String,

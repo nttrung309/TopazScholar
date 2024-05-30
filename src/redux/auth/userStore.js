@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
-import { setStatusLogin } from './userAction';
+import { authLogOut, setStatusLogin } from './userAction';
 import { AuthLogin, AuthSignUp, AutoLogin } from './userThunk';
 
 const initialState = {
@@ -15,6 +15,12 @@ const userStore = createReducer(initialState, (builder) => {
   builder
     .addCase(setStatusLogin, (state, action) => {
       state.statusLogin = action.payload;
+    })
+    .addCase(authLogOut, (state, action) => {
+      localStorage.setItem('token', '');
+      localStorage.setItem('uid', '');
+      state.statusLogin = false;
+      window.location.reload();
     })
 
     //Login
