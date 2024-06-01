@@ -90,7 +90,14 @@ const activitySchema = new mongoose.Schema({
   },
   activityStatus: {
     type: String,
-    enum: ["NotApproved", "NotStartYet", "TakingPlace", "Delaying", "Canceled"],
+    enum: [
+      "NotApprovedYet",
+      "NotApproved",
+      "NotStartYet",
+      "TakingPlace",
+      "Delaying",
+      "Canceled",
+    ],
     default: "NotApproved",
   },
   registerStatus: {
