@@ -14,9 +14,15 @@ const { json } = require("express");
 
 //Get notify by uid
 NotifyRoute.get("/:id", (req, res) => {
-	Notify.find({notifyID: req.params.id}).then(data => {
+	console.log(req.params.id);
+	Notify.find({ recvID: req.params.id })
+	  .sort({ sendTime: -1 }) // Sắp xếp giảm dần theo sendTime
+	  .then(data => {
 		res.json(data);
-	});
+	  })
+	  .catch(err => {
+		res.status(500).json({ error: err.message });
+	  });
 });
 
 //Send notify
@@ -28,6 +34,32 @@ NotifyRoute.post("/send", async (req, res) => {
 	newNotify.save({}).then(data => {
 		res.send(data);
 	})
+});
+
+//Send notify
+NotifyRoute.post("/mark-read", async (req, res) => {
+	const notifyData = req.body;
+	console.log(notifyData);
+	if(notifyData.reqType == 'single'){
+		const updatedNotify = await Notify.findOneAndUpdate(
+			{notifyID: notifyData.notifyID},
+			{ $set: { isRead: true } },
+			{ new: true } // Trả về tài liệu đã cập nhật
+		);
+		
+		res.send(updatedNotify);
+	}
+	else{
+		const result = await Notify.updateMany(
+			{ recvID: notifyData.recvID },
+			{ $set: { isRead: true } }
+		  );
+
+		  // Tìm và trả về các thông báo đã cập nhật
+		  const updatedNotify = await Notify.find({ recvID: notifyData.recvID }).sort({ sendTime: -1 });
+	  
+		  res.json({updatedNotify, type: 'all'});
+	}
 });
 
 NotifyRoute.post("/test-send-mail", async (req, res) => {

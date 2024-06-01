@@ -41,7 +41,7 @@ const Contact = () => {
 
   useEffect(() => {
     if(selectedContactID == '' && contactData.length != 0){
-      dispatch(updateSelectedContactID(contactData[0].recvID));
+      dispatch(updateSelectedContactID((currentUserId == contactData[0].senderID) ? contactData[0].recvID : contactData[0].senderID));
     }
   }, [contactData]);
 
@@ -97,7 +97,7 @@ const Contact = () => {
         </Select>
         <div className="users-contact-group">
           {contactData.map(data => (
-            <ContactItem recvID={data.recvID} content={data.lastestMsg} sendTime={data.sendTime} name={allContactData.find(contact => contact.uid == data.recvID)?.name}/>
+            <ContactItem recvID={(currentUserId == data.senderID) ? data.recvID : data.senderID} content={data.lastestMsg} sendTime={data.sendTime} name={allContactData.find(contact => contact.uid == data.recvID)?.name}/>
           ))}
         </div>
       </div>

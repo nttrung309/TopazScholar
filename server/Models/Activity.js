@@ -110,6 +110,10 @@ const activitySchema = new mongoose.Schema({
   note: {
     type: String,
   },
+  isAutoMailed: {
+    type: Boolean,
+    default: false
+  }
 });
 
 module.exports = mongoose.model("Activity", activitySchema);
