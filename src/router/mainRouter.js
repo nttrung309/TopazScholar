@@ -13,7 +13,7 @@ import { routerDetail } from "view/detail/router.jsx";
 import { routerContact } from "view/contact/router.jsx";
 import { routerHome } from "../view/home/router.jsx";
 import { routerAccount } from "view/admin/account/router.jsx";
-import { routerActivityAdmin } from "view/admin/activty/router.jsx";
+import { routerActivityAdmin } from "view/admin/activity/router.jsx";
 
 export const privatePage = [
   routerHome,

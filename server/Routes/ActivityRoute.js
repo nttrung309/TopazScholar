@@ -1,12 +1,7 @@
 const ActivityRoute = require("express").Router();
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-
 const Activity = require("../Models/Activity");
 const Host = require("../Models/Host");
 const User = require("../Models/User");
-
-const { json } = require("express");
 
 //Get all activities
 ActivityRoute.get("/", (req, res) => {
@@ -52,8 +47,8 @@ ActivityRoute.post("/host", async (req, res) => {
     content: actData.content,
     category: actData.category,
     time: {
-      startDate: actData.date[0],
-      endDate: actData.date[1],
+      startDate: actData.startDate,
+      endDate: actData.endDate,
     },
     form: actData.form,
     address: actData.address,

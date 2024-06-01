@@ -97,6 +97,9 @@ const activitySchema = new mongoose.Schema({
     type: String,
     enum: ["Available", "Full"],
   },
+  linkJoin: {
+    type: String,
+  },
   note: {
     type: String,
   },

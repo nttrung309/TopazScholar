@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import {
   Button,
   DatePicker,
@@ -11,56 +12,38 @@ import {
   Tag,
 } from "antd";
 import { BsPlus } from "react-icons/bs";
-import dayjs from "dayjs";
 import { useDispatch, useSelector } from "react-redux";
-import { HostActivity } from "../../../redux/activity/activityThunk";
+import {
+  GetAllActivity,
+  HostActivity,
+} from "../../../redux/activity/activityThunk";
 import { AuthUIDSelector } from "../../../redux/auth/userSelector";
-const data = [
-  {
-    key: "1",
-    name: "UIT Job Fair 2023",
-    user: "Nguyễn Ngọc Trinh",
-    hostDate: "03/12/2023",
-    registerDate: "12/11/2023",
-    status: "Đã kết thúc",
-  },
-  {
-    key: "2",
-    name: "Tháng hành động thanh niên",
-    user: "Nguyễn Thành Trung",
-    hostDate: "26/03/2024",
-    registerDate: "20/03/2024",
-    status: "Đã kết thúc",
-  },
-  {
-    key: "3",
-    name: "Cuộc thi tìm hiểu về lịch sử",
-    user: "Nguyễn Ngọc Trinh",
-    hostDate: "20/03/2024",
-    registerDate: "12/03/2024",
-    status: "Đã kết thúc",
-  },
-  {
-    key: "4",
-    name: "Thủ lĩnh sinh viên 2024",
-    user: "Nguyễn Thành Trung",
-    hostDate: "20/05/2024",
-    registerDate: "10/05/2023",
-    status: "Sắp diễn ra",
-  },
-];
+import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
 
-const { Column } = Table;
 const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 const Activity = () => {
-  const [openCreatingModal, setOpenCreatingModal] = useState(false);
-  const [activity, setActivity] = useState(null);
   const dispatch = useDispatch();
   const userID = useSelector(AuthUIDSelector);
+  const activities = useSelector(ActivityDataSelector);
+
+  const [openCreatingModal, setOpenCreatingModal] = useState(false);
+  const [activity, setActivity] = useState(null);
+  const [typeModal, setTypeModal] = useState(null);
   const [form] = Form.useForm();
   const formValue = Form.useWatch("form", form);
+
+  useEffect(() => {
+    const getAllActivity = async () => {
+      try {
+        // @ts-ignore
+        await dispatch(GetAllActivity());
+      } catch (error) {
+        console.error("Error occurred:", error.message);
+      }
+    };
+    getAllActivity();
+  }, []);
 
   const handleSubmitActivity = async () => {
     try {
@@ -82,6 +65,7 @@ const Activity = () => {
 
   const openAddModal = () => {
     setOpenCreatingModal(true);
+    setTypeModal("add");
     setActivity({
       name: "",
       content: "",
@@ -95,10 +79,72 @@ const Activity = () => {
       participants: null,
       maxParticipants: null,
       rule: "",
-      activityStatus: "NotStartYet",
+      activityStatus: "NotApproved",
       registerStatus: "Available",
     });
   };
+
+  const deleteActivity = () => {};
+
+  const columns = [
+    {
+      title: "#",
+      dataIndex: "key",
+      key: "key",
+    },
+    {
+      title: "Tên hoạt động",
+      dataIndex: "name",
+      key: "name",
+      width: 200,
+    },
+    {
+      title: "Người đăng ký",
+      dataIndex: "hostName",
+      key: "hostName",
+      width: 200,
+    },
+    // {
+    //   title: "Nội dung",
+    //   dataIndex: "content",
+    //   key: "content",
+    //   width: 340,
+    // },
+    {
+      title: "Ngày tổ chức",
+      dataIndex: "time",
+      key: "time",
+      render: (item) => dayjs(item.startDate).format("DD/MM/YYYY"),
+    },
+    {
+      title: "Ngày đăng ký",
+      dataIndex: "dateCreated",
+      key: "dateCreated",
+      render: (item) => dayjs(item).format("DD/MM/YYYY"),
+    },
+    {
+      title: "Tình trạng",
+      dataIndex: "activityStatus",
+      key: "dateCreated",
+      render: (status) => (
+        <Tag key={status} color={status === "NotStartYet" && "blue"}>
+          {status === "NotStartYet" && "Sắp diễn ra".toUpperCase()}
+        </Tag>
+      ),
+    },
+    {
+      title: "",
+      key: "action",
+      render: () => (
+        <div className="action-group">
+          <Button
+            icon={<i className="bi bi-pencil-square" />}
+            className="edit"
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <div className="account">
@@ -116,41 +162,24 @@ const Activity = () => {
         </Button>
       </div>
       <div className="main-content" style={{ marginTop: 40 }}></div>
-      <Table dataSource={data}>
-        <Column title="#" dataIndex="key" key="key" />
-        <Column title="Tên hoạt động" dataIndex="name" key="name" />
-        <Column title="Người đăng ký" dataIndex="user" key="user" />
-        <Column title="Ngày tổ chức" dataIndex="hostDate" key="hostDate" />
-        <Column
-          title="Ngày đăng ký"
-          dataIndex="registerDate"
-          key="registerDate"
-        />
-        <Column
-          title="Tình trạng"
-          dataIndex="status"
-          key="status"
-          render={(status) => (
-            <Tag key={status} color={status === "Sắp diễn ra" && "blue"}>
-              {status.toUpperCase()}
-            </Tag>
-          )}
-        />
-        <Column
-          title=""
-          fixed
-          key="action"
-          render={() => (
-            <div className="action-group">
-              <Button
-                icon={<i className="bi bi-pencil-square" />}
-                className="edit"
-              />
-              <Button icon={<i className="bi bi-trash" />} className="delete" />
-            </div>
-          )}
-        />
-      </Table>
+      <Table
+        style={{
+          wordWrap: "break-word",
+          wordBreak: "break-word",
+        }}
+        columns={columns}
+        dataSource={activities}
+        onRow={(record) => {
+          return {
+            onDoubleClick: () => {
+              // @ts-ignore
+              setActivity({ ...record });
+              setTypeModal("view");
+              setOpenCreatingModal(true);
+            },
+          };
+        }}
+      />
 
       <Modal
         title="Thông tin hoạt động"
@@ -165,6 +194,7 @@ const Activity = () => {
           autoFocus: true,
         }}
         destroyOnClose
+        footer={typeModal === "view" && null}
       >
         <Form
           form={form}
@@ -183,7 +213,10 @@ const Activity = () => {
               },
             ]}
           >
-            <Input placeholder="Tên hoạt động" />
+            <Input
+              placeholder="Tên hoạt động"
+              readOnly={typeModal === "view" && true}
+            />
           </Form.Item>
           <Form.Item
             name="content"
@@ -196,9 +229,10 @@ const Activity = () => {
           >
             <TextArea
               showCount
-              maxLength={1000}
+              maxLength={2000}
               autoSize={{ minRows: 4 }}
               placeholder="Nội dung hoặc mô tả về hoạt động"
+              readOnly={typeModal === "view" && true}
             />
           </Form.Item>
           <Form.Item
@@ -233,23 +267,51 @@ const Activity = () => {
             />
           </Form.Item>
           <Form.Item
-            name="date"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng chọn thời gian diễn ra hoạt động!",
-              },
-            ]}
+            style={{
+              marginBottom: 0,
+            }}
           >
-            <RangePicker
-              showTime={{
-                format: "HH:mm",
+            <Form.Item
+              name="startDate"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn thời gian tổ chức!",
+                },
+              ]}
+              style={{
+                display: "inline-block",
+                width: "calc(50% - 10px)",
               }}
-              placeholder={["Thời gian bắt đầu", "Thời gian kết thúc"]}
-              format="DD/MM/YYYY HH:mm"
-              // disabledDate={disabledDate}
-              style={{ width: "100%" }}
-            />
+            >
+              <DatePicker
+                showTime={{
+                  format: "HH:mm",
+                }}
+                placeholder={"Thời gian bắt đầu"}
+                format="DD/MM/YYYY HH:mm"
+                // disabledDate={disabledDate}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
+            <Form.Item
+              name="endDate"
+              style={{
+                display: "inline-block",
+                width: "calc(50% - 10px)",
+                marginLeft: "20px",
+              }}
+            >
+              <DatePicker
+                showTime={{
+                  format: "HH:mm",
+                }}
+                placeholder={"Thời gian kết thúc"}
+                format="DD/MM/YYYY HH:mm"
+                // disabledDate={disabledDate}
+                style={{ width: "100%" }}
+              />
+            </Form.Item>
           </Form.Item>
           <Form.Item
             name="form"
@@ -273,7 +335,7 @@ const Activity = () => {
                 },
               ]}
             />
-          </Form.Item>
+          </Form.Item>  
           {formValue === "Trực tiếp" ? (
             <Form.Item
               name="address"
@@ -284,7 +346,10 @@ const Activity = () => {
                 },
               ]}
             >
-              <Input placeholder="Địa điểm tổ chức" />
+              <Input
+                placeholder="Địa điểm tổ chức"
+                readOnly={typeModal === "view" && true}
+              />
             </Form.Item>
           ) : (
             formValue === "Online" && (
@@ -301,7 +366,10 @@ const Activity = () => {
                   },
                 ]}
               >
-                <Input placeholder="Liên kết tham gia sự kiện" />
+                <Input
+                  placeholder="Liên kết tham gia sự kiện"
+                  readOnly={typeModal === "view" && true}
+                />
               </Form.Item>
             )
           )}
@@ -312,7 +380,7 @@ const Activity = () => {
             }}
           >
             <Form.Item
-              name="faculty"
+              name={"faculty"}
               rules={[
                 {
                   required: true,
@@ -359,7 +427,7 @@ const Activity = () => {
               />
             </Form.Item>
             <Form.Item
-              name="participants"
+              name={"participants"}
               rules={[
                 {
                   required: true,
@@ -414,6 +482,7 @@ const Activity = () => {
               style={{
                 width: "100%",
               }}
+              readOnly={typeModal === "view" && true}
             />
           </Form.Item>
 
