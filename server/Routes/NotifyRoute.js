@@ -47,7 +47,7 @@ NotifyRoute.post("/mark-read", async (req, res) => {
 			{ new: true } // Trả về tài liệu đã cập nhật
 		);
 		
-		res.send(updatedNotify);
+		res.json({updatedNotify, type: 'single'});
 	}
 	else{
 		const result = await Notify.updateMany(

@@ -29,12 +29,14 @@ const notifyStore = createReducer(initialState, (builder) => {
     .addCase(UpdateReadNotify.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
       
-      if(action.payload.data.type){
+      if(action.payload.data.type == 'all'){
+        console.log(action.payload.data.type);
         state.data = action.payload.data.updatedNotify;
       }
       else{
+        console.log(action.payload.data.type);
         const updatedNotifyData = state.data.map(data => 
-          data.notifyID === action.payload.data.notifyID
+          data.notifyID === action.payload.data.updatedNotify.notifyID
             ? { ...data, isRead: true } 
             : data
         );
