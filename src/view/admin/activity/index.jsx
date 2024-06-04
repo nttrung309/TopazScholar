@@ -1,20 +1,93 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { Button, Carousel, Image, Input, Modal, Table, Tag } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { GetAllActivity } from "../../../redux/activity/activityThunk";
-import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
 import { useNavigate } from "react-router-dom";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
+import {
+  Button,
+  Carousel,
+  Form,
+  Input,
+  Modal,
+  Popover as AntPopover,
+  Table,
+  Tag,
+  Select,
+  message,
+} from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  GetAllActivity,
+  UpdateStatus,
+} from "../../../redux/activity/activityThunk";
+import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
+
+const Popover = ({ record, setRecord, navigate, setOpenStatusModal, form }) => {
+  return (
+    <div className="action-group">
+      <AntPopover
+        placement="left"
+        content={
+          <div>
+            <p
+              className="item"
+              onClick={() =>
+                navigate("/admin/activity/edit", {
+                  state: { id: record.actID },
+                })
+              }
+            >
+              Chỉnh sửa
+            </p>
+            <p
+              className="item"
+              onClick={() => {
+                setOpenStatusModal(true);
+                form.setFieldsValue({
+                  actID: record.actID,
+                  activityStatus: record.activityStatus,
+                  registerStatus: record.registerStatus,
+                });
+              }}
+            >
+              Phê duyệt hoạt động
+            </p>
+            <p
+              className="item"
+              onClick={() => {
+                setOpenStatusModal(true);
+                form.setFieldsValue({
+                  activityStatus: record.activityStatus,
+                  registerStatus: record.registerStatus,
+                });
+                setRecord(record);
+              }}
+            >
+              Cập nhật trạng thái
+            </p>
+          </div>
+        }
+      >
+        <Button
+          icon={<i className="bi bi-three-dots-vertical" />}
+          className="edit"
+        />
+      </AntPopover>
+    </div>
+  );
+};
 
 const Activity = () => {
   const dispatch = useDispatch();
   const activities = useSelector(ActivityDataSelector);
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
+  const [openStatusModal, setOpenStatusModal] = useState(false);
   const [record, setRecord] = useState(null);
 
   const navigate = useNavigate();
+
+  const [form] = Form.useForm();
+  const activityStatus = Form.useWatch("activityStatus", form);
 
   const getData = (data) => {
     return data?.map((item, index) => ({ ...item, key: index + 1 }));
@@ -63,7 +136,7 @@ const Activity = () => {
       }
     };
     getAllActivity();
-  }, []);
+  }, [dispatch]);
 
   const columns = [
     {
@@ -96,9 +169,9 @@ const Activity = () => {
       render: (item) => dayjs(item).format("DD/MM/YYYY"),
     },
     {
-      title: "Tình trạng",
+      title: "Trạng thái hoạt động",
       dataIndex: "activityStatus",
-      key: "dateCreated",
+      key: "activityStatus",
       render: (status) => (
         <Tag
           key={status}
@@ -121,21 +194,77 @@ const Activity = () => {
       ),
     },
     {
+      title: "Tình trạng",
+      dataIndex: "registerStatus",
+      key: "registerStatus",
+      render: (status) => (
+        <Tag
+          key={status}
+          color={
+            status === "Available"
+              ? "#0A58CA"
+              : status === "Full"
+              ? "#888DC2"
+              : status === "NotApproved"
+              ? "#dc3545"
+              : status === "TakingPlace"
+              ? "#007747"
+              : status === "Delaying"
+              ? "#FE7C1B"
+              : status === "Canceled" && "#454655"
+          }
+        >
+          {STATUS.find((item) => item.value === status)?.label.toUpperCase()}
+        </Tag>
+      ),
+    },
+    {
       title: "",
       key: "action",
       render: (_, record) => (
-        <div className="action-group">
-          <Button
-            icon={<i className="bi bi-pencil-square" />}
-            className="edit"
-            onClick={() =>
-              navigate("/admin/activity/edit", { state: { activity: record } })
-            }
-          />
-        </div>
+        <Popover
+          record={record}
+          setRecord={setRecord}
+          navigate={navigate}
+          setOpenStatusModal={setOpenStatusModal}
+          form={form}
+        />
       ),
     },
   ];
+
+  const handleSubmitStatus = async (e) => {
+    e.preventDefault();
+    try {
+      const values = await form.validateFields();
+      console.log(values);
+      if (
+        values.activityStatus === "NotStartYet" ||
+        values.activityStatus === "TakingPlace"
+      )
+        if (!values.registerStatus) {
+          message.error("Vui lòng chọn tình trạng đăng ký");
+          return;
+        }
+
+      // @ts-ignore
+      await dispatch(UpdateStatus({ ...values, actID: record.actID }));
+      setOpenStatusModal(false);
+      form.resetFields();
+      message.success("Cập nhật trạng thái thành công!");
+    } catch (error) {
+      console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  useEffect(() => {
+    if (activityStatus === "NotStartYet" || activityStatus === "TakingPlace")
+      return;
+    if (activityStatus !== "NotStartYet" && activityStatus !== "TakingPlace") {
+      form.setFieldValue("registerStatus", null);
+    }
+  }, [activityStatus]);
 
   return (
     <div className="account">
@@ -164,37 +293,87 @@ const Activity = () => {
           return {
             onDoubleClick: async () => {
               setRecord(record);
-              setOpenModal(true);
+              setOpenDetailModal(true);
             },
           };
         }}
       />
 
+      {/* Modal update status */}
+      <Modal
+        title="Cập nhật trạng thái"
+        centered
+        open={openStatusModal}
+        key={openStatusModal ? "open" : "closed"}
+        okText="Lưu"
+        onOk={handleSubmitStatus}
+        onCancel={() => setOpenStatusModal(false)}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          autoComplete="off"
+          layout="vertical"
+          requiredMark={false}
+          size="large"
+        >
+          <Form.Item
+            name="activityStatus"
+            label="Trạng thái hoạt động"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn trạng thái hoạt động!",
+              },
+            ]}
+          >
+            <Select options={STATUS.slice(0, 6)} />
+          </Form.Item>
+
+          <Form.Item
+            name="registerStatus"
+            label="Tình trạng đăng ký"
+            dependencies={["activityStatus"]}
+          >
+            <Select
+              options={STATUS.slice(6, 8)}
+              disabled={
+                activityStatus === "NotStartYet" ||
+                activityStatus === "TakingPlace"
+                  ? false
+                  : true
+              }
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal view details */}
       <Modal
         title="Thông tin hoạt động"
         centered
         footer={null}
-        open={openModal}
-        key={openModal ? "open" : "closed"}
-        onCancel={() => setOpenModal(false)}
-        okButtonProps={{
-          autoFocus: true,
-        }}
+        open={openDetailModal}
+        key={openDetailModal ? "openDetail" : "closedDetail"}
+        onCancel={() => setOpenDetailModal(false)}
         destroyOnClose
         width={800}
       >
-        <Carousel
-          fade
-          arrows
-          prevArrow={<BsChevronLeft size={32} />}
-          nextArrow={<BsChevronRight size={40} />}
-          infinite={false}
-        >
-          {record?.mediaContent?.images?.map((path) => {
-            console.log("http://localhost:5000/" + path);
-            return <img src={"http://localhost:5000/" + path} />;
-          })}
-        </Carousel>
+        {record?.mediaContent?.images?.length > 1 ? (
+          <Carousel
+            fade
+            arrows
+            prevArrow={<BsChevronLeft size={32} />}
+            nextArrow={<BsChevronRight size={40} />}
+            infinite={false}
+          >
+            {record?.mediaContent?.images?.map((path) => (
+              <img alt="Activity" src={"http://localhost:5000/" + path} />
+            ))}
+          </Carousel>
+        ) : (
+          <img alt="Activity" src={record?.mediaContent?.images[0]} />
+        )}
         <div className="label" style={{ marginTop: 0 }}>
           Tên hoạt động
         </div>

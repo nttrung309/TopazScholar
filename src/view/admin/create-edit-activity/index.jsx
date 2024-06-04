@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import {
   Button,
@@ -12,12 +12,16 @@ import {
   Upload,
   message,
 } from "antd";
-import { UploadFile } from "antd";
+import { Link, useLocation } from "react-router-dom";
 import { BsChevronLeft, BsCloudArrowUp } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { HostActivity } from "../../../redux/activity/activityThunk";
+import {
+  GetActivityByActID,
+  HostActivity,
+  UpdateActivity,
+} from "../../../redux/activity/activityThunk";
 import { AuthUIDSelector } from "../../../redux/auth/userSelector";
-import { Link, useLocation } from "react-router-dom";
+import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
 
 const MAX_IMAGES = 5;
 
@@ -30,8 +34,10 @@ const getBase64 = (file) =>
   });
 
 const CreateNewActivity = () => {
+  const actID = useLocation()?.state?.id;
   const dispatch = useDispatch();
   const userID = useSelector(AuthUIDSelector);
+  const activity = useSelector(ActivityDataSelector);
 
   const [form] = Form.useForm();
   const formValue = Form.useWatch("form", form);
@@ -39,20 +45,58 @@ const CreateNewActivity = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
 
-  const activity = useLocation()?.state?.activity;
-  console.log(activity);
+  useEffect(() => {
+    const getAllActivity = async () => {
+      try {
+        // @ts-ignore
+        await dispatch(GetActivityByActID(actID));
+      } catch (error) {
+        console.error("Error occurred:", error.message);
+      }
+    };
+    getAllActivity();
+  }, [actID, dispatch]);
 
   const getFileList = () => {
     if (activity) {
-      const images = activity.mediaContent.images.map((path, index) => ({
+      const images = activity.mediaContent?.images.map((path, index) => ({
         uid: index,
-        name: path.slice(8),
+        name: path?.slice(8),
         status: "done",
         url: "http://localhost:5000/" + path,
       }));
       return images;
     } else return null;
   };
+
+  const getInitialValue = () => {
+    if (activity)
+      form.setFieldsValue({
+        ...activity,
+        startDate: dayjs(activity?.time?.startDate),
+        endDate: activity?.time?.endDate ? dayjs(activity?.time?.endDate) : "",
+        images: getFileList(),
+      });
+    else
+      form.setFieldsValue({
+        images: null,
+        name: "",
+        content: "",
+        category: null,
+        startDate: "",
+        endDate: "",
+        form: null,
+        address: "",
+        linkJoin: "",
+        faculty: null,
+        participants: null,
+        maxParticipants: null,
+        rule: "",
+        activityStatus: "NotApprovedYet",
+        registerStatus: "Available",
+      });
+  };
+  getInitialValue();
 
   const handleSubmitActivity = async (e) => {
     e.preventDefault();
@@ -82,8 +126,68 @@ const CreateNewActivity = () => {
       // prettier-ignore
       await dispatch(HostActivity(formData));
       form.resetFields();
+      message.success("Tạo hoạt động mới thành công!");
     } catch (error) {
       console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  const handleUpdateActivity = async (e) => {
+    e.preventDefault();
+    try {
+      const values = await form.validateFields();
+      const formData = new FormData();
+
+      //Check new uploaded image
+      const activityImages = getFileList();
+      let newImages = values.images;
+      for (let i = 0; i < activityImages.length; i++) {
+        newImages = newImages.filter(
+          (image) => image.name !== activityImages[i].name
+        );
+      }
+
+      //Return remain images from database (when user delete a image in database)
+      let remainImages = [];
+      for (let i = 0; i < activityImages.length; i++) {
+        const image = values.images.filter(
+          (image) => image.name === activityImages[i].name
+        );
+        if (image.length !== 0) remainImages.push(image);
+      }
+
+      remainImages = remainImages.reduce((acc, el) => acc.concat(el), []);
+      newImages.forEach((item) => {
+        formData.append("images", item.originFileObj);
+      });
+      remainImages.forEach((item) => {
+        formData.append("remainImages", item.url?.slice(22));
+      });
+      formData.append("actID", activity.actID);
+      formData.append("name", values.name);
+      formData.append("content", values.content);
+      formData.append("category", values.category);
+      formData.append("startDate", values.startDate);
+      formData.append("endDate", values.endDate);
+      formData.append("form", values.form);
+      formData.append("address", values.address);
+      formData.append("linkJoin", values.linkJoin);
+      formData.append("faculty", values.faculty);
+      formData.append("participants", values.participants);
+      formData.append("maxParticipants", values.maxParticipants);
+      formData.append("rule", values.rule);
+      formData.append("activityStatus", values.activityStatus);
+      formData.append("registerStatus", values.registerStatus);
+      formData.append("userID", userID);
+
+      // @ts-ignore
+      // prettier-ignore
+      await dispatch(UpdateActivity(formData));
+      message.success("Cập nhật hoạt động thành công!");
+    } catch (error) {
+      console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
     }
   };
 
@@ -145,34 +249,6 @@ const CreateNewActivity = () => {
         layout="vertical"
         requiredMark={false}
         size="large"
-        initialValues={
-          activity
-            ? {
-                ...activity,
-                startDate: dayjs(activity?.time?.startDate),
-                endDate: activity?.time?.endDate
-                  ? dayjs(activity?.time?.endDate)
-                  : "",
-                images: getFileList(),
-              }
-            : {
-                images: null,
-                name: "",
-                content: "",
-                category: null,
-                startDate: "",
-                endDate: "",
-                form: null,
-                address: "",
-                linkJoin: "",
-                faculty: null,
-                participants: null,
-                maxParticipants: null,
-                rule: "",
-                activityStatus: "NotApprovedYet",
-                registerStatus: "Available",
-              }
-        }
       >
         <Form.Item
           name="images"
@@ -194,7 +270,7 @@ const CreateNewActivity = () => {
             maxCount={MAX_IMAGES}
             beforeUpload={beforeUpload}
             onPreview={handlePreview}
-            >
+          >
             <BsCloudArrowUp size={40} />
             <p className="ant-upload-text">Thêm hình ảnh</p>
           </Upload.Dragger>
@@ -365,7 +441,12 @@ const CreateNewActivity = () => {
               width: "calc(50% - 10px)",
             }}
           >
-            <Select placeholder="Chọn khoa" options={FACULTY} />
+            <Select
+              placeholder="Chọn khoa"
+              options={FACULTY}
+              mode="multiple"
+              allowClear
+            />
           </Form.Item>
           <Form.Item
             name={"participants"}
@@ -381,7 +462,12 @@ const CreateNewActivity = () => {
               marginLeft: "20px",
             }}
           >
-            <Select placeholder="Chọn năm" options={YEAR} />
+            <Select
+              placeholder="Chọn năm"
+              options={YEAR}
+              mode="multiple"
+              allowClear
+            />
           </Form.Item>
         </Form.Item>
         <Form.Item
@@ -449,14 +535,26 @@ const CreateNewActivity = () => {
             />
           </Form.Item>
         </Form.Item>
-        <Button
-          key="submit"
-          style={{ justifySelf: "flex-end" }}
-          type="primary"
-          onClick={handleSubmitActivity}
-        >
-          Tạo hoạt động
-        </Button>
+
+        {activity ? (
+          <div style={{ justifySelf: "flex-end" }}>
+            <Button style={{ marginRight: 20 }} htmlType="reset">
+              Reset
+            </Button>
+            <Button key="submit" type="primary" onClick={handleUpdateActivity}>
+              Lưu thay đổi
+            </Button>
+          </div>
+        ) : (
+          <Button
+            style={{ justifySelf: "flex-end" }}
+            key="submit"
+            type="primary"
+            onClick={handleSubmitActivity}
+          >
+            Tạo hoạt động
+          </Button>
+        )}
       </Form>
     </div>
   );

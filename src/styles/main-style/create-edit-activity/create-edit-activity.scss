@@ -45,4 +45,13 @@
       margin-top: 12px;
     }
   }
+
+  .ant-select-multiple {
+    height: 40px;
+
+    .ant-select-selector {
+      padding-top: 1px !important;
+      padding-bottom: 1px !important;
+    }
+  }
 }

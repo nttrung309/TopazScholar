@@ -1,6 +1,12 @@
 // @ts-nocheck
 import { createReducer } from "@reduxjs/toolkit";
-import { GetAllActivity, HostActivity, UpdateActivity } from "./activityThunk";
+import {
+  GetActivityByActID,
+  GetAllActivity,
+  HostActivity,
+  UpdateActivity,
+  UpdateStatus,
+} from "./activityThunk";
 
 const initialState = {
   data: null,
@@ -48,6 +54,34 @@ const activityStore = createReducer(initialState, (builder) => {
       console.log(action.payload.data);
     })
     .addCase(UpdateActivity.rejected, (state, action) => {
+      state.dataLoadingState = "failed";
+      state.error = action.error.message;
+    })
+
+    //Get Activity by ActID
+    .addCase(GetActivityByActID.pending, (state, _action) => {
+      state.dataLoadingState = "loading";
+    })
+    .addCase(GetActivityByActID.fulfilled, (state, action) => {
+      state.dataLoadingState = "succeeded";
+      state.data = action.payload.data;
+      console.log(action.payload.data);
+    })
+    .addCase(GetActivityByActID.rejected, (state, action) => {
+      state.dataLoadingState = "failed";
+      state.error = action.error.message;
+    })
+
+    //Update Status by actID
+    .addCase(UpdateStatus.pending, (state, _action) => {
+      state.dataLoadingState = "loading";
+    })
+    .addCase(UpdateStatus.fulfilled, (state, action) => {
+      state.dataLoadingState = "succeeded";
+      state.data = action.payload.data;
+      console.log(action.payload.data);
+    })
+    .addCase(UpdateStatus.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
     });

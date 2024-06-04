@@ -114,3 +114,16 @@
     display: none !important;
   }
 }
+
+.ant-popover-inner-content {
+  .item {
+    cursor: pointer;
+    margin: 0;
+    padding: 4px 8px;
+
+    &:hover,
+    &:focus {
+      background-color: $blue-100;
+    }
+  }
+}

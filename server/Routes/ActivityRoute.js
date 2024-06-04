@@ -1,5 +1,7 @@
 const ActivityRoute = require("express").Router();
 const multer = require("multer");
+const fs = require("fs");
+const { promisify } = require("util");
 const Activity = require("../Models/Activity");
 const Host = require("../Models/Host");
 const User = require("../Models/User");
@@ -12,7 +14,9 @@ const storage = multer.diskStorage({
     return cb(null, `${Date.now()}_${file.originalname}`);
   },
 });
+
 const upload = multer({ storage });
+const unlinkAsync = promisify(fs.unlink);
 
 //Get all activities
 ActivityRoute.get("/", (req, res) => {
@@ -104,10 +108,24 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
 });
 
 //Update activity
-ActivityRoute.post("/update", async (req, res) => {
+ActivityRoute.post("/update", upload.array("images"), async (req, res) => {
   const actData = req.body;
 
   await Activity.findOne({ actID: actData.actID }).then((data) => {
+    console.log(actData.remainImages);
+    console.log(data.mediaContent.images);
+
+    // @ts-ignore
+    let paths = req.files.map((file) => file.path);
+    if (actData?.remainImages?.length > 0)
+      paths = paths.concat(actData.remainImages);
+
+    // Delete file
+    const deleteFile = data.mediaContent.images.filter(
+      (image) => !actData.remainImages.includes(image)
+    );
+    deleteFile.forEach(async (path) => await unlinkAsync(path));
+
     if (!data) {
       return res.json(data);
     } else {
@@ -117,25 +135,59 @@ ActivityRoute.post("/update", async (req, res) => {
         },
         {
           hostID: actData.hostID,
-          dateCreated: actData.dateCreated,
-          lastModified: actData.lastModified,
           name: actData.name,
           content: actData.content,
           category: actData.category,
-          address: actData.address,
-          ggMap: actData.ggMap,
-          entryFee: actData.entryFee,
-          topic: actData.topic,
+          time: {
+            startDate: actData.startDate,
+            endDate: actData.endDate,
+          },
           form: actData.form,
-          rule: actData.rule,
-          rating: actData.rating,
+          address: actData.address,
+          linkJoin: actData.linkJoin,
+          faculty: actData.faculty,
+          participants: actData.participants,
           maxParticipants: actData.maxParticipants,
+          mediaContent: {
+            images: [...(paths || [])],
+            videos: [...(actData?.videos || [])],
+          },
+          rule: actData.rule === "" ? "Không có" : actData.rule,
+          rating: actData.rating,
           registeredParticipants: actData.registeredParticipants,
           attendedParticipants: actData.attendedParticipants,
           commentsID: actData.commentsID,
           activityStatus: actData.activityStatus,
           registerStatus: actData.registerStatus,
-          note: actData.note,
+        },
+        { new: true, upsert: true }
+      ).then((data) => {
+        res.json(data);
+      });
+    }
+  });
+});
+
+//Update status
+ActivityRoute.post("/updateStatus", async (req, res) => {
+  const actData = req.body;
+  console.log(actData);
+
+  await Activity.findOne({ actID: actData.actID }).then((data) => {
+    if (!data) {
+      return res.json(data);
+    } else {
+      let registerStatus;
+      if (!actData.registerStatus) registerStatus = "";
+      else registerStatus = actData.registerStatus;
+
+      Activity.findOneAndUpdate(
+        {
+          actID: actData.actID,
+        },
+        {
+          activityStatus: actData.activityStatus,
+          registerStatus: registerStatus,
         },
         { new: true, upsert: true }
       ).then((data) => {

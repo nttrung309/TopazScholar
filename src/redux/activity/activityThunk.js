@@ -26,6 +26,20 @@ export const GetAllActivity = createAsyncThunk(
   }
 );
 
+export const GetActivityByActID = createAsyncThunk(
+  "activityStore/GetActivityByActID",
+  async (id) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/activity/" + id
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
 export const HostActivity = createAsyncThunk(
   "activityStore/HostActivity",
   async (data) => {
@@ -47,6 +61,21 @@ export const UpdateActivity = createAsyncThunk(
     try {
       const response = await axios.post(
         "http://localhost:5000/api/activity/update",
+        data
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const UpdateStatus = createAsyncThunk(
+  "activityStore/UpdateStatus",
+  async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/activity/updateStatus",
         data
       );
       return response;
