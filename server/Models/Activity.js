@@ -107,13 +107,19 @@ const activitySchema = new mongoose.Schema({
   linkJoin: {
     type: String,
   },
+  faculty: {
+    type: String,
+  },
+  participants: {
+    type: String,
+  },
   note: {
     type: String,
   },
   isAutoMailed: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Activity", activitySchema);

@@ -1,13 +1,26 @@
 const ActivityRoute = require("express").Router();
+const multer = require("multer");
 const Activity = require("../Models/Activity");
 const Host = require("../Models/Host");
 const User = require("../Models/User");
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    return cb(null, "./uploads");
+  },
+  filename: function (req, file, cb) {
+    return cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+const upload = multer({ storage });
+
 //Get all activities
 ActivityRoute.get("/", (req, res) => {
-  Activity.find({}).then((data) => {
-    res.json(data);
-  });
+  Activity.find({})
+    .sort({ dateCreated: 1 })
+    .then((data) => {
+      res.json(data);
+    });
 });
 
 //Get activity by actID
@@ -29,9 +42,10 @@ ActivityRoute.get("/get-by-host/:hostID", (req, res) => {
 });
 
 //Host new activity
-ActivityRoute.post("/host", async (req, res) => {
+ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
   const actData = req.body;
-
+  //@ts-ignore
+  const paths = req.files.map((file) => file.path);
   //Add new host infor
   const newHost = new Host({
     userID: actData.userID,
@@ -56,11 +70,11 @@ ActivityRoute.post("/host", async (req, res) => {
     faculty: actData.faculty,
     participants: actData.participants,
     maxParticipants: actData.maxParticipants,
-    // mediaContent: {
-    //   images: [...(actData.mediaContent?.images || [])],
-    //   videos: [...(actData.mediaContent?.videos || [])],
-    // },
-    rule: actData.rule,
+    mediaContent: {
+      images: [...(paths || [])],
+      videos: [...(actData?.videos || [])],
+    },
+    rule: actData.rule === "" ? "Không có" : actData.rule,
     activityStatus: actData.activityStatus,
     registerStatus: actData.registerStatus,
   });

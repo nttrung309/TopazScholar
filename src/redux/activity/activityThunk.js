@@ -40,3 +40,18 @@ export const HostActivity = createAsyncThunk(
     }
   }
 );
+
+export const UpdateActivity = createAsyncThunk(
+  "activityStore/UpdateActivity",
+  async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/activity/update",
+        data
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

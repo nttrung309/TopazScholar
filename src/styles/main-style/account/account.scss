@@ -5,6 +5,7 @@
   background-color: white;
   padding: 20px;
   overflow-x: hidden;
+  padding-bottom: 40px;
 
   .page-title {
     .title-name {
@@ -52,7 +53,12 @@
 .ant-modal-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+
+  .label {
+    margin: 6px 0 2px;
+    font: $base-text;
+    font-weight: 600;
+  }
 
   .ant-input-suffix {
     .ant-btn-default {
@@ -62,6 +68,7 @@
       height: fit-content;
     }
   }
+
   .ant-form-item-label {
     label {
       height: fit-content !important;
@@ -81,5 +88,29 @@
   .ant-btn-default {
     border-color: $blue-600;
     color: $blue-600;
+  }
+}
+
+.ant-carousel .slick-prev {
+  inset-inline-start: 20px !important;
+  color: #00000075;
+  z-index: 1;
+  width: auto;
+  height: auto;
+
+  &.slick-disabled {
+    display: none !important;
+  }
+}
+
+.ant-carousel .slick-next {
+  inset-inline-end: 10px !important;
+  color: #00000075;
+  z-index: 1;
+  width: auto;
+  height: auto;
+
+  &.slick-disabled {
+    display: none !important;
   }
 }
