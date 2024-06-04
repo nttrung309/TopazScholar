@@ -1,0 +1,57 @@
+.back-list {
+  margin-top: 20px;
+  color: $blue-700 !important;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  width: fit-content;
+  padding: 4px 0;
+
+  &:focus {
+    text-decoration: underline;
+  }
+}
+
+.form {
+  width: 800px;
+  margin: auto;
+  display: grid;
+
+  .ant-form-item-label {
+    label {
+      height: fit-content !important;
+      font: $base-text;
+    }
+  }
+
+  .ant-upload-wrapper {
+    display: flex !important;
+    flex-direction: column;
+
+    .ant-upload-drag-container {
+      color: $blue-600;
+
+      svg {
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+      .ant-upload-text {
+        color: inherit;
+      }
+    }
+
+    .ant-upload-list-picture-card {
+      margin-top: 12px;
+    }
+  }
+
+  .ant-select-multiple {
+    height: 40px;
+
+    .ant-select-selector {
+      padding-top: 1px !important;
+      padding-bottom: 1px !important;
+    }
+  }
+}

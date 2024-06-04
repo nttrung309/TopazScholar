@@ -53,7 +53,7 @@ const activitySchema = new mongoose.Schema({
   },
   form: {
     type: String,
-    enum: ["onl", "off"],
+    enum: ["Trực tiếp", "Online"],
   },
   rule: {
     type: String,
@@ -63,10 +63,10 @@ const activitySchema = new mongoose.Schema({
   },
   time: {
     startDate: {
-      type: Date,
+      type: String,
     },
     endDate: {
-      type: Date,
+      type: String,
     },
   },
   event: {
@@ -90,20 +90,36 @@ const activitySchema = new mongoose.Schema({
   },
   activityStatus: {
     type: String,
-    enum: ["NotApprovedYet", "NotApproved", "NotStartYet", "TakingPlace", "Delaying", "Canceled"],
+    enum: [
+      "NotApprovedYet",
+      "NotApproved",
+      "NotStartYet",
+      "TakingPlace",
+      "Delaying",
+      "Canceled",
+    ],
     default: "NotApprovedYet",
   },
   registerStatus: {
     type: String,
     enum: ["Available", "Full"],
   },
+  linkJoin: {
+    type: String,
+  },
+  faculty: {
+    type: String,
+  },
+  participants: {
+    type: String,
+  },
   note: {
     type: String,
   },
   isAutoMailed: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Activity", activitySchema);

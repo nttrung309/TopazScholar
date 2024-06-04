@@ -13,7 +13,11 @@ import { routerDetail } from "view/detail/router.jsx";
 import { routerContact } from "view/contact/router.jsx";
 import { routerHome } from "../view/home/router.jsx";
 import { routerAccount } from "view/admin/account/router.jsx";
-import { routerActivityAdmin } from "view/admin/activty/router.jsx";
+import { routerActivityAdmin } from "view/admin/activity/router.jsx";
+import {
+  routerCreateActivity,
+  routerEditActivity,
+} from "view/admin/create-edit-activity/route.jsx";
 
 export const privatePage = [
   routerHome,
@@ -27,4 +31,9 @@ export const privatePage = [
 
 export const publicPage = [routerLogin, routerSignUp, routerActivityAdmin];
 
-export const adminPage = [routerActivityAdmin, routerAccount];
+export const adminPage = [
+  routerActivityAdmin,
+  routerAccount,
+  routerCreateActivity,
+  routerEditActivity,
+];
