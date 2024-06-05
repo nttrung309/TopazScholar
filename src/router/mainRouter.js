@@ -18,6 +18,7 @@ import {
   routerCreateActivity,
   routerEditActivity,
 } from "view/admin/create-edit-activity/route.jsx";
+import { routerStatistics } from "view/admin/statistics/route.jsx";
 
 export const privatePage = [
   routerHome,
@@ -29,11 +30,12 @@ export const privatePage = [
   routerContact,
 ];
 
-export const publicPage = [routerLogin, routerSignUp, routerActivityAdmin];
+export const publicPage = [routerLogin, routerSignUp];
 
 export const adminPage = [
   routerActivityAdmin,
   routerAccount,
   routerCreateActivity,
   routerEditActivity,
+  routerStatistics,
 ];
