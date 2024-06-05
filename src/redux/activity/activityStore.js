@@ -5,7 +5,7 @@ import {
   GetAllActivity,
   HostActivity,
   UpdateActivity,
-  UpdateStatus,
+  UpdateHaft,
 } from "./activityThunk";
 
 const initialState = {
@@ -72,16 +72,15 @@ const activityStore = createReducer(initialState, (builder) => {
       state.error = action.error.message;
     })
 
-    //Update Status by actID
-    .addCase(UpdateStatus.pending, (state, _action) => {
+    .addCase(UpdateHaft.pending, (state, _action) => {
       state.dataLoadingState = "loading";
     })
-    .addCase(UpdateStatus.fulfilled, (state, action) => {
+    .addCase(UpdateHaft.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
       state.data = action.payload.data;
       console.log(action.payload.data);
     })
-    .addCase(UpdateStatus.rejected, (state, action) => {
+    .addCase(UpdateHaft.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
     });

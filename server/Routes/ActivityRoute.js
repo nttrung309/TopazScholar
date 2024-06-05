@@ -79,14 +79,13 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
       videos: [...(actData?.videos || [])],
     },
     rule: actData.rule === "" ? "Không có" : actData.rule,
-    activityStatus: actData.activityStatus,
-    registerStatus: actData.registerStatus,
   });
+  console.log(newAct);
 
   try {
     const data = await newAct.save({});
 
-    //Update host data (actID)
+    // Update host data (actID)
     await Host.findOneAndUpdate(
       { hostID: hostData.hostID },
       { actID: data.actID },
@@ -101,10 +100,12 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
       },
       { new: true, upsert: true }
     );
-  } catch {
+    return res.status(200).send("Đăng ký thành công!");
+  } catch (error) {
     res.json(null);
+    console.log("error: " + error);
+    return res.send({ Error: error });
   }
-  return res.status(200).send("Đăng ký thành công!");
 });
 
 //Update activity
@@ -112,9 +113,6 @@ ActivityRoute.post("/update", upload.array("images"), async (req, res) => {
   const actData = req.body;
 
   await Activity.findOne({ actID: actData.actID }).then((data) => {
-    console.log(actData.remainImages);
-    console.log(data.mediaContent.images);
-
     // @ts-ignore
     let paths = req.files.map((file) => file.path);
     if (actData?.remainImages?.length > 0)
@@ -168,33 +166,22 @@ ActivityRoute.post("/update", upload.array("images"), async (req, res) => {
   });
 });
 
-//Update status
-ActivityRoute.post("/updateStatus", async (req, res) => {
-  const actData = req.body;
-  console.log(actData);
-
-  await Activity.findOne({ actID: actData.actID }).then((data) => {
-    if (!data) {
-      return res.json(data);
-    } else {
-      let registerStatus;
-      if (!actData.registerStatus) registerStatus = "";
-      else registerStatus = actData.registerStatus;
-
-      Activity.findOneAndUpdate(
-        {
-          actID: actData.actID,
-        },
-        {
-          activityStatus: actData.activityStatus,
-          registerStatus: registerStatus,
-        },
-        { new: true, upsert: true }
-      ).then((data) => {
-        res.json(data);
-      });
-    }
-  });
+//Update
+ActivityRoute.post("/haflUpdate", async (req, res) => {
+  let data = req.body;
+  try {
+    if (!data.registerStatus) data = { ...data, registerStatus: "" };
+    const result = await Activity.findOneAndUpdate(
+      { actID: data.actID },
+      {
+        data,
+      },
+      { new: true, upsert: true }
+    );
+    res.send({ status: "Success", data: result });
+  } catch (error) {
+    res.send({ status: "Error", error: error });
+  }
 });
 
 module.exports = ActivityRoute;

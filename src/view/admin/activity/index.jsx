@@ -17,11 +17,20 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   GetAllActivity,
-  UpdateStatus,
+  UpdateHaft,
 } from "../../../redux/activity/activityThunk";
 import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
+import { UpdateHostByActId } from "../../../redux/host/hostThunk";
+import { AuthUIDSelector } from "../../../redux/auth/userSelector";
 
-const Popover = ({ record, setRecord, navigate, setOpenStatusModal, form }) => {
+const Popover = ({
+  record,
+  setRecord,
+  navigate,
+  setOpenStatusModal,
+  setOpenApproveModal,
+  form,
+}) => {
   return (
     <div className="action-group">
       <AntPopover
@@ -41,12 +50,14 @@ const Popover = ({ record, setRecord, navigate, setOpenStatusModal, form }) => {
             <p
               className="item"
               onClick={() => {
-                setOpenStatusModal(true);
+                setOpenApproveModal(true);
                 form.setFieldsValue({
-                  actID: record.actID,
-                  activityStatus: record.activityStatus,
-                  registerStatus: record.registerStatus,
+                  regStatus: record.regStatus,
+                  denyReason: record.denyReason,
+                  adminNote: record.adminNote,
                 });
+
+                setRecord(record);
               }}
             >
               Phê duyệt hoạt động
@@ -56,8 +67,14 @@ const Popover = ({ record, setRecord, navigate, setOpenStatusModal, form }) => {
               onClick={() => {
                 setOpenStatusModal(true);
                 form.setFieldsValue({
-                  activityStatus: record.activityStatus,
-                  registerStatus: record.registerStatus,
+                  activityStatus:
+                    record?.activityStatus === "Undefined"
+                      ? null
+                      : record?.activityStatus,
+                  registerStatus:
+                    record?.registerStatus === "Undefined"
+                      ? null
+                      : record?.registerStatus,
                 });
                 setRecord(record);
               }}
@@ -79,15 +96,18 @@ const Popover = ({ record, setRecord, navigate, setOpenStatusModal, form }) => {
 const Activity = () => {
   const dispatch = useDispatch();
   const activities = useSelector(ActivityDataSelector);
+  const userID = useSelector(AuthUIDSelector);
 
   const [openDetailModal, setOpenDetailModal] = useState(false);
   const [openStatusModal, setOpenStatusModal] = useState(false);
+  const [openApproveModal, setOpenApproveModal] = useState(false);
   const [record, setRecord] = useState(null);
 
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
   const activityStatus = Form.useWatch("activityStatus", form);
+  const regStatus = Form.useWatch("regStatus", form);
 
   const getData = (data) => {
     return data?.map((item, index) => ({ ...item, key: index + 1 }));
@@ -107,23 +127,34 @@ const Activity = () => {
   };
 
   const getPartipants = (faculty, participants) => {
-    if (faculty === "Tất cả" && participants === "Tất cả")
+    if (
+      faculty?.indexOf("Tất cả") !== -1 &&
+      participants?.indexOf("Tất cả") !== -1
+    )
       return "Tất cả sinh viên trường";
-    else if (faculty === "Tất cả" && participants !== "Tất cả")
+    else
       return (
-        faculty +
-        " " +
-        participants.charAt(0).toLowerCase() +
-        participants.slice(1)
+        "Sinh viên năm " +
+        participants?.join(", ") +
+        " - Khoa " +
+        faculty?.join(", ")
       );
-    else if (faculty !== "Tất cả" && participants === "Tất cả")
-      return (
-        participants +
-        " sinh viên " +
-        faculty?.slice(0, 1).toLowerCase() +
-        faculty?.slice(1)
-      );
-    else return participants + " " + faculty;
+
+    // else if (faculty === "Tất cả" && participants !== "Tất cả")
+    //   return (
+    //     faculty +
+    //     " " +
+    //     participants.charAt(0).toLowerCase() +
+    //     participants.slice(1)
+    //   );
+    // else if (faculty !== "Tất cả" && participants === "Tất cả")
+    //   return (
+    //     participants +
+    //     " sinh viên " +
+    //     faculty?.slice(0, 1).toLowerCase() +
+    //     faculty?.slice(1)
+    //   );
+    // else return participants + " " + faculty;
   };
 
   useEffect(() => {
@@ -160,13 +191,32 @@ const Activity = () => {
       title: "Ngày tổ chức",
       dataIndex: "time",
       key: "time",
-      render: (item) => dayjs(item.startDate).format("DD/MM/YYYY"),
+      render: (item) => dayjs(item).format("DD/MM/YYYY"),
     },
     {
       title: "Ngày đăng ký",
-      dataIndex: "dateCreated",
-      key: "dateCreated",
+      dataIndex: "regDate",
+      key: "regDate",
       render: (item) => dayjs(item).format("DD/MM/YYYY"),
+    },
+    {
+      title: "Tình trạng đơn đăng ký",
+      dataIndex: "regStatus",
+      key: "regStatus",
+      render: (status) => (
+        <Tag
+          key={status}
+          color={
+            status === "Waiting"
+              ? "#0A58CA"
+              : status === "Approved"
+              ? "#007747"
+              : status === "Denied" && "#dc3545"
+          }
+        >
+          {STATUS.find((item) => item.value === status).label.toUpperCase()}
+        </Tag>
+      ),
     },
     {
       title: "Trạng thái hoạt động",
@@ -176,42 +226,30 @@ const Activity = () => {
         <Tag
           key={status}
           color={
-            status === "NotApprovedYet"
+            status === "TakingPlace"
               ? "#0A58CA"
-              : status === "NotStartYet"
+              : status === "Finished"
               ? "#888DC2"
-              : status === "NotApproved"
-              ? "#dc3545"
-              : status === "TakingPlace"
+              : status === "NotStartYet"
               ? "#007747"
               : status === "Delaying"
               ? "#FE7C1B"
               : status === "Canceled" && "#454655"
           }
         >
-          {STATUS.find((item) => item.value === status).label.toUpperCase()}
+          {STATUS.find((item) => item.value === status)?.label.toUpperCase()}
         </Tag>
       ),
     },
     {
-      title: "Tình trạng",
+      title: "Trạng thái đăng ký",
       dataIndex: "registerStatus",
       key: "registerStatus",
       render: (status) => (
         <Tag
           key={status}
           color={
-            status === "Available"
-              ? "#0A58CA"
-              : status === "Full"
-              ? "#888DC2"
-              : status === "NotApproved"
-              ? "#dc3545"
-              : status === "TakingPlace"
-              ? "#007747"
-              : status === "Delaying"
-              ? "#FE7C1B"
-              : status === "Canceled" && "#454655"
+            status === "Available" ? "#0A58CA" : status === "Full" && "#888DC2"
           }
         >
           {STATUS.find((item) => item.value === status)?.label.toUpperCase()}
@@ -227,31 +265,43 @@ const Activity = () => {
           setRecord={setRecord}
           navigate={navigate}
           setOpenStatusModal={setOpenStatusModal}
+          setOpenApproveModal={setOpenApproveModal}
           form={form}
         />
       ),
     },
   ];
 
-  const handleSubmitStatus = async (e) => {
-    e.preventDefault();
+  const handleSubmitStatus = async () => {
     try {
       const values = await form.validateFields();
       console.log(values);
-      if (
-        values.activityStatus === "NotStartYet" ||
-        values.activityStatus === "TakingPlace"
-      )
-        if (!values.registerStatus) {
-          message.error("Vui lòng chọn tình trạng đăng ký");
-          return;
-        }
-
       // @ts-ignore
-      await dispatch(UpdateStatus({ ...values, actID: record.actID }));
-      setOpenStatusModal(false);
+      // prettier-ignore
+      const result = await dispatch(UpdateHaft({ ...values, actID: record.actID }));
+      // setOpenStatusModal(false);
+      // form.resetFields();
+      if (result.status === "Success")
+        message.success("Cập nhật thông tin thành công!");
+      else if (result.status === "Error") message.error("Có lỗi xảy ra!");
+    } catch (error) {
+      console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  const handleSubmitApprove = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log(values);
+      // @ts-ignore
+      // prettier-ignore
+      const result = await dispatch(UpdateHostByActId({ ...values, actID: record.actID, adminID: userID }));
+      setOpenApproveModal(false);
       form.resetFields();
-      message.success("Cập nhật trạng thái thành công!");
+      if (result.status === "Success")
+        message.success("Cập nhật thông tin thành công!");
+      else if (result.status === "Error") message.error("Có lỗi xảy ra!");
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -259,9 +309,17 @@ const Activity = () => {
   };
 
   useEffect(() => {
-    if (activityStatus === "NotStartYet" || activityStatus === "TakingPlace")
+    if (activityStatus === "Finished")
+      form.setFieldValue("registerStatus", "Full");
+    else if (
+      activityStatus === "NotStartYet" ||
+      activityStatus === "TakingPlace"
+    )
       return;
-    if (activityStatus !== "NotStartYet" && activityStatus !== "TakingPlace") {
+    else if (
+      activityStatus !== "NotStartYet" &&
+      activityStatus !== "TakingPlace"
+    ) {
       form.setFieldValue("registerStatus", null);
     }
   }, [activityStatus]);
@@ -292,7 +350,21 @@ const Activity = () => {
         onRow={(record) => {
           return {
             onDoubleClick: async () => {
-              setRecord(record);
+              setRecord({
+                ...record,
+                activityStatus:
+                  record.activityStatus === "Undefined"
+                    ? "Đơn đăng ký chưa được duyệt"
+                    : STATUS.find(
+                        (item) => item.value === record.activityStatus
+                      )?.label,
+                registerStatus:
+                  record.registerStatus === "Undefined"
+                    ? "Đơn đăng ký chưa được duyệt"
+                    : STATUS.find(
+                        (item) => item.value === record.registerStatus
+                      )?.label,
+              });
               setOpenDetailModal(true);
             },
           };
@@ -304,14 +376,18 @@ const Activity = () => {
         title="Cập nhật trạng thái"
         centered
         open={openStatusModal}
-        key={openStatusModal ? "open" : "closed"}
+        key={openStatusModal ? "openStatus" : "closedStatus"}
         okText="Lưu"
-        onOk={handleSubmitStatus}
-        onCancel={() => setOpenStatusModal(false)}
+        onOk={form.submit}
+        onCancel={() => {
+          setOpenStatusModal(false);
+          form.resetFields();
+        }}
         destroyOnClose
       >
         <Form
           form={form}
+          onFinish={handleSubmitStatus}
           autoComplete="off"
           layout="vertical"
           requiredMark={false}
@@ -327,22 +403,84 @@ const Activity = () => {
               },
             ]}
           >
-            <Select options={STATUS.slice(0, 6)} />
+            <Select options={STATUS.slice(3, 8)} />
           </Form.Item>
-
-          <Form.Item
-            name="registerStatus"
-            label="Tình trạng đăng ký"
-            dependencies={["activityStatus"]}
-          >
+          <Form.Item name="registerStatus" label="Trạng thái đăng ký">
             <Select
-              options={STATUS.slice(6, 8)}
+              placeholder="Chọn tình trạng đăng ký"
+              options={STATUS.slice(8, 10)}
               disabled={
                 activityStatus === "NotStartYet" ||
                 activityStatus === "TakingPlace"
                   ? false
                   : true
               }
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal approve actvity */}
+      <Modal
+        title="Phê duyệt hoạt động"
+        centered
+        open={openApproveModal}
+        key={openApproveModal ? "openApprove" : "closedApprove"}
+        okText="Lưu"
+        onOk={form.submit}
+        onCancel={() => {
+          setOpenApproveModal(false);
+          form.resetFields();
+        }}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          onFinish={handleSubmitApprove}
+          autoComplete="off"
+          layout="vertical"
+          requiredMark={false}
+          size="large"
+        >
+          <Form.Item name="regStatus" label="Tình trạng đơn đăng ký">
+            <Select
+              options={[
+                {
+                  value: "Approved",
+                  label: "Phê duyệt",
+                },
+                {
+                  value: "Denied",
+                  label: "Từ chối",
+                },
+                {
+                  value: "Waiting",
+                  label: "Chờ phê duyệt",
+                },
+              ]}
+            />
+          </Form.Item>
+          {regStatus === "Denied" && (
+            <Form.Item
+              name="denyReason"
+              label="Lý do từ chối"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập lý do từ chối!",
+                },
+              ]}
+            >
+              <Input.TextArea
+                autoSize={{ minRows: 1 }}
+                placeholder="Lý do từ chối"
+              />
+            </Form.Item>
+          )}
+          <Form.Item name="adminNote" label="Lưu ý từ người phê duyệt">
+            <Input.TextArea
+              autoSize={{ minRows: 1 }}
+              placeholder="Lưu ý từ người phê duyệt"
             />
           </Form.Item>
         </Form>
@@ -367,8 +505,12 @@ const Activity = () => {
             nextArrow={<BsChevronRight size={40} />}
             infinite={false}
           >
-            {record?.mediaContent?.images?.map((path) => (
-              <img alt="Activity" src={"http://localhost:5000/" + path} />
+            {record?.mediaContent?.images?.map((path, index) => (
+              <img
+                key={index}
+                alt="Activity"
+                src={"http://localhost:5000/" + path}
+              />
             ))}
           </Carousel>
         ) : (
@@ -392,7 +534,7 @@ const Activity = () => {
         <div className="label">Thời gian tổ chức</div>
         <Input
           size="large"
-          value={getHostDate(record?.time?.startDate, record?.time?.endDate)}
+          value={getHostDate(record?.startDate, record?.endDate)}
           readOnly
         />
         <div className="label">Hình thức</div>
@@ -427,22 +569,22 @@ const Activity = () => {
             <div className="label">Trạng thái hoạt động</div>
             <Input
               size="large"
-              value={
-                STATUS.find((item) => item.value === record?.activityStatus)
-                  ?.label
-              }
+              value={record?.activityStatus}
               readOnly
+              disabled={
+                record?.activityStatus === "Đơn đăng ký chưa được duyệt"
+              }
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-            <div className="label">Tình trạng đăng ký</div>
+            <div className="label">Trạng thái đăng ký</div>
             <Input
               size="large"
-              value={
-                STATUS.find((item) => item.value === record?.registerStatus)
-                  ?.label
-              }
+              value={record?.registerStatus}
               readOnly
+              disabled={
+                record?.activityStatus === "Đơn đăng ký chưa được duyệt"
+              }
             />
           </div>
         </div>
@@ -455,12 +597,16 @@ export default Activity;
 
 const STATUS = [
   {
-    value: "NotApprovedYet",
-    label: "Chờ phê duyệt",
+    value: "Approved",
+    label: "Đã phê duyệt",
   },
   {
-    value: "NotApproved",
-    label: "Từ chối",
+    value: "Denied",
+    label: "Đã từ chối",
+  },
+  {
+    value: "Waiting",
+    label: "Chờ phê duyệt",
   },
   {
     value: "NotStartYet",
@@ -477,6 +623,10 @@ const STATUS = [
   {
     value: "Canceled",
     label: "Bị hủy",
+  },
+  {
+    value: "Finished",
+    label: "Đã kết thúc",
   },
   {
     value: "Available",

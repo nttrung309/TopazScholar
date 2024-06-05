@@ -1,20 +1,20 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const hostSchema = new mongoose.Schema({
   hostID: {
     type: String,
-		default: function () {
-		// Tạo một mongoose.Types.ObjectId và chuyển đổi thành chuỗi
-		return new mongoose.Types.ObjectId().toString();
-		},
-		required: true,
-		unique: true
+    default: function () {
+      // Tạo một mongoose.Types.ObjectId và chuyển đổi thành chuỗi
+      return new mongoose.Types.ObjectId().toString();
+    },
+    required: true,
+    unique: true,
   },
   adminID: {
     type: String,
   },
   actID: {
-    type: String
+    type: String,
   },
   userID: {
     type: String,
@@ -29,14 +29,15 @@ const hostSchema = new mongoose.Schema({
   },
   regStatus: {
     type: String,
-    enum: ['Approved', 'Denied'],
+    enum: ["Approved", "Denied", "Waiting"],
+    default: "Waiting",
   },
   denyReason: {
     type: String,
   },
   adminNote: {
     type: String,
-  }
+  },
 });
 
-module.exports = mongoose.model('Host', hostSchema);
+module.exports = mongoose.model("Host", hostSchema);
