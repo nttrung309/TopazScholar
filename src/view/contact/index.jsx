@@ -97,14 +97,18 @@ const Contact = () => {
         </Select>
         <div className="users-contact-group">
           {contactData.map(data => (
-            <ContactItem recvID={(currentUserId == data.senderID) ? data.recvID : data.senderID} content={data.lastestMsg} sendTime={data.sendTime} name={allContactData.find(contact => contact.uid == data.recvID)?.name}/>
+            <ContactItem recvID={(currentUserId == data.senderID) ? data.recvID : data.senderID} content={data.lastestMsg} sendTime={data.sendTime} name={allContactData.find(contact => contact.uid == data.recvID)?.name} avatar={allContactData.find(contact => contact.uid == data.recvID)?.avatar}/>
           ))}
         </div>
       </div>
       <div className="chat-window">
         <div className="chat-header">
           <div className="chat-header__user-info">
-            <Avatar size={52} src={require('../../shared/asset/image/contact/temp_avatar.jpg')}/>
+            {allContactData.find(contact => contact.uid == selectedContactID)?.avatar !== '' ? (
+              <Avatar src={allContactData.find(contact => contact.uid == selectedContactID)?.avatar} />
+            ) : (
+              <Avatar>{allContactData.find(contact => contact.uid == selectedContactID)?.name[0].toUpperCase()}</Avatar>
+            )}
             <div className="username">{allContactData.find(contact => contact.uid === selectedContactID)?.name}</div>
           </div>
           <div className="chat-header__control-group">

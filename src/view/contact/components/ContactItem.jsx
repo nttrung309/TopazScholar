@@ -5,14 +5,18 @@ import { SelectedContactIDDataSelector } from "../../../redux/contact/contactSel
 import { updateSelectedContactID } from "../../../redux/contact/contactAction";
 import { TimePrettier } from "shared/helper/Time";
 
-const ContactItem = ({recvID, content, sendTime, name}) => {
+const ContactItem = ({recvID, content, sendTime, name, avatar}) => {
     const dispatch = useDispatch();
     const selectedContactID = useSelector(SelectedContactIDDataSelector);
 
     return(
         <div className={'contact-item ' + ((selectedContactID == recvID) ? 'selected' : '')}
         onClick={() => dispatch(updateSelectedContactID(recvID))}>
-            <Avatar size={28} src={require('../../../shared/asset/image/contact/temp_avatar.jpg')} />
+            {avatar !== '' ? (
+                <Avatar src={avatar} />
+            ) : (
+                <Avatar>{name[0].toUpperCase()}</Avatar>
+            )}
             <div className="contact-info">
                     <div className="username">{name}</div>
                     <div className="last-row-wrapper">

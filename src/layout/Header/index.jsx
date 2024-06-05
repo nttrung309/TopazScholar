@@ -101,7 +101,11 @@ const Header = ({ collapsed, handleCollapsed }) => {
               <div className="information__name">{userData.name}</div>
               <div className="information__class">{userData.class}</div>
             </div>
-            <Avatar src={userData.avatar} />
+            {userData.avatar !== '' ? (
+              <Avatar src={userData.avatar} />
+            ) : (
+              <Avatar>{userData.name[0].toUpperCase()}</Avatar>
+            )}
             <i className="bi bi-chevron-down"></i>
           </Button>
         </Dropdown>
