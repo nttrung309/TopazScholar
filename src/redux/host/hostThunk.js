@@ -2,13 +2,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const GetHostById = createAsyncThunk(
+export const GetHostByActId = createAsyncThunk(
   "hostStore/GetHostById",
-  async ({ actId }) => {
+  async ({ actID }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/host/" + actId,
-        actId
+        "http://localhost:5000/api/host/" + actID,
+        actID
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const UpdateHostByActId = createAsyncThunk(
+  "hostStore/UpdateHostByActId",
+  async (data) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/host/update",
+        data
       );
       return response;
     } catch (error) {

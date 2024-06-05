@@ -61,13 +61,11 @@ const activitySchema = new mongoose.Schema({
   rating: {
     type: Number,
   },
-  time: {
-    startDate: {
-      type: String,
-    },
-    endDate: {
-      type: String,
-    },
+  startDate: {
+    type: String,
+  },
+  endDate: {
+    type: String,
   },
   event: {
     type: Array,
@@ -91,27 +89,30 @@ const activitySchema = new mongoose.Schema({
   activityStatus: {
     type: String,
     enum: [
-      "NotApprovedYet",
-      "NotApproved",
       "NotStartYet",
       "TakingPlace",
       "Delaying",
       "Canceled",
+      "Finished",
+      "Undefined",
     ],
-    default: "NotApprovedYet",
+    default: "Undefined",
   },
   registerStatus: {
     type: String,
-    enum: ["Available", "Full"],
+    enum: ["Available", "Full", "Undefined"],
+    default: "Undefined",
   },
   linkJoin: {
     type: String,
   },
   faculty: {
-    type: String,
+    type: Array,
+    default: [],
   },
   participants: {
-    type: String,
+    type: Array,
+    default: [],
   },
   note: {
     type: String,

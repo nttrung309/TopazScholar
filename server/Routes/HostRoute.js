@@ -1,8 +1,6 @@
 const HostRoute = require("express").Router();
 const Host = require("../Models/Host");
 
-const { json } = require("express");
-
 //Get all host
 HostRoute.get("/", (req, res) => {
   Host.find({}).then((data) => {
@@ -18,17 +16,23 @@ HostRoute.get("/:actID", (req, res) => {
   });
 });
 
-//Update host info
+//Update host by activity id
 HostRoute.post("/update", async (req, res) => {
-  const hostData = req.body;
-
-  const result = await Host.findOneAndUpdate(
-    { hostID: hostData.hostID },
-    hostData,
-    { new: true, upsert: true }
-  );
-
-  res.send(result);
+  let data = req.body;
+  try {
+    if (data.regStatus !== "Denied") data = { ...data, denyReason: "" };
+    const result = await Host.findOneAndUpdate(
+      { actID: data.actID },
+      { ...data, responseTime: new Date() },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
+    res.send({ statuss: "Success", data: result });
+  } catch (error) {
+    res.send({ status: "Error", error: error });
+  }
 });
 
 module.exports = HostRoute;
