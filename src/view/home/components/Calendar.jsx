@@ -1,10 +1,12 @@
 import { Button } from "antd";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 import { GetCalendarDate } from "shared/helper/Time";
 
 const Calendar = () => {
     const calendarDate = GetCalendarDate();
+    const navigate = useNavigate();
 
     return(
         <div className="calendar">
@@ -39,7 +41,7 @@ const Calendar = () => {
                 })}
             </div>
             
-            <Button className="view-detail-calendar-btn">Xem chi tiết lịch của bạn</Button>
+            <Button className="view-detail-calendar-btn" onClick={() => navigate('/calendar')} >Xem chi tiết lịch của bạn</Button>
         </div>
     );
 };
