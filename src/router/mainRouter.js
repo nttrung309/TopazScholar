@@ -19,6 +19,8 @@ import {
   routerEditActivity,
 } from "view/admin/create-edit-activity/route.jsx";
 import { routerStatistics } from "view/admin/statistics/route.jsx";
+import { routerCalendar } from "view/calendar/router.jsx";
+
 
 export const privatePage = [
   routerHome,
@@ -28,6 +30,7 @@ export const privatePage = [
   routerJoined,
   routerDetail,
   routerContact,
+  routerCalendar
 ];
 
 export const publicPage = [routerLogin, routerSignUp];
