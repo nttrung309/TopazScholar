@@ -64,10 +64,8 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
     name: actData.name,
     content: actData.content,
     category: actData.category,
-    time: {
-      startDate: actData.startDate,
-      endDate: actData.endDate,
-    },
+    startDate: actData.startDate,
+    endDate: actData.endDate,
     form: actData.form,
     address: actData.address,
     linkJoin: actData.linkJoin,

@@ -27,7 +27,7 @@ const Header = ({ collapsed, handleCollapsed }) => {
   }, []);
 
   useEffect(() => {
-    setCountNotify(notifyData.length)
+    setCountNotify(notifyData.filter(item => !item.isRead).length)
   }, [notifyData])
 
   const LoadNotifyData = async () => {
