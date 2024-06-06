@@ -32,6 +32,35 @@ export const GetAllActivity = createAsyncThunk(
   }
 );
 
+export const GetNumberCategories = createAsyncThunk(
+  "activityStore/GetNumberCategories",
+  async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/activity/get-number-categories"
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
+export const GetRecentActivities = createAsyncThunk(
+  "activityStore/GetRecentActivities",
+  async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/activity/recent"
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
 export const GetActivityByActID = createAsyncThunk(
   "activityStore/GetActivityByActID",
   async (id) => {
@@ -88,7 +117,7 @@ export const UpdateActivity = createAsyncThunk(
 );
 
 export const UpdateHaft = createAsyncThunk(
-  "activityStore/UpdateStatus",
+  "activityStore/UpdateHaft",
   async (data) => {
     try {
       const response = await axios.post(

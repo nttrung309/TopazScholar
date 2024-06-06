@@ -17,8 +17,8 @@ import { routerActivityAdmin } from "view/admin/activity/router.jsx";
 import {
   routerCreateActivity,
   routerEditActivity,
-} from "view/admin/create-edit-activity/route.jsx";
-import { routerStatistics } from "view/admin/statistics/route.jsx";
+} from "view/admin/create-edit-activity/router.jsx";
+import { routerStatistics } from "view/admin/statistics/router.jsx";
 import { routerCalendar } from "view/calendar/router.jsx";
 
 

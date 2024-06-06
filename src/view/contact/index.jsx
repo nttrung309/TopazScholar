@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import ActivityCard from "shared/components/ActivityCard";
-
 import { BsCursorFill, BsListUl, BsTelephoneFill } from "react-icons/bs";
-import { Avatar, Input, Select } from "antd";
+import { Avatar, Select } from "antd";
 
 import ChatInput from "./components/ChatInput";
 import ContactItem from "./components/ContactItem";
@@ -16,7 +14,6 @@ import { AllContactDataSelector, ContactDataSelector, MessageDataSelector, Selec
 import { ContactGetAllMessage, ContactGetAllUserData } from "../../redux/contact/contactThunk";
 import { updateSelectedContactID } from "../../redux/contact/contactAction";
 
-import socket from "../../shared/helper/Socket";
 import { SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -40,8 +37,8 @@ const Contact = () => {
   }, [currentUserId])
 
   useEffect(() => {
-    if(selectedContactID == '' && contactData.length != 0){
-      dispatch(updateSelectedContactID((currentUserId == contactData[0].senderID) ? contactData[0].recvID : contactData[0].senderID));
+    if(selectedContactID === '' && contactData.length !== 0){
+      dispatch(updateSelectedContactID((currentUserId === contactData[0].senderID) ? contactData[0].recvID : contactData[0].senderID));
     }
   }, [contactData]);
 
@@ -76,7 +73,7 @@ const Contact = () => {
           onChange={(newSelectContactID) => {
             dispatch(updateSelectedContactID(newSelectContactID));
             console.log(allContactData, selectedContactID);
-            setResetSelect(resetSelect == 0 ? 1 : 0);
+            setResetSelect(resetSelect === 0 ? 1 : 0);
             inputRef.current.focus();
           }}
           suffixIcon={<SearchOutlined />}

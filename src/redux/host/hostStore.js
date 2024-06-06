@@ -30,7 +30,7 @@ const hostStore = createReducer(initialState, (builder) => {
     })
     .addCase(UpdateHostByActId.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
-      state.data = action.payload.data;
+      state.data = action.payload.data.host;
       console.log(action.payload.data);
     })
     .addCase(UpdateHostByActId.rejected, (state, action) => {

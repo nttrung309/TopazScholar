@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  GetAllActivity,
+  GetRecentActivities,
+} from "../../redux/activity/activityThunk";
+import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 
 const items = [
   {
@@ -38,6 +44,21 @@ const Activity = () => {
   const location = useLocation();
   const data = location.state?.item || null;
   const type = location.pathname.slice(1);
+
+  const dispatch = useDispatch();
+  const activities = useSelector(ActivityDataSelector);
+
+  useEffect(() => {
+    const getAllActivity = async () => {
+      try {
+        // @ts-ignore
+        await dispatch(GetRecentActivities());
+      } catch (error) {
+        console.error("Error occurred:", error.message);
+      }
+    };
+    getAllActivity();
+  }, []);
 
   return (
     <div className="activity">

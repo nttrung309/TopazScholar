@@ -4,9 +4,7 @@ import {
   Modal,
   Switch,
   Table,
-  Divider,
   notification,
-  Space,
 } from "antd";
 import React, { useEffect, useState } from "react";
 
@@ -238,7 +236,7 @@ const Account = () => {
           <div>Số điện thoại</div>
           <Input
             defaultValue={
-              selectedItem?.phone == "Chưa có" ? "" : selectedItem?.phone
+              selectedItem?.phone === "Chưa có" ? "" : selectedItem?.phone
             }
             onChange={(event) => {
               HandleUserInput(event, "phone");
