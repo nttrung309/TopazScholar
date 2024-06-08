@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
+
+import { useDispatch, useSelector } from "react-redux";
+import { ActivityDataSelector } from "../../redux/activity/activitySelector";
+import { GetAllActivity } from "../../redux/activity/activityThunk";
 
 const items = [
   {
@@ -34,10 +38,25 @@ const options = [
 ];
 
 const Activity = () => {
+  const dispatch = useDispatch();
+
   const [value1, setValue1] = useState("Sắp diễn ra");
   const location = useLocation();
   const data = location.state?.item || null;
   const type = location.pathname.slice(1);
+  const activityData = useSelector(ActivityDataSelector);
+
+  useEffect(() => {
+    LoadAllActivity();
+  }, []);
+
+  const LoadAllActivity = async () => {
+    await dispatch(GetAllActivity());
+  }
+
+  useEffect(() => {
+    console.log(activityData);
+  }, [activityData]);
 
   return (
     <div className="activity">
@@ -91,30 +110,33 @@ const Activity = () => {
             </div>
 
             <div className="grid">
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
+              {activityData?.length > 0 ? (
+                activityData.map((data, index) => (
+                  <ActivityCard key={index} variant="vertical" data={data} />
+                ))
+              ) : (
+                <p>Không có sự kiện sắp đến</p>
+              )}
             </div>
           </>
         ) : (
           <div className="flex-column">
             <div className="item">
               <div className="title">Hôm nay</div>
-              <ActivityCard variant="horizontal" />
-              <ActivityCard variant="horizontal" />
+              {activityData?.length > 0 ? (
+                <ActivityCard variant="horizontal" data={activityData[0]} />
+              ) : (
+                <p>Không có sự kiện nào</p>
+              )}
             </div>
 
             <div className="item">
               <div className="title">Tháng trước</div>
-              <ActivityCard variant="horizontal" />
-              <ActivityCard variant="horizontal" />
+              {activityData?.length > 0 ? (
+                <ActivityCard variant="horizontal" data={activityData[0]} />
+              ) : (
+                <p>Không có sự kiện nào</p>
+              )}
             </div>
           </div>
         )}

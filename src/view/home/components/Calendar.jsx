@@ -1,12 +1,15 @@
 import { Button } from "antd";
 import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ActivityDataSelector } from "../../../redux/activity/activitySelector";
 
-import { GetCalendarDate } from "shared/helper/Time";
+import { GetCalendarDate, TimePrettier } from "shared/helper/Time";
 
 const Calendar = () => {
     const calendarDate = GetCalendarDate();
     const navigate = useNavigate();
+    const activityData = useSelector(ActivityDataSelector);
 
     return(
         <div className="calendar">
@@ -19,22 +22,23 @@ const Calendar = () => {
                                 <div className="day">{date.day + '/' + date.month}</div>
                             </div>
                             <div className="content">
-                                <div className="activity-info">
+                            {activityData?.filter(item => {
+                                const itemDate = new Date(item.startDate);
+                                return (
+                                    itemDate.getDate() === date.day &&
+                                    itemDate.getMonth() === date.month - 1 &&
+                                    itemDate.getFullYear() === date.year
+                                );
+                                }).map((data, index) => (
+                                <div key={index} className="activity-info">
                                     <div className="activity-name">
-                                        Ngày hội việc làm
+                                        {data.name}
                                     </div>
                                     <div className="activity-time">
-                                        8:00 am
+                                        {TimePrettier(data.startDate)}
                                     </div>
                                 </div>
-                                <div className="activity-info">
-                                    <div className="activity-name">
-                                        Ngày hội văn hóa
-                                    </div>
-                                    <div className="activity-time">
-                                        20:00 am
-                                    </div>
-                                </div>
+                            ))}
                             </div>
                         </div>
                     );
