@@ -3,7 +3,7 @@ import { createReducer } from "@reduxjs/toolkit";
 import { CreateSupply, GetAllSupplies, UpdateSupply } from "./SupplyThunk";
 
 const initialState = {
-  data: null,
+  data: [],
   dataLoadingState: "idle",
   error: null,
   result: "",

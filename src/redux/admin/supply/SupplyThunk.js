@@ -12,6 +12,7 @@ export const GetAllSupplies = createAsyncThunk(
           const typeResponse = await axios.get(
             "http://localhost:5000/api/supply/type/" + item.typeID
           );
+
           return {
             ...item,
             typeName: typeResponse.data.name,
