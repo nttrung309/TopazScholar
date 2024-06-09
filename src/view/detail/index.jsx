@@ -20,7 +20,7 @@ const DetailActivity = () => {
   const [value, setValue] = useState("Mô tả chi tiết");
 
   //default || ongoing || registered || finished
-  const [state, setState] = useState("finished");
+  const [state] = useState("finished");
 
   //true || false
   const hosting = true;

@@ -8,7 +8,7 @@ export const routerCreateActivity = {
 };
 
 export const routerEditActivity = {
-  path: "/admin/activity/edit",
+  path: "/admin/activity/:actID",
   element: React.lazy(() => import("./index")),
   layout: MainLayout,
 };

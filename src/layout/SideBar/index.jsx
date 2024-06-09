@@ -64,11 +64,11 @@ const menus = [
     role: "student",
   },
   {
-    name: "statistic",
+    name: "statistics",
     label: "Thống kê",
     icon: "bi bi-bar-chart",
     iconActive: "bi bi-bar-chart-fill",
-    path: "/admin",
+    path: "/admin/statistics",
     role: "admin",
   },
   {
@@ -99,7 +99,7 @@ const menus = [
     name: "account",
     label: "Quản lý tài khoản",
     icon: "bi bi-person-circle",
-    iconActive: "bi bi-person-circle-fill",
+    iconActive: "bi bi-person-circle",
     path: "/admin/account",
     role: "admin",
   },

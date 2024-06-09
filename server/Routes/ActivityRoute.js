@@ -2,6 +2,7 @@ const ActivityRoute = require("express").Router();
 const multer = require("multer");
 const fs = require("fs");
 const { promisify } = require("util");
+
 const Activity = require("../Models/Activity");
 const Host = require("../Models/Host");
 const User = require("../Models/User");
@@ -27,6 +28,23 @@ ActivityRoute.get("/", (req, res) => {
     });
 });
 
+//Get number activities of category
+ActivityRoute.get("/get-number-categories", (req, res) => {
+  Activity.find({}).then((data) => {
+    const category = data.reduce((accumulator, item) => {
+      accumulator[item.category] = accumulator[item.category] || 0;
+      accumulator[item.category] += 1;
+      return accumulator;
+    }, {});
+
+    const parsedArray = Object.entries(category).map(([key, value]) => ({
+      [key]: value,
+    }));
+
+    res.send(parsedArray);
+  });
+});
+
 //Get activity by actID
 ActivityRoute.get("/:actID", (req, res) => {
   const actID = req.params.actID;
@@ -43,6 +61,15 @@ ActivityRoute.get("/get-by-host/:hostID", (req, res) => {
   Activity.findOne({ hostID: hostID }).then((data) => {
     res.json(data);
   });
+});
+
+//Get recent activities
+ActivityRoute.get("/recent", (req, res) => {
+  Activity.find({})
+    .sort({ dateCreated: 1 })
+    .then((data) => {
+      res.json(data);
+    });
 });
 
 //Host new activity
@@ -78,7 +105,6 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
     },
     rule: actData.rule === "" ? "Không có" : actData.rule,
   });
-  console.log(newAct);
 
   try {
     const data = await newAct.save({});
@@ -106,7 +132,7 @@ ActivityRoute.post("/host", upload.array("images"), async (req, res) => {
   }
 });
 
-//Update activity
+//Update with keys in edit page
 ActivityRoute.post("/update", upload.array("images"), async (req, res) => {
   const actData = req.body;
 
@@ -164,19 +190,20 @@ ActivityRoute.post("/update", upload.array("images"), async (req, res) => {
   });
 });
 
-//Update
+//Update with some keys props
 ActivityRoute.post("/haflUpdate", async (req, res) => {
   let data = req.body;
   try {
     if (!data.registerStatus) data = { ...data, registerStatus: "" };
+    const hhihi = await Activity.findOne({ actID: data.actID });
+    console.log(hhihi);
+
     const result = await Activity.findOneAndUpdate(
       { actID: data.actID },
-      {
-        data,
-      },
+      data,
       { new: true, upsert: true }
     );
-    res.send({ status: "Success", data: result });
+    res.send({ status: "Success", activity: result });
   } catch (error) {
     res.send({ status: "Error", error: error });
   }

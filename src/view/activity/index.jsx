@@ -3,10 +3,9 @@ import { Button, DatePicker, Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
-
-import { useDispatch, useSelector } from "react-redux";
 import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 import { GetAllActivity } from "../../redux/activity/activityThunk";
+import { useDispatch, useSelector } from "react-redux";
 
 const locationItems = [
   {
@@ -24,7 +23,7 @@ const locationItems = [
   {
     label: "Online",
     key: "3",
-  }
+  },
 ];
 
 const timeFilterItems = [
@@ -90,7 +89,7 @@ const Activity = () => {
 
   const LoadAllActivity = async () => {
     await dispatch(GetAllActivity());
-  }
+  };
 
   useEffect(() => {
     console.log(activityData);
@@ -98,11 +97,11 @@ const Activity = () => {
 
   const HandleLocationClick = (e) => {
     setLocationOption(e.key);
-  }
+  };
 
   const HandleTimeClick = (e) => {
     setTimeOption(e.key);
-  }
+  };
 
   const menuLocationProps = {
     items: locationItems,

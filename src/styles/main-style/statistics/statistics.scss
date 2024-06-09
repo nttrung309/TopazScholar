@@ -1,0 +1,25 @@
+.statistics-card {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  width: 400px;
+  height: 300px;
+  padding: 20px;
+  border-radius: 20px;
+
+  .container {
+    height: 200px;
+  }
+
+  .title {
+    text-align: center;
+    font: $base-text;
+
+    span {
+      color: $blue-700;
+      font-weight: 600;
+    }
+  }
+}

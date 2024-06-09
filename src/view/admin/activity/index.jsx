@@ -167,7 +167,7 @@ const Activity = () => {
       }
     };
     getAllActivity();
-  }, [dispatch]);
+  }, []);
 
   const columns = [
     {
@@ -214,7 +214,7 @@ const Activity = () => {
               : status === "Denied" && "#dc3545"
           }
         >
-          {STATUS.find((item) => item.value === status).label.toUpperCase()}
+          {STATUS.find((item) => item.value === status)?.label.toUpperCase()}
         </Tag>
       ),
     },
@@ -275,12 +275,11 @@ const Activity = () => {
   const handleSubmitStatus = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       // @ts-ignore
       // prettier-ignore
       const result = await dispatch(UpdateHaft({ ...values, actID: record.actID }));
-      // setOpenStatusModal(false);
-      // form.resetFields();
+      setOpenStatusModal(false);
+      form.resetFields();
       if (result.status === "Success")
         message.success("Cập nhật thông tin thành công!");
       else if (result.status === "Error") message.error("Có lỗi xảy ra!");
@@ -339,6 +338,7 @@ const Activity = () => {
           Tạo hoạt động
         </Button>
       </div>
+
       <Table
         style={{
           wordWrap: "break-word",

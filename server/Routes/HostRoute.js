@@ -21,6 +21,7 @@ HostRoute.post("/update", async (req, res) => {
   let data = req.body;
   try {
     if (data.regStatus !== "Denied") data = { ...data, denyReason: "" };
+    console.log(data.actID);
     const result = await Host.findOneAndUpdate(
       { actID: data.actID },
       { ...data, responseTime: new Date() },
@@ -29,7 +30,7 @@ HostRoute.post("/update", async (req, res) => {
         upsert: true,
       }
     );
-    res.send({ statuss: "Success", data: result });
+    res.send({ statuss: "Success", host: result });
   } catch (error) {
     res.send({ status: "Error", error: error });
   }

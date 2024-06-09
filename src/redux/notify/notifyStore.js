@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { createReducer } from '@reduxjs/toolkit';
-import { NotifyGetAllData, UpdateReadNotify } from './notifyThunk';
-import {  } from './notifyAction';
+import { createReducer } from "@reduxjs/toolkit";
+import { NotifyGetAllData, UpdateReadNotify } from "./notifyThunk";
+import {} from "./notifyAction";
 
 const initialState = {
   data: [],
   dataLoadingState: "idle",
-  error: null
+  error: null,
 };
 
 const notifyStore = createReducer(initialState, (builder) => {
@@ -28,16 +28,15 @@ const notifyStore = createReducer(initialState, (builder) => {
     })
     .addCase(UpdateReadNotify.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
-      
-      if(action.payload.data.type == 'all'){
+
+      if (action.payload.data.type === "all") {
         console.log(action.payload.data.type);
         state.data = action.payload.data.updatedNotify;
-      }
-      else{
+      } else {
         console.log(action.payload.data.type);
-        const updatedNotifyData = state.data.map(data => 
+        const updatedNotifyData = state.data.map((data) =>
           data.notifyID === action.payload.data.updatedNotify.notifyID
-            ? { ...data, isRead: true } 
+            ? { ...data, isRead: true }
             : data
         );
         state.data = updatedNotifyData;
@@ -46,7 +45,7 @@ const notifyStore = createReducer(initialState, (builder) => {
     .addCase(UpdateReadNotify.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
-    })
+    });
 });
 
 export default notifyStore;
