@@ -18,8 +18,8 @@ export const GetAllSupplies = createAsyncThunk(
           };
         })
       ).then((result) => result);
+
       const newData = await promise;
-      console.log(newData);
       return { ...response, data: newData };
     } catch (error) {
       throw new Error(error.message);
@@ -35,7 +35,18 @@ export const CreateSupply = createAsyncThunk(
         "http://localhost:5000/api/supply/add",
         data
       );
-      return response;
+
+      const typeResponse = await axios
+        .get(
+          "http://localhost:5000/api/supply/type/" + response.data.supply.typeID
+        )
+        .then((data) => data);
+
+      const newData = {
+        ...response.data.supply,
+        typeName: typeResponse.data.name,
+      };
+      return { ...response, data: { ...response.data, supply: newData } };
     } catch (error) {
       throw new Error(error.message);
     }
@@ -50,7 +61,18 @@ export const UpdateSupply = createAsyncThunk(
         "http://localhost:5000/api/supply/update",
         data
       );
-      return response;
+
+      const typeResponse = await axios
+        .get(
+          "http://localhost:5000/api/supply/type/" + response.data.supply.typeID
+        )
+        .then((data) => data);
+
+      const newData = {
+        ...response.data.supply,
+        typeName: typeResponse.data.name,
+      };
+      return { ...response, data: { ...response.data, supply: newData } };
     } catch (error) {
       throw new Error(error.message);
     }

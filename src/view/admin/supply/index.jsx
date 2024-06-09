@@ -28,14 +28,18 @@ import {
   ExcuteSupplyTypeState,
   SupplyTypeDataSelector,
 } from "../../../redux/admin/supplyType/supplyTypeSelector";
+import { AuthUIDSelector } from "../../../redux/auth/userSelector";
+import { AccountManageDataSelector } from "../../../redux/admin/account/accountManageSelector";
+import { GetAllUsersData } from "../../../redux/admin/account/accountManageThunk";
 
 const Popover = ({
   record,
   form,
   setRecord,
   setOpenUpdateSupply,
-  getAllSupplyTypes,
   setOpenStatusModal,
+  getAllSupplyTypes,
+  getUsersAsOptions,
 }) => {
   return (
     <div className="action-group">
@@ -51,7 +55,7 @@ const Popover = ({
                 form.setFieldsValue({
                   name: record.name,
                   address: record.address,
-                  typeID: record.typeName,
+                  typeID: record.typeID,
                 });
                 setRecord(record);
               }}
@@ -62,11 +66,15 @@ const Popover = ({
               className="item"
               onClick={() => {
                 setOpenStatusModal(true);
+                getUsersAsOptions();
                 form.setFieldsValue({
                   name: record.name,
-                  address: record.address,
-                  typeID: record.typeName,
+                  status: record.status,
+                  lastUsedDate: "",
+                  lastUser: "",
+                  lastAdmin: "",
                 });
+                setRecord(record);
               }}
             >
               Cập nhật trạng thái
@@ -89,7 +97,8 @@ const Supply = () => {
   const types = useSelector(SupplyTypeDataSelector);
   const typeResult = useSelector(ExcuteSupplyTypeState);
   const supplyResult = useSelector(ExcuteSupplyState);
-  // const result = useSelector(ExcuteSupplyTypeState);
+  const userID = useSelector(AuthUIDSelector);
+  const users = useSelector(AccountManageDataSelector);
 
   const [openAddSupply, setOpenAddSupply] = useState(false);
   const [openUpdateSupply, setOpenUpdateSupply] = useState(false);
@@ -98,6 +107,7 @@ const Supply = () => {
   const [record, setRecord] = useState(false);
 
   const [form] = Form.useForm();
+  const statusValue = Form.useWatch("status", form);
 
   const getData = (data) => {
     return data?.map((item, index) => ({ ...item, key: index + 1 }));
@@ -113,7 +123,17 @@ const Supply = () => {
       }
     };
 
+    const getAllUSer = async () => {
+      try {
+        // @ts-ignore
+        await dispatch(GetAllUsersData());
+      } catch (error) {
+        console.error("Error occurred:", error.message);
+      }
+    };
+
     getAllSupply();
+    getAllUSer();
   }, []);
 
   const getAllSupplyTypes = async () => {
@@ -168,7 +188,7 @@ const Supply = () => {
       ),
     },
     {
-      title: "Ngày sử dụng cuối",
+      title: "Người sử dụng cuối",
       dataIndex: "lastUser",
       key: "lastUser",
       render: (value) => {
@@ -176,7 +196,7 @@ const Supply = () => {
       },
     },
     {
-      title: "Người sử dụng cuối",
+      title: "Ngày sử dụng cuối",
       dataIndex: "lastUsedDate",
       key: "lastUsedDate",
     },
@@ -194,6 +214,7 @@ const Supply = () => {
           form={form}
           setRecord={setRecord}
           getAllSupplyTypes={getAllSupplyTypes}
+          getUsersAsOptions={getUsersAsOptions}
           setOpenUpdateSupply={setOpenUpdateSupply}
           setOpenStatusModal={setOpenStatusModal}
         />
@@ -208,6 +229,13 @@ const Supply = () => {
     }));
   };
 
+  const getUsersAsOptions = (user) => {
+    return user?.map((item) => ({
+      label: item.name,
+      value: item.uid,
+    }));
+  };
+
   const handleSubmitType = async () => {
     try {
       const values = await form.validateFields();
@@ -215,8 +243,8 @@ const Supply = () => {
       dispatch(CreateSupplyType(values));
       if (typeResult?.status === "Success")
         message.success("Tạo mới thành công!");
-      else if (typeResult?.status === "Error") message.error("Có lỗi xảy ra!");
-      else if (typeResult?.status === "Existed")
+      else if (typeResult === "Error") message.error("Có lỗi xảy ra!");
+      else if (typeResult === "Existed")
         message.error("Thông tin này đã tồn tại!");
 
       setOpenAddType(false);
@@ -233,10 +261,8 @@ const Supply = () => {
       // @ts-ignore
       dispatch(CreateSupply(values));
       console.log(supplyResult);
-      if (supplyResult?.status === "Success")
-        message.success("Tạo mới thành công!");
-      else if (supplyResult?.status === "Error")
-        message.error("Có lỗi xảy ra!");
+      if (supplyResult === "Success") message.success("Tạo mới thành công!");
+      else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
 
       setOpenAddSupply(false);
       form.resetFields();
@@ -251,14 +277,12 @@ const Supply = () => {
       const values = await form.validateFields();
       // @ts-ignore
       dispatch(UpdateSupply({ ...values, supplyID: record.supplyID }));
-      // console.log(supplyResult);
-      // if (supplyResult?.status === "Success")
-      //   message.success("Tạo mới thành công!");
-      // else if (supplyResult?.status === "Error")
-      //   message.error("Có lỗi xảy ra!");
+      console.log(supplyResult);
+      if (supplyResult === "Success") message.success("Tạo mới thành công!");
+      else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
 
-      // setOpenAddSupply(false);
-      // form.resetFields();
+      setOpenUpdateSupply(false);
+      form.resetFields();
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -268,16 +292,14 @@ const Supply = () => {
   const handleSubmitStatus = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       // @ts-ignore
-      // dispatch(CreateSupply(values));
-      // console.log(supplyResult);
-      // if (supplyResult?.status === "Success")
-      //   message.success("Tạo mới thành công!");
-      // else if (supplyResult?.status === "Error")
-      //   message.error("Có lỗi xảy ra!");
+      // prettier-ignore
+      dispatch(UpdateSupply({ ...values, supplyID: record.supplyID , lastAdmin: userID,}));
 
-      // setOpenAddSupply(false);
+      // if (supplyResult === "Success") message.success("Tạo mới thành công!");
+      // else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
+
+      // setOpenStatusModal(false);
       // form.resetFields();
     } catch (error) {
       console.log("Failed:", error);
@@ -319,28 +341,6 @@ const Supply = () => {
         }}
         columns={columns}
         dataSource={getData(supplies)}
-        // onRow={(record) => {
-        //   return {
-        //     onDoubleClick: async () => {
-        //       setRecord({
-        //         ...record,
-        //         activityStatus:
-        //           record.activityStatus === "Undefined"
-        //             ? "Đơn đăng ký chưa được duyệt"
-        //             : STATUS.find(
-        //                 (item) => item.value === record.activityStatus
-        //               )?.label,
-        //         registerStatus:
-        //           record.registerStatus === "Undefined"
-        //             ? "Đơn đăng ký chưa được duyệt"
-        //             : STATUS.find(
-        //                 (item) => item.value === record.registerStatus
-        //               )?.label,
-        //       });
-        //       setOpenDetailModal(true);
-        //     },
-        //   };
-        // }}
       />
 
       {/* Modal update status */}
@@ -365,92 +365,37 @@ const Supply = () => {
           requiredMark={false}
           size="large"
         >
+          <Form.Item name="name" label="Tên vật dụng">
+            <Input readOnly />
+          </Form.Item>
           <Form.Item
-            name="activityStatus"
-            label="Trạng thái hoạt động"
+            name="status"
+            label="Trạng thái"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn trạng thái hoạt động!",
+                message: "Vui lòng chọn trạng thái vật dụng!",
               },
             ]}
           >
-            <Select options={STATUS.slice(3, 8)} />
+            <Select options={STATUS} />
           </Form.Item>
-          <Form.Item name="registerStatus" label="Trạng thái đăng ký">
-            <Select
-              placeholder="Chọn tình trạng đăng ký"
-              options={STATUS.slice(8, 10)}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* Modal approve actvity */}
-      {/* <Modal
-        title="Phê duyệt hoạt động"
-        centered
-        open={openApproveModal}
-        key={openApproveModal ? "openApprove" : "closedApprove"}
-        okText="Lưu"
-        onOk={form.submit}
-        onCancel={() => {
-          setOpenApproveModal(false);
-          form.resetFields();
-        }}
-        destroyOnClose
-      >
-        <Form
-          form={form}
-          onFinish={handleSubmitApprove}
-          autoComplete="off"
-          layout="vertical"
-          requiredMark={false}
-          size="large"
-        >
-          <Form.Item name="regStatus" label="Tình trạng đơn đăng ký">
-            <Select
-              options={[
-                {
-                  value: "Approved",
-                  label: "Phê duyệt",
-                },
-                {
-                  value: "Denied",
-                  label: "Từ chối",
-                },
-                {
-                  value: "Waiting",
-                  label: "Chờ phê duyệt",
-                },
-              ]}
-            />
-          </Form.Item>
-          {regStatus === "Denied" && (
+          {statusValue === "Used" && (
             <Form.Item
-              name="denyReason"
-              label="Lý do từ chối"
+              name="lastUser"
+              label="Họ tên người mượn"
               rules={[
                 {
                   required: true,
-                  message: "Vui lòng nhập lý do từ chối!",
+                  message: "Vui lòng chọn họ tên người mượn!",
                 },
               ]}
             >
-              <Input.TextArea
-                autoSize={{ minRows: 1 }}
-                placeholder="Lý do từ chối"
-              />
+              <Select options={getUsersAsOptions(users)} />
             </Form.Item>
           )}
-          <Form.Item name="adminNote" label="Lưu ý từ người phê duyệt">
-            <Input.TextArea
-              autoSize={{ minRows: 1 }}
-              placeholder="Lưu ý từ người phê duyệt"
-            />
-          </Form.Item>
         </Form>
-      </Modal> */}
+      </Modal>
 
       {/* Modal add type */}
       <Modal

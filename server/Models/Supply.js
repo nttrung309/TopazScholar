@@ -23,8 +23,9 @@ const supplySchema = new mongoose.Schema({
     type: String,
     default: "Available",
   },
-  lastUsedDate: {
+  lastUpdateDate: {
     type: Date,
+    default: new Date(),
   },
   lastUser: {
     type: String,
