@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Button, DatePicker, Dropdown, Radio } from "antd";
+import { Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
-import { ActivityDataSelector } from "redux/activity/activitySelector";
+import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 import { GetAllActivity } from "../../redux/activity/activityThunk";
-import { useSelector } from "../../react-redux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const locationItems = [
   {

@@ -19,6 +19,7 @@ const HostRoute = require("./Routes/HostRoute");
 const CommentRoute = require("./Routes/CommentRoute");
 const NotifyRoute = require("./Routes/NotifyRoute");
 const MessageRoute = require("./Routes/MessageRoute");
+const SupplyRoute = require("./Routes/SupplyRoute");
 
 //Import Socket
 const SocketHandler = require("./Socket/SocketHandler");
@@ -56,6 +57,7 @@ app.use("/api/host", HostRoute);
 app.use("/api/comment", CommentRoute);
 app.use("/api/notify", NotifyRoute);
 app.use("/api/message", MessageRoute);
+app.use("/api/supply", SupplyRoute);
 
 //Socket
 SocketHandler(io);

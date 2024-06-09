@@ -99,7 +99,7 @@ const menus = [
     name: "account",
     label: "Quản lý tài khoản",
     icon: "bi bi-person-circle",
-    iconActive: "bi bi-person-circle-fill",
+    iconActive: "bi bi-person-circle",
     path: "/admin/account",
     role: "admin",
   },
