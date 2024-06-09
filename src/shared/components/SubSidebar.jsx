@@ -13,9 +13,14 @@ const submenus = [
   { label: "Đã tham gia", path: "/joined", title: "Hoạt động bạn đã tham gia" },
 ];
 
-const SubSidebar = () => {
+const SubSidebar = (props) => {
   const location = useLocation();
   var submenu = location.pathname.slice(1);
+  const setSearchInput = props.onChange;
+
+  const handleInputChange = (e) => {
+    setSearchInput(e.target.value);
+  };
 
   return (
     <div className="sub-sidebar">
@@ -23,6 +28,7 @@ const SubSidebar = () => {
         size="large"
         placeholder="Tìm kiếm hoạt động"
         suffix={<i className="bi bi-search" />}
+        onChange={handleInputChange}
       />
       <div className="sub-menu">
         {submenus.map((item, index) => (
