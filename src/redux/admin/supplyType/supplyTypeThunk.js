@@ -14,6 +14,20 @@ export const GetAllSupplyTypes = createAsyncThunk(
   }
 );
 
+export const GetSupplyType = createAsyncThunk(
+  "supplyTypeStore/GetSupplyType",
+  async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/supply/type/:id"
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);
+
 export const CreateSupplyType = createAsyncThunk(
   "supplyTypeStore/CreateSupplyType",
   async (data) => {

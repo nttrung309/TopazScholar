@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { createReducer } from "@reduxjs/toolkit";
-import { CreateSupply, GetAllSupplies } from "./SupplyThunk";
+import { CreateSupply, GetAllSupplies, UpdateSupply } from "./SupplyThunk";
 
 const initialState = {
   data: null,
@@ -15,8 +15,8 @@ const supplyStore = createReducer(initialState, (builder) => {
     })
     .addCase(GetAllSupplies.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
-      state.data = action.payload.data;
       console.log(action.payload.data);
+      state.data = action.payload.data;
     })
     .addCase(GetAllSupplies.rejected, (state, action) => {
       state.dataLoadingState = "failed";
@@ -31,6 +31,25 @@ const supplyStore = createReducer(initialState, (builder) => {
       state.result = action.payload.data;
     })
     .addCase(CreateSupply.rejected, (state, action) => {
+      state.dataLoadingState = "failed";
+      state.error = action.error.message;
+    })
+
+    .addCase(UpdateSupply.pending, (state, action) => {
+      state.dataLoadingState = "loading";
+    })
+    .addCase(UpdateSupply.fulfilled, (state, action) => {
+      state.dataLoadingState = "succeeded";
+      state.result = action.payload.data.status;
+      console.log(action.payload.data);
+      // const updateData = state.data.map((data) =>
+      //   data.supplyID === action.payload.data.supply.supplyID
+      //     ? { ...action.payload.data.supply }
+      //     : data
+      // );
+      // state.data = updateData;
+    })
+    .addCase(UpdateSupply.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
     });

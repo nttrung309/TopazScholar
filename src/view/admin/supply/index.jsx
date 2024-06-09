@@ -3,7 +3,7 @@ import {
   Form,
   Input,
   Modal,
-  Popover,
+  Popover as AntPopover,
   Select,
   Table,
   Tag,
@@ -18,6 +18,7 @@ import {
 import {
   CreateSupply,
   GetAllSupplies,
+  UpdateSupply,
 } from "../../../redux/admin/supply/SupplyThunk";
 import {
   CreateSupplyType,
@@ -28,17 +29,73 @@ import {
   SupplyTypeDataSelector,
 } from "../../../redux/admin/supplyType/supplyTypeSelector";
 
+const Popover = ({
+  record,
+  form,
+  setRecord,
+  setOpenUpdateSupply,
+  getAllSupplyTypes,
+  setOpenStatusModal,
+}) => {
+  return (
+    <div className="action-group">
+      <AntPopover
+        placement="left"
+        content={
+          <div>
+            <p
+              className="item"
+              onClick={() => {
+                setOpenUpdateSupply(true);
+                getAllSupplyTypes();
+                form.setFieldsValue({
+                  name: record.name,
+                  address: record.address,
+                  typeID: record.typeName,
+                });
+                setRecord(record);
+              }}
+            >
+              Chỉnh sửa
+            </p>
+            <p
+              className="item"
+              onClick={() => {
+                setOpenStatusModal(true);
+                form.setFieldsValue({
+                  name: record.name,
+                  address: record.address,
+                  typeID: record.typeName,
+                });
+              }}
+            >
+              Cập nhật trạng thái
+            </p>
+          </div>
+        }
+      >
+        <Button
+          icon={<i className="bi bi-three-dots-vertical" />}
+          className="edit"
+        />
+      </AntPopover>
+    </div>
+  );
+};
+
 const Supply = () => {
   const dispatch = useDispatch();
   const supplies = useSelector(SupplyDataSelector);
   const types = useSelector(SupplyTypeDataSelector);
-
   const typeResult = useSelector(ExcuteSupplyTypeState);
   const supplyResult = useSelector(ExcuteSupplyState);
   // const result = useSelector(ExcuteSupplyTypeState);
 
   const [openAddSupply, setOpenAddSupply] = useState(false);
+  const [openUpdateSupply, setOpenUpdateSupply] = useState(false);
   const [openAddType, setOpenAddType] = useState(false);
+  const [openStatusModal, setOpenStatusModal] = useState(false);
+  const [record, setRecord] = useState(false);
 
   const [form] = Form.useForm();
 
@@ -56,18 +113,17 @@ const Supply = () => {
       }
     };
 
-    const getAllSupplyTypes = async () => {
-      try {
-        // @ts-ignore
-        await dispatch(GetAllSupplyTypes());
-      } catch (error) {
-        console.error("Error occurred:", error.message);
-      }
-    };
-
     getAllSupply();
-    getAllSupplyTypes();
   }, []);
+
+  const getAllSupplyTypes = async () => {
+    try {
+      // @ts-ignore
+      await dispatch(GetAllSupplyTypes());
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  };
 
   const columns = [
     {
@@ -88,6 +144,11 @@ const Supply = () => {
       width: 200,
     },
     {
+      title: "Loại",
+      dataIndex: "typeName",
+      key: "typeName",
+    },
+    {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
@@ -95,11 +156,11 @@ const Supply = () => {
         <Tag
           key={status}
           color={
-            status === "Waiting"
+            status === "Available"
               ? "#0A58CA"
-              : status === "Approved"
+              : status === "Used"
               ? "#007747"
-              : status === "Denied" && "#dc3545"
+              : status === "Broken" && "#dc3545"
           }
         >
           {STATUS.find((item) => item.value === status)?.label.toUpperCase()}
@@ -110,6 +171,9 @@ const Supply = () => {
       title: "Ngày sử dụng cuối",
       dataIndex: "lastUser",
       key: "lastUser",
+      render: (value) => {
+        return value;
+      },
     },
     {
       title: "Người sử dụng cuối",
@@ -121,20 +185,20 @@ const Supply = () => {
       dataIndex: "lastAdmin",
       key: "lastAdmin",
     },
-    // {
-    //   title: "",
-    //   key: "action",
-    //   render: (_, record) => (
-    //     <Popover
-    //       record={record}
-    //       setRecord={setRecord}
-    //       navigate={navigate}
-    //       setOpenStatusModal={setOpenStatusModal}
-    //       setOpenApproveModal={setOpenApproveModal}
-    //       form={form}
-    //     />
-    //   ),
-    // },
+    {
+      title: "",
+      key: "action",
+      render: (_, record) => (
+        <Popover
+          record={record}
+          form={form}
+          setRecord={setRecord}
+          getAllSupplyTypes={getAllSupplyTypes}
+          setOpenUpdateSupply={setOpenUpdateSupply}
+          setOpenStatusModal={setOpenStatusModal}
+        />
+      ),
+    },
   ];
 
   const getTypesAsOptions = (types) => {
@@ -173,11 +237,48 @@ const Supply = () => {
         message.success("Tạo mới thành công!");
       else if (supplyResult?.status === "Error")
         message.error("Có lỗi xảy ra!");
-      else if (supplyResult?.status === "Existed")
-        message.error("Thông tin này đã tồn tại!");
 
       setOpenAddSupply(false);
       form.resetFields();
+    } catch (error) {
+      console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  const handleUpdateSupply = async () => {
+    try {
+      const values = await form.validateFields();
+      // @ts-ignore
+      dispatch(UpdateSupply({ ...values, supplyID: record.supplyID }));
+      // console.log(supplyResult);
+      // if (supplyResult?.status === "Success")
+      //   message.success("Tạo mới thành công!");
+      // else if (supplyResult?.status === "Error")
+      //   message.error("Có lỗi xảy ra!");
+
+      // setOpenAddSupply(false);
+      // form.resetFields();
+    } catch (error) {
+      console.log("Failed:", error);
+      message.error("Có lỗi xảy ra!");
+    }
+  };
+
+  const handleSubmitStatus = async () => {
+    try {
+      const values = await form.validateFields();
+      console.log(values);
+      // @ts-ignore
+      // dispatch(CreateSupply(values));
+      // console.log(supplyResult);
+      // if (supplyResult?.status === "Success")
+      //   message.success("Tạo mới thành công!");
+      // else if (supplyResult?.status === "Error")
+      //   message.error("Có lỗi xảy ra!");
+
+      // setOpenAddSupply(false);
+      // form.resetFields();
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -194,7 +295,10 @@ const Supply = () => {
         <Button
           icon={<i className="bi bi-plus" />}
           type="primary"
-          onClick={() => setOpenAddSupply(true)}
+          onClick={() => {
+            getAllSupplyTypes();
+            setOpenAddSupply(true);
+          }}
         >
           Tạo vật dụng
         </Button>
@@ -214,7 +318,7 @@ const Supply = () => {
           marginTop: 40,
         }}
         columns={columns}
-        // dataSource={getData(supplies)}
+        dataSource={getData(supplies)}
         // onRow={(record) => {
         //   return {
         //     onDoubleClick: async () => {
@@ -240,7 +344,7 @@ const Supply = () => {
       />
 
       {/* Modal update status */}
-      {/* <Modal
+      <Modal
         title="Cập nhật trạng thái"
         centered
         open={openStatusModal}
@@ -277,16 +381,10 @@ const Supply = () => {
             <Select
               placeholder="Chọn tình trạng đăng ký"
               options={STATUS.slice(8, 10)}
-              disabled={
-                activityStatus === "NotStartYet" ||
-                activityStatus === "TakingPlace"
-                  ? false
-                  : true
-              }
             />
           </Form.Item>
         </Form>
-      </Modal> */}
+      </Modal>
 
       {/* Modal approve actvity */}
       {/* <Modal
@@ -352,110 +450,6 @@ const Supply = () => {
             />
           </Form.Item>
         </Form>
-      </Modal> */}
-
-      {/* Modal view details */}
-      {/* <Modal
-        title="Thông tin hoạt động"
-        centered
-        footer={null}
-        open={openDetailModal}
-        key={openDetailModal ? "openDetail" : "closedDetail"}
-        onCancel={() => setOpenDetailModal(false)}
-        destroyOnClose
-        width={800}
-      >
-        {record?.mediaContent?.images?.length > 1 ? (
-          <Carousel
-            fade
-            arrows
-            prevArrow={<BsChevronLeft size={32} />}
-            nextArrow={<BsChevronRight size={40} />}
-            infinite={false}
-          >
-            {record?.mediaContent?.images?.map((path, index) => (
-              <img
-                key={index}
-                alt="Activity"
-                src={"http://localhost:5000/" + path}
-              />
-            ))}
-          </Carousel>
-        ) : (
-          <img alt="Activity" src={record?.mediaContent?.images[0]} />
-        )}
-        <div className="label" style={{ marginTop: 0 }}>
-          Tên hoạt động
-        </div>
-        <Input value={record?.name} size="large" readOnly />
-        <div className="label">Nội dung</div>
-        <Input.TextArea
-          showCount
-          maxLength={2000}
-          autoSize={{ minRows: 4, maxRows: 6 }}
-          size="large"
-          value={record?.content}
-          readOnly
-        />
-        <div className="label">Loại hoạt động</div>
-        <Input size="large" value={record?.category} readOnly />
-        <div className="label">Thời gian tổ chức</div>
-        <Input
-          size="large"
-          value={getHostDate(record?.startDate, record?.endDate)}
-          readOnly
-        />
-        <div className="label">Hình thức</div>
-        <Input size="large" value={record?.form} />
-        {record?.form === "Trực tiếp" ? (
-          <>
-            <div className="label">Địa điểm</div>
-            <Input size="large" value={record?.address} readOnly />
-          </>
-        ) : (
-          record?.form === "Online" && (
-            <Input size="large" value={record?.linkJoin} readOnly />
-          )
-        )}
-        <div className="label">Đối tượng tham gia</div>
-        <Input
-          size="large"
-          value={getPartipants(record?.faculty, record?.participants)}
-          readOnly
-        />
-        <div className="label">Số lượng tối đa</div>
-        <Input size="large" value={record?.maxParticipants} readOnly />
-        <div className="label">Quy định</div>
-        <Input.TextArea
-          size="large"
-          autoSize={{ minRows: 1 }}
-          readOnly
-          value={record?.rule}
-        />
-        <div style={{ display: "flex", flexDirection: "row", gap: 20 }}>
-          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-            <div className="label">Trạng thái hoạt động</div>
-            <Input
-              size="large"
-              value={record?.activityStatus}
-              readOnly
-              disabled={
-                record?.activityStatus === "Đơn đăng ký chưa được duyệt"
-              }
-            />
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-            <div className="label">Trạng thái đăng ký</div>
-            <Input
-              size="large"
-              value={record?.registerStatus}
-              readOnly
-              disabled={
-                record?.activityStatus === "Đơn đăng ký chưa được duyệt"
-              }
-            />
-          </div>
-        </div>
       </Modal> */}
 
       {/* Modal add type */}
@@ -559,6 +553,71 @@ const Supply = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* Modal update supply */}
+      <Modal
+        title="Thông tin vật dụng"
+        centered
+        open={openUpdateSupply}
+        key={openUpdateSupply ? "openUpdate" : "closedUpdate"}
+        okText="Lưu"
+        onOk={form.submit}
+        onCancel={() => {
+          setOpenUpdateSupply(false);
+          form.resetFields();
+        }}
+        destroyOnClose
+      >
+        <Form
+          form={form}
+          onFinish={handleUpdateSupply}
+          autoComplete="off"
+          layout="vertical"
+          requiredMark={false}
+          size="large"
+        >
+          <Form.Item
+            name="name"
+            label="Tên vật dụng"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên vật dụng !",
+              },
+            ]}
+          >
+            <Input size="large" placeholder="Tên vật dụng" />
+          </Form.Item>
+
+          <Form.Item
+            name="address"
+            label="Vị trí lưu trữ"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập vị trí vật dụng !",
+              },
+            ]}
+          >
+            <Input size="large" placeholder="Vị trí" />
+          </Form.Item>
+          <Form.Item
+            name="typeID"
+            label="Loại vật dụng"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn loại vật dụng!",
+              },
+            ]}
+          >
+            <Select
+              options={getTypesAsOptions(types)}
+              placeholder="Chọn loại vật dụng"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };
@@ -567,43 +626,15 @@ export default Supply;
 
 const STATUS = [
   {
-    value: "Approved",
-    label: "Đã phê duyệt",
+    value: "Broken",
+    label: "Đã hỏng",
   },
   {
-    value: "Denied",
-    label: "Đã từ chối",
-  },
-  {
-    value: "Waiting",
-    label: "Chờ phê duyệt",
-  },
-  {
-    value: "NotStartYet",
-    label: "Chưa bắt đầu",
-  },
-  {
-    value: "TakingPlace",
-    label: "Đang diễn ra",
-  },
-  {
-    value: "Delaying",
-    label: "Tạm hoãn",
-  },
-  {
-    value: "Canceled",
-    label: "Bị hủy",
-  },
-  {
-    value: "Finished",
-    label: "Đã kết thúc",
+    value: "Used",
+    label: "Đang được mượn",
   },
   {
     value: "Available",
-    label: "Mở đăng ký",
-  },
-  {
-    value: "Full",
-    label: "Đóng đăng ký",
+    label: "Có sẵn",
   },
 ];
