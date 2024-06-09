@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import LogoIcon from "../../shared/asset/icon/logo.svg";
 import { AuthRoleSelector } from "../../redux/auth/userSelector";
@@ -16,14 +16,10 @@ const SideBar = ({ collapsed }) => {
         {menus
           .filter((menu) => menu.role === authRole)
           .map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              className={path === item.path && "active"}
-            >
+            <NavLink key={index} to={item.path}>
               <i className={path === item.path ? item.iconActive : item.icon} />
               <span className="label">{item.label}</span>
-            </Link>
+            </NavLink>
           ))}
       </div>
     </div>

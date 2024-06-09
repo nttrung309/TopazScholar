@@ -6,6 +6,7 @@ const initialState = {
   data: null,
   dataLoadingState: "idle",
   error: null,
+  result: "",
 };
 
 const supplyStore = createReducer(initialState, (builder) => {
@@ -28,7 +29,9 @@ const supplyStore = createReducer(initialState, (builder) => {
     })
     .addCase(CreateSupply.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
-      state.result = action.payload.data;
+      state.result = action.payload.data.status;
+      state.data.push(action.payload.data.supply);
+      console.log(state.data);
     })
     .addCase(CreateSupply.rejected, (state, action) => {
       state.dataLoadingState = "failed";
@@ -41,13 +44,12 @@ const supplyStore = createReducer(initialState, (builder) => {
     .addCase(UpdateSupply.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
       state.result = action.payload.data.status;
-      console.log(action.payload.data);
-      // const updateData = state.data.map((data) =>
-      //   data.supplyID === action.payload.data.supply.supplyID
-      //     ? { ...action.payload.data.supply }
-      //     : data
-      // );
-      // state.data = updateData;
+      const updateData = state.data.map((item) => {
+        if (item.supplyID === action.payload.data.supply.supplyID)
+          return action.payload.data.supply;
+        else return { ...item };
+      });
+      state.data = updateData;
     })
     .addCase(UpdateSupply.rejected, (state, action) => {
       state.dataLoadingState = "failed";
