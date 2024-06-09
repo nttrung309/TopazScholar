@@ -1,8 +1,8 @@
 import React from "react";
-import MainLayout from "../../../layout/MainLayout";
+import AdminLayout from "../../../layout/AdminLayout";
 
 export const routerActivityAdmin = {
   path: "/admin/activity",
   element: React.lazy(() => import("./index")),
-  layout: MainLayout,
+  layout: AdminLayout,
 };

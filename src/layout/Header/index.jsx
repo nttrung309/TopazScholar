@@ -9,12 +9,10 @@ import { UserDataSelector } from "../../redux/auth/userSelector";
 import { NotifyDataSelector } from "../../redux/notify/notifySelector";
 import { NotifyGetAllData } from "../../redux/notify/notifyThunk";
 
-
 import NotifyHolder from "./components/NotifyHolder";
 
-
 const Header = ({ collapsed, handleCollapsed }) => {
-  const dispatch  = useDispatch();
+  const dispatch = useDispatch();
 
   const userData = useSelector(UserDataSelector);
   const notifyData = useSelector(NotifyDataSelector);
@@ -27,34 +25,36 @@ const Header = ({ collapsed, handleCollapsed }) => {
   }, []);
 
   useEffect(() => {
-    setCountNotify(notifyData.filter(item => !item.isRead).length)
-  }, [notifyData])
+    setCountNotify(notifyData.filter((item) => !item.isRead).length);
+  }, [notifyData]);
 
   const LoadNotifyData = async () => {
-    await dispatch(NotifyGetAllData({id: userData.uid}));
-  }
+    await dispatch(NotifyGetAllData({ id: userData.uid }));
+  };
 
   const userDropdownItems = [
     {
       key: "1",
       label: (
-        <a className="user-dropdown-item" target="_blank" rel="noopener noreferrer" href="">
-          1st menu item
-        </a>
-      ),
-    },
-    {
-      key: "2",
-      label: (
-        <a className="user-dropdown-item" onClick={() => {}}>
-          2nd menu item
+        <a
+          className="user-dropdown-item"
+          rel="noopener noreferrer"
+          href="/admin/statistics"
+        >
+          Trang quản trị
         </a>
       ),
     },
     {
       key: "3",
       label: (
-        <a className="user-dropdown-item log-out" rel="noopener noreferrer" onClick={() => {dispatch(authLogOut())}}>
+        <a
+          className="user-dropdown-item log-out"
+          rel="noopener noreferrer"
+          onClick={() => {
+            dispatch(authLogOut());
+          }}
+        >
           <LoginOutlined />
           Đăng xuất
         </a>
@@ -64,7 +64,7 @@ const Header = ({ collapsed, handleCollapsed }) => {
 
   const HandleOpenNotifyWindow = (newOpen) => {
     setIsNotifyOpen(newOpen);
-  }
+  };
 
   return (
     <div className="header">
@@ -84,24 +84,29 @@ const Header = ({ collapsed, handleCollapsed }) => {
 
       <div className="header__right">
         <Popover
-        placement="bottomRight"
-        content={<NotifyHolder/>}
-        trigger="click"
-        open={isNotifyOpen}
-        onOpenChange={HandleOpenNotifyWindow}>
+          placement="bottomRight"
+          content={<NotifyHolder />}
+          trigger="click"
+          open={isNotifyOpen}
+          onOpenChange={HandleOpenNotifyWindow}
+        >
           <Badge size="small" count={countNotify} offset={[-10, 10]}>
             <i className="bi bi-bell"></i>
           </Badge>
         </Popover>
 
-        <Dropdown trigger={["click"]} menu={{ items: userDropdownItems } } placement="bottomRight">
+        <Dropdown
+          trigger={["click"]}
+          menu={{ items: userDropdownItems }}
+          placement="bottomRight"
+        >
           <Button>
             {/* Chèn img vào class image*/}
             <div className="information">
               <div className="information__name">{userData.name}</div>
               <div className="information__class">{userData.class}</div>
             </div>
-            {userData.avatar !== '' ? (
+            {userData.avatar !== "" ? (
               <Avatar src={userData.avatar} />
             ) : (
               <Avatar>{userData.name[0].toUpperCase()}</Avatar>

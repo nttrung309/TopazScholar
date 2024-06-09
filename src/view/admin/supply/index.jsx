@@ -313,7 +313,7 @@ const Supply = () => {
     <div className="account">
       <div className="page-title">
         <div className="title-icon">
-          <i className="bi bi-lightning-fill" />
+          <i className="bi bi-plug-fill" />
         </div>
         <div className="title-name">Quản lý vật dụng</div>
         <Button
