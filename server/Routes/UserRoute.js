@@ -113,7 +113,6 @@ UserRoute.post("/update", async (req, res) => {
     );
     res.json(updatedUser);
   } catch (error) {
-    console.log("hmmmmm");
     const signUpResponse = await axios.post(
       "http://localhost:5000/api/user/sign-up",
       req.body
@@ -444,19 +443,20 @@ UserRoute.post("/attend", async (req, res) => {
 
   //Check if activity not full
   const actData = await Activity.findOne({ actID: attendData.actID });
-  if (actData.registeredParticipants === actData.maxParticipants) {
+  if (actData.participants.length === actData.maxParticipants) {
     return res.send("Đã hết số lượng đăng ký!");
   }
 
   //Resigter if still have free slot
-  const newAttend = new AttendDetail(attendData);
-  const result = await newAttend.save({});
+  // const newAttend = new AttendDetail(attendData);
+  // const result = await newAttend.save({});
 
-  if (result) {
+  // if (result) {
     //Update registeredParticipants
     await Activity.findOneAndUpdate(
       { actID: attendData.actID },
-      { registeredParticipants: actData.registeredParticipants + 1 },
+      { registeredParticipants: actData.registeredParticipants + 1,  
+        $push: { participants: attendData.userID }},
       { new: true, upsert: true }
     );
 
@@ -469,7 +469,7 @@ UserRoute.post("/attend", async (req, res) => {
     );
 
     return res.status(200).send("Đăng ký tham gia thành công!");
-  }
+  
   return res.json(null);
 });
 

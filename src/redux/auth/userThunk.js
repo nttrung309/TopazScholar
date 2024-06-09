@@ -55,3 +55,21 @@ export const AutoLogin = createAsyncThunk("userStore/AutoLogin", async () => {
     throw new Error(error.message);
   }
 });
+
+export const AttendActivity = createAsyncThunk(
+  "userStore/AttendActivity",
+  async ({ actID, userID }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/user/attend",
+        {
+          actID,
+          userID
+        }
+      );
+      return response;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

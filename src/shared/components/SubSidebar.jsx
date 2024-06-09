@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Input, Button } from "antd";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const submenus = [
   { label: "Khám phá", path: "/explore", title: "Khám phá" },
@@ -17,6 +17,7 @@ const SubSidebar = (props) => {
   const location = useLocation();
   var submenu = location.pathname.slice(1);
   const setSearchInput = props.onChange;
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setSearchInput(e.target.value);
@@ -45,7 +46,7 @@ const SubSidebar = (props) => {
           </Link>
         ))}
       </div>
-      <Button type="primary" size="large" icon={<i className="bi bi-plus" />}>
+      <Button type="primary" size="large" icon={<i className="bi bi-plus" />} onClick={() => navigate('/activity/create')}>
         Tạo hoạt động mới
       </Button>
     </div>

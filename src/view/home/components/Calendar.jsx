@@ -22,7 +22,7 @@ const Calendar = () => {
                                 <div className="day">{date.day + '/' + date.month}</div>
                             </div>
                             <div className="content">
-                            {activityData?.filter(item => {
+                            {Array.isArray(activityData) ? activityData?.filter(item => {
                                 const itemDate = new Date(item.startDate);
                                 return (
                                     itemDate.getDate() === date.day &&
@@ -38,7 +38,7 @@ const Calendar = () => {
                                         {TimePrettier(data.startDate)}
                                     </div>
                                 </div>
-                            ))}
+                            )): null}
                             </div>
                         </div>
                     );

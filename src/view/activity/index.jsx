@@ -5,11 +5,11 @@ import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
 import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 import { GetAllActivity } from "../../redux/activity/activityThunk";
-<<<<<<< Updated upstream
+
 import { useDispatch, useSelector } from "react-redux";
-=======
+
 import { AuthUIDSelector } from "../../redux/auth/userSelector";
->>>>>>> Stashed changes
+
 
 const locationItems = [
   {
@@ -207,8 +207,13 @@ const Activity = () => {
               )}
             </div>
           </div>
-        ) : activityData?.length > 0 ?
-          <ActivityCard variant="horizontal" data={activityData[1]} /> : null
+        ) : activityData?.length > 0 ? (
+            activityData.filter(data => data.hostName == userUID).map((data, index) => (
+              <ActivityCard key={index} variant="horizontal" data={data} />
+            ))
+          ) : (
+            <p>Không có sự kiện nào</p>
+          )
         }
       </div>
     </div>
