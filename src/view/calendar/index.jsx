@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import '../../App.css';
 
 import { ScheduleComponent, Day, Week, WorkWeek, Month, Agenda, Inject, MonthAgenda, TimelineViews, TimelineMonth, ViewsDirective, ViewDirective } from '@syncfusion/ej2-react-schedule';
-import { eventTemplate } from "./components/eventTemplate";
+import { eventTemplate, editorTemplate } from "./components/eventTemplate";
+import { registerLicense } from '@syncfusion/ej2-base';
+
+
 
 import { useDispatch, useSelector } from "react-redux";
 import { GetAllActivity } from "../../redux/activity/activityThunk";
@@ -10,10 +13,44 @@ import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 
 import './components/vi';
 
+// Registering Syncfusion license key
+registerLicense('ORg4AjUWIQA/Gnt2UFhhQlJBfVhdW3xLflFyVWJbdV91flZGcDwsT3RfQFljT35Vd0diXn5WcHVWTw==');
+
 const Calendar = () => {
   const dispatch = useDispatch();
   const activityData = useSelector(ActivityDataSelector);
   const [calendarData, setCalendarData] = useState([]);
+
+  const color = [
+    {
+      main: '#6ea8fe',
+      sub: '#2f80f8'
+    },
+    {
+      main: '#febb6e',
+      sub: '#f88a2f'
+    },
+    {
+      main: '#6efe8d',
+      sub: '#1eda46'
+    },
+    {
+      main: '#6ea8fe',
+      sub: '#2279fc'
+    },
+    {
+      main: '#6ea8fe',
+      sub: '#2279fc'
+    },
+    {
+      main: '#fa8be7',
+      sub: '#d660c3'
+    },
+    {
+      main: '#fa8bac',
+      sub: '#d66091'
+    }
+  ]
 
   useEffect(() => {
     LoadAllActivity();
@@ -29,12 +66,17 @@ const Calendar = () => {
         ...item,
         Id: item.actID,
         Subject: item.name,
-        StartTime: new Date(item.time.startDate),
-        EndTime: new Date(item.time.endDate),
+        StartTime: new Date(item.startDate),
+        EndTime: new Date(item.endDate),
+        color: color[getRandomNumber()]
       }));
       setCalendarData(newActivityData);
     }
   }, [activityData]);
+
+  function getRandomNumber() {
+    return Math.floor(Math.random() * 7);
+  }
   
   const data = [
     {
@@ -59,20 +101,26 @@ const Calendar = () => {
     if (divElement) {
       divElement.style.display = 'none';
     }
-  }, []); // Mảng rỗng [] để đảm bảo useEffect chỉ chạy một lần sau khi component mount
+  }, []);
+
+  const onPopupOpen = (args) => {
+    args.cancel = true;
+  }
 
   return(
     <div className="my-calendar">
       <ScheduleComponent
-        selectedDate={Date.now()}
+        selectedDate={new Date('2024/6/10')}
         eventSettings={{
           dataSource: calendarData
         }}
         readonly={true}
+        rowAutoHeight
         locale="en"
+        popupOpen={onPopupOpen.bind(this)}
       >
         <ViewsDirective>
-          <ViewDirective option="Day"/>
+          <ViewDirective option="Day" eventTemplate={eventTemplate}/>
           <ViewDirective option="Week" eventTemplate={eventTemplate}/>
           <ViewDirective option="Month"/>
         </ViewsDirective>

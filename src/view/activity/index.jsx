@@ -1,30 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { Dropdown, Radio } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, DatePicker, Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  GetAllActivity,
-  GetRecentActivities,
-} from "../../redux/activity/activityThunk";
-import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 
 const items = [
   {
-    label: "1st menu item",
+    label: "Bất kỳ",
     key: "0",
   },
   {
-    label: "2nd menu item",
+    label: "Tại trường",
     key: "1",
   },
   {
-    type: "divider",
+    label: "Bên ngoài",
+    key: "2",
   },
   {
-    label: "3rd menu item",
+    label: "Online",
     key: "3",
+  }
+];
+
+const timeFilterItems = [
+  {
+    label: "Mọi lúc",
+    key: "0",
+  },
+  {
+    label: "Đang diễn ra",
+    key: "1",
+  },
+  {
+    label: "Sắp diễn ra",
+    key: "2",
   },
 ];
 
@@ -40,25 +50,46 @@ const options = [
 ];
 
 const Activity = () => {
+  const dispatch = useDispatch();
+
   const [value1, setValue1] = useState("Sắp diễn ra");
   const location = useLocation();
   const data = location.state?.item || null;
   const type = location.pathname.slice(1);
-
-  const dispatch = useDispatch();
-  const activities = useSelector(ActivityDataSelector);
+  const [locationOption, setLocationOption] = useState(0);
+  const [timeOption, setTimeOption] = useState(0);
+  const datePickerRef = useRef(null);
+  const activityData = useSelector(ActivityDataSelector);
 
   useEffect(() => {
-    const getAllActivity = async () => {
-      try {
-        // @ts-ignore
-        await dispatch(GetRecentActivities());
-      } catch (error) {
-        console.error("Error occurred:", error.message);
-      }
-    };
-    getAllActivity();
+    LoadAllActivity();
   }, []);
+
+  const LoadAllActivity = async () => {
+    await dispatch(GetAllActivity());
+  }
+
+  useEffect(() => {
+    console.log(activityData);
+  }, [activityData]);
+
+  const HandleLocationClick = (e) => {
+    setLocationOption(e.key);
+  }
+
+  const HandleTimeClick = (e) => {
+    setTimeOption(e.key);
+  }
+
+  const menuLocationProps = {
+    items: locationItems,
+    onClick: HandleLocationClick,
+  };
+
+  const menuTimeProps = {
+    items: timeFilterItems,
+    onClick: HandleTimeClick,
+  };
 
   return (
     <div className="activity">
@@ -75,7 +106,7 @@ const Activity = () => {
           {type === "hosting" && (
             <Radio.Group
               options={options}
-              onChange={(e) => setValue1(e.target.value)}
+              onChange={(e) => {}}
               value={value1}
               optionType="button"
               buttonStyle="solid"
@@ -86,23 +117,23 @@ const Activity = () => {
         {type === "explore" ? (
           <>
             <div className="dropdown-wrapper">
-              <Dropdown menu={{ items }} trigger={["click"]}>
+              <Dropdown menu={menuLocationProps} trigger={["click"]}>
                 <div>
                   <i
                     className="bi bi-geo-alt-fill"
                     style={{ fontSize: "12px" }}
                   />
-                  Địa điểm
+                  {locationItems[locationOption].label}
                   <i
                     className="bi bi-chevron-down"
                     style={{ fontSize: "12px" }}
                   />
                 </div>
               </Dropdown>
-              <Dropdown menu={{ items }} trigger={["click"]}>
+              <Dropdown menu={menuTimeProps} trigger={["click"]}>
                 <div>
                   <i className="bi bi-table" style={{ fontSize: "12px" }} />
-                  Ngày bất kỳ
+                  {timeFilterItems[timeOption].label}
                   <i
                     className="bi bi-chevron-down"
                     style={{ fontSize: "12px" }}
@@ -112,30 +143,33 @@ const Activity = () => {
             </div>
 
             <div className="grid">
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
-              <ActivityCard variant="vertical" />
+              {activityData?.length > 0 ? (
+                activityData.map((data, index) => (
+                  <ActivityCard key={index} variant="vertical" data={data} />
+                ))
+              ) : (
+                <p>Không có sự kiện sắp đến</p>
+              )}
             </div>
           </>
         ) : (
           <div className="flex-column">
             <div className="item">
               <div className="title">Hôm nay</div>
-              <ActivityCard variant="horizontal" />
-              <ActivityCard variant="horizontal" />
+              {activityData?.length > 0 ? (
+                <ActivityCard variant="horizontal" data={activityData[0]} />
+              ) : (
+                <p>Không có sự kiện nào</p>
+              )}
             </div>
 
             <div className="item">
               <div className="title">Tháng trước</div>
-              <ActivityCard variant="horizontal" />
-              <ActivityCard variant="horizontal" />
+              {activityData?.length > 0 ? (
+                <ActivityCard variant="horizontal" data={activityData[0]} />
+              ) : (
+                <p>Không có sự kiện nào</p>
+              )}
             </div>
           </div>
         )}

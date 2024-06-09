@@ -2,15 +2,6 @@ import { L10n } from '@syncfusion/ej2-base';
 
 L10n.load({
     "en": {
-        "months": {
-            "short": ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"],
-            "long": ["Tháng Một", "Tháng Hai", "Tháng Ba", "Tháng Tư", "Tháng Năm", "Tháng Sáu", "Tháng Bảy", "Tháng Tám", "Tháng Chín", "Tháng Mười", "Tháng Mười Một", "Tháng Mười Hai"]
-          },
-          // Các chuỗi dịch cho ngày trong tuần
-          "days": {
-            "short": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
-            "long": ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
-          },
         "schedule": {
             "day": "NGÀY",
             "week": "TUẦN",

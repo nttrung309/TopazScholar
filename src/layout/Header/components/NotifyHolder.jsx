@@ -37,8 +37,8 @@ const NotifyHolder = () => {
 
     useEffect(() => {
         if(notifyData.length != 0){
-            setActivityTypeCount(notifyData.filter(item => item.type === 'activity').length);
-            setSystemTypeCount(notifyData.filter(item => item.type === 'system').length);
+            setActivityTypeCount(notifyData.filter(item => item.type === 'activity' && !item.isRead).length);
+            setSystemTypeCount(notifyData.filter(item => item.type === 'system' && !item.isRead).length);
         }
     }, [notifyData]);
 
