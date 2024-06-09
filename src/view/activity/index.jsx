@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, DatePicker, Dropdown, Radio } from "antd";
 import ActivityCard from "shared/components/ActivityCard";
 import SubSidebar from "shared/components/SubSidebar";
@@ -44,26 +44,45 @@ const timeFilterItems = [
 
 const options = [
   {
-    label: "Sắp diễn ra",
-    value: "Sắp diễn ra",
+    label: "Trước đây",
+    value: 0,
   },
   {
-    label: "Trước đây",
-    value: "Trước đây",
+    label: "Đang diễn ra",
+    value: 1,
   },
+  {
+    label: "Sắp diễn ra",
+    value: 2
+  }
 ];
 
 const Activity = () => {
   const dispatch = useDispatch();
 
-  const [value1, setValue1] = useState("Sắp diễn ra");
   const location = useLocation();
   const data = location.state?.item || null;
   const type = location.pathname.slice(1);
   const [locationOption, setLocationOption] = useState(0);
   const [timeOption, setTimeOption] = useState(0);
+  const [hostingOption, setHostingOption] = useState(0);
   const datePickerRef = useRef(null);
   const activityData = useSelector(ActivityDataSelector);
+
+  const filteredActivities = useMemo(() => {
+    const now = new Date();
+    return (activityData?.length > 0) ? activityData.filter(activity => {
+      return (
+        ((locationOption == 0) ||
+        (activity.form == 'Trực tiếp' && locationOption == 1) ||
+        (activity.form == 'Online' && locationOption == 3) ||
+        (activity.form == 'Trực tiếp' && locationOption == 0)) &&
+        ((timeOption == 0) ||
+        (((new Date(activity.startDate) <= now) && (new Date(activity.endDate) > now)) && timeOption == 1) || 
+        ((new Date(activity.startDate) > now) && timeOption == 2))
+      );
+    }) : [];
+  }, [activityData, locationOption, timeOption]);
 
   useEffect(() => {
     LoadAllActivity();
@@ -110,8 +129,8 @@ const Activity = () => {
           {type === "hosting" && (
             <Radio.Group
               options={options}
-              onChange={(e) => {}}
-              value={value1}
+              onChange={(e) => {setHostingOption(e.target.value)}}
+              value={hostingOption}
               optionType="button"
               buttonStyle="solid"
             ></Radio.Group>
@@ -147,12 +166,12 @@ const Activity = () => {
             </div>
 
             <div className="grid">
-              {activityData?.length > 0 ? (
-                activityData.map((data, index) => (
+              {filteredActivities?.length > 0 ? (
+                filteredActivities.map((data, index) => (
                   <ActivityCard key={index} variant="vertical" data={data} />
                 ))
               ) : (
-                <p>Không có sự kiện sắp đến</p>
+                <p>Không có sự kiện nào</p>
               )}
             </div>
           </>
