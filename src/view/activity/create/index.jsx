@@ -167,6 +167,7 @@ const CreateNewActivityUser = () => {
     e.preventDefault();
     try {
       const values = await form.validateFields();
+      console.log(values);
       const formData = new FormData();
 
       //Check new uploaded image
