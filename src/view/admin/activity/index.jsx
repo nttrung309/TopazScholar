@@ -40,7 +40,7 @@ const Popover = ({
             <p
               className="item"
               onClick={() =>
-                navigate("/admin/activity/edit", {
+                navigate("/admin/activity/" + record.actID, {
                   state: { id: record.actID },
                 })
               }
@@ -110,6 +110,7 @@ const Activity = () => {
   const regStatus = Form.useWatch("regStatus", form);
 
   const getData = (data) => {
+    if(Array.isArray(data))
     return data?.map((item, index) => ({ ...item, key: index + 1 }));
   };
 

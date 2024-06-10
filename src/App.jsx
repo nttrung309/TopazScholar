@@ -51,9 +51,10 @@ const MainView = memo(() => {
     ) {
       navigate("/");
     } else if (
-      statusLogin &&
+      (statusLogin &&
       authRole === "admin" &&
-      !adminRoutes.includes(location.pathname)
+      !adminRoutes.includes(location.pathname)) 
+      && !location.pathname.includes('/admin/activity/')
     ) {
       navigate("admin/statistics");
     }
