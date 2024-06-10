@@ -34,10 +34,13 @@ export const GetAllActivity = createAsyncThunk(
 
 export const GetNumberCategories = createAsyncThunk(
   "activityStore/GetNumberCategories",
-  async () => {
+  async (data) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/activity/get-number-categories"
+        "http://localhost:5000/api/activity/get-number-categories/?firstDay=" +
+          data.firstDay +
+          "&lastDay=" +
+          data.lastDay
       );
       return response;
     } catch (error) {
