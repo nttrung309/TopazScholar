@@ -33,7 +33,6 @@ const Header = ({ collapsed, handleCollapsed }) => {
   };
 
   const userDropdownItems = [
-<<<<<<< Updated upstream
     {
       key: "1",
       label: (
@@ -46,7 +45,6 @@ const Header = ({ collapsed, handleCollapsed }) => {
         </a>
       ),
     },
-=======
     // {
     //   key: "1",
     //   label: (
@@ -63,7 +61,6 @@ const Header = ({ collapsed, handleCollapsed }) => {
     //     </a>
     //   ),
     // },
->>>>>>> Stashed changes
     {
       key: "3",
       label: (
@@ -79,7 +76,7 @@ const Header = ({ collapsed, handleCollapsed }) => {
         </a>
       ),
     },
-  ];
+  ];  
 
   const HandleOpenNotifyWindow = (newOpen) => {
     setIsNotifyOpen(newOpen);

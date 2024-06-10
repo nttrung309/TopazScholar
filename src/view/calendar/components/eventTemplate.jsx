@@ -1,9 +1,11 @@
 import { ClockCircleOutlined } from "@ant-design/icons";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const eventTemplate = (props) => {
+
   const OpenActivity = () => {
-    
+    window.open('http://localhost:3000/activity/' + props.actID, '_blank', 'noopener,noreferrer');
   }
 
   return (

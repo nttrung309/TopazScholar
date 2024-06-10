@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import SubSidebar from "shared/components/SubSidebar";
 import Image from "../../shared/asset/image/temp/card-img.png";
 import { Button, Modal, Radio, message } from "antd";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import SuggestActivityCard from "./components/SuggestActivityCard";
 import { useDispatch, useSelector } from "react-redux";
 import { GetActivityByActID } from "../../redux/activity/activityThunk";
 import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 import { AuthUIDSelector } from "../../redux/auth/userSelector";
 import { AttendActivity } from "../../redux/auth/userThunk";
+import { format } from 'date-fns';
+import { vi } from 'date-fns/locale';
 
 const options = [
   {
@@ -23,6 +25,7 @@ const options = [
 
 const DetailActivity = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { actID } = useParams();  // Lấy uid từ URL
   const [messageApi, contextHolder] = message.useMessage();
   const activityData = useSelector(ActivityDataSelector);
@@ -81,29 +84,18 @@ const DetailActivity = () => {
     await dispatch(GetActivityByActID(actID))
   }
 
-  function formatDate(dateStr) {
-    if(!dateStr) {
+  const formatDate = (dateString) => {
+    if(!dateString) {
       return;
     }
-    const daysOfWeek = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
-    
-    // Tạo đối tượng Date từ chuỗi ngày tháng ban đầu
-    
-   
-    const dateParts = dateStr.split(/[/ :]/);
-    const date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1], dateParts[3], dateParts[4], dateParts[5]);
+    const date = new Date(dateString);
   
-    // Lấy các thành phần cần thiết
-    const dayOfWeek = daysOfWeek[date.getDay()];
-    const day = ("0" + date.getDate()).slice(-2);
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
-    const year = date.getFullYear();
-    const hours = ("0" + date.getHours()).slice(-2);
-    const minutes = ("0" + date.getMinutes()).slice(-2);
+    const day = format(date, 'HH:mm', { locale: vi });
+    const weekDay = format(date, "EEEE", { locale: vi }).toUpperCase();
+    const dayMonthYear = format(date, 'dd/MM/yyyy', { locale: vi });
   
-    // Tạo chuỗi theo định dạng mong muốn
-    return `${hours}:${minutes}, ${dayOfWeek} ${day}/${month}/${year}`;
-  }
+    return `${day}, ${weekDay} ${dayMonthYear}`;
+  };
 
   const HandleRegister = async () => {
     await dispatch(AttendActivity({
@@ -262,7 +254,7 @@ const DetailActivity = () => {
               <>
                 {state === "default" ? (
                   <div className="button-wrapper">
-                    <Button size="large" style={{ flex: 1 }}>
+                    <Button size="large" style={{ flex: 1 }} onClick={() => navigate('/activity/edit/' + activityData.actID)}>
                       Chỉnh sửa thông tin
                     </Button>
                     <Button type="primary" size="large" style={{ flex: 1 }}>

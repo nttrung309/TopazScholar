@@ -94,13 +94,6 @@ const activityStore = createReducer(initialState, (builder) => {
     })
     .addCase(UpdateActivity.fulfilled, (state, action) => {
       state.dataLoadingState = "succeeded";
-      console.log(action.payload.data.activity);
-      const updateData = state.data.map((data) =>
-        data.actID === action.payload.data.activity.actID
-          ? { ...action.payload.data }
-          : data
-      );
-      state.data = updateData;
     })
     .addCase(UpdateActivity.rejected, (state, action) => {
       state.dataLoadingState = "failed";
