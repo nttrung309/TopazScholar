@@ -22,6 +22,7 @@ import { routerCalendar } from "view/calendar/router.jsx";
 import { routerSupply } from "view/admin/supply/router.jsx";
 import { routerCreateActivityUser } from "view/activity/create/router.jsx";
 import { routerEditActivityUser } from "view/activity/create/router.jsx";
+import { routerDetail } from "view/detail/router.jsx";
 
 export const privatePage = [
   routerHome,
@@ -29,7 +30,7 @@ export const privatePage = [
   routerRegistered,
   routerHosting,
   routerJoined,
-  r,
+  routerDetail,
   routerContact,
   routerCalendar,
   routerCreateActivityUser,
