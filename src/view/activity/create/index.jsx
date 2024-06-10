@@ -33,7 +33,7 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const CreateNewActivity = () => {
+const CreateNewActivityUser = () => {
   const type = useLocation().pathname;
   const actID = useLocation()?.state?.id;
   const dispatch = useDispatch();
@@ -273,7 +273,7 @@ const CreateNewActivity = () => {
 
       <div style={{ position: "relative" }}>
         <Link
-          to="/admin/activity"
+          to="/explore"
           className="back-list"
           style={{ position: "absolute", top: 0 }}
         >
@@ -582,7 +582,7 @@ const CreateNewActivity = () => {
               </Form.Item>
             </Form.Item>
           )}
-          {type !== '/admin/activity/create' ? (
+          {type == '/activity/edit' ? (
             <div style={{ justifySelf: "flex-end" }}>
               <Button style={{ marginRight: 20 }} htmlType="reset">
                 Reset
@@ -595,7 +595,7 @@ const CreateNewActivity = () => {
                 Lưu thay đổi
               </Button>
             </div>
-          ) : (
+          ) : type == '/activity/create' ? (
             <Button
               style={{ justifySelf: "flex-end" }}
               key="submit"
@@ -604,14 +604,14 @@ const CreateNewActivity = () => {
             >
               Tạo hoạt động
             </Button>
-          )}
+          ): null}
         </Form>
       </div>
     </div>
   );
 };
 
-export default CreateNewActivity;
+export default CreateNewActivityUser;
 const STATUS = [
   {
     value: "Approved",

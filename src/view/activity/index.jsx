@@ -5,7 +5,11 @@ import SubSidebar from "shared/components/SubSidebar";
 import { useLocation } from "react-router-dom";
 import { ActivityDataSelector } from "../../redux/activity/activitySelector";
 import { GetAllActivity } from "../../redux/activity/activityThunk";
+
 import { useDispatch, useSelector } from "react-redux";
+
+import { AuthUIDSelector } from "../../redux/auth/userSelector";
+
 
 const locationItems = [
   {
@@ -43,16 +47,20 @@ const timeFilterItems = [
 
 const options = [
   {
-    label: "Trước đây",
+    label: "Mọi lúc",
     value: 0,
   },
   {
-    label: "Đang diễn ra",
+    label: "Đã diễn ra",
     value: 1,
   },
   {
+    label: "Đang diễn ra",
+    value: 2,
+  },
+  {
     label: "Sắp diễn ra",
-    value: 2
+    value: 3
   }
 ];
 
@@ -65,23 +73,36 @@ const Activity = () => {
   const [locationOption, setLocationOption] = useState(0);
   const [timeOption, setTimeOption] = useState(0);
   const [hostingOption, setHostingOption] = useState(0);
+  const [searchInput, setSearchInput] = useState('')
   const datePickerRef = useRef(null);
   const activityData = useSelector(ActivityDataSelector);
+  const userUID = useSelector(AuthUIDSelector);
 
   const filteredActivities = useMemo(() => {
     const now = new Date();
-    return (activityData?.length > 0) ? activityData.filter(activity => {
-      return (
-        ((locationOption == 0) ||
-        (activity.form == 'Trực tiếp' && locationOption == 1) ||
-        (activity.form == 'Online' && locationOption == 3) ||
-        (activity.form == 'Trực tiếp' && locationOption == 0)) &&
-        ((timeOption == 0) ||
-        (((new Date(activity.startDate) <= now) && (new Date(activity.endDate) > now)) && timeOption == 1) || 
-        ((new Date(activity.startDate) > now) && timeOption == 2))
-      );
-    }) : [];
-  }, [activityData, locationOption, timeOption]);
+    return (activityData?.length > 0) ? 
+      (type === 'explore') ? 
+        activityData.filter(activity => {
+          return (
+            ((locationOption == 0) ||
+            (activity.form == 'Trực tiếp' && locationOption == 1) ||
+            (activity.form == 'Online' && locationOption == 3) ||
+            (activity.form == 'Trực tiếp' && locationOption == 0)) &&
+            ((timeOption == 0) ||
+            (((new Date(activity.startDate) <= now) && (new Date(activity.endDate) > now)) && timeOption == 1) || 
+            ((new Date(activity.startDate) > now) && timeOption == 2)) &&
+            (activity.name.toUpperCase().includes(searchInput.toUpperCase()))
+          );
+        }) 
+      : (type === 'registered') ? activityData.filter(activity => 
+            activity.participants.includes(userUID) &&
+            (activity.name.toUpperCase().includes(searchInput.toUpperCase())))
+        : (type === 'joined') ? activityData.filter(activity => 
+          activity.rollCall.includes(userUID) &&
+          (activity.name.toUpperCase().includes(searchInput.toUpperCase()))) 
+        : []
+    : [];
+  }, [activityData, locationOption, timeOption, searchInput, type]);
 
   useEffect(() => {
     LoadAllActivity();
@@ -115,7 +136,7 @@ const Activity = () => {
 
   return (
     <div className="activity">
-      <SubSidebar />
+      <SubSidebar onChange={setSearchInput}/>
 
       <div className="main">
         <div className="top">
@@ -174,27 +195,26 @@ const Activity = () => {
               )}
             </div>
           </>
-        ) : (
+        ) : (type === "registered" || type === "joined") ? (
           <div className="flex-column">
             <div className="item">
-              <div className="title">Hôm nay</div>
-              {activityData?.length > 0 ? (
-                <ActivityCard variant="horizontal" data={activityData[0]} />
-              ) : (
-                <p>Không có sự kiện nào</p>
-              )}
-            </div>
-
-            <div className="item">
-              <div className="title">Tháng trước</div>
-              {activityData?.length > 0 ? (
-                <ActivityCard variant="horizontal" data={activityData[0]} />
+              {filteredActivities?.length > 0 ? (
+                filteredActivities.map((data, index) => (
+                  <ActivityCard key={index} variant="horizontal" data={data} />
+                ))
               ) : (
                 <p>Không có sự kiện nào</p>
               )}
             </div>
           </div>
-        )}
+        ) : activityData?.length > 0 ? (
+            activityData.filter(data => data.hostName == userUID).map((data, index) => (
+              <ActivityCard key={index} variant="horizontal" data={data} />
+            ))
+          ) : (
+            <p>Không có sự kiện nào</p>
+          )
+        }
       </div>
     </div>
   );

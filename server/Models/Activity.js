@@ -114,6 +114,10 @@ const activitySchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
+  rollCall: {
+    type: Array,
+    default: [],
+  },
   note: {
     type: String,
   },

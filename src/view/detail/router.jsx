@@ -2,7 +2,7 @@ import React from "react";
 import MainLayout from "../../layout/MainLayout";
 
 export const routerDetail = {
-  path: "/detail",
+  path: "/activity/:actID",
   element: React.lazy(() => import("./index")),
   layout: MainLayout,
 };

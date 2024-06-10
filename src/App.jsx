@@ -44,9 +44,10 @@ const MainView = memo(() => {
     ) {
       navigate("/auth/login");
     } else if (
-      statusLogin &&
+      (statusLogin &&
       authRole === "student" &&
-      !privateRoutes.includes(location.pathname)
+      !privateRoutes.includes(location.pathname)) 
+      && !location.pathname.includes('activity')
     ) {
       navigate("/");
     } else if (

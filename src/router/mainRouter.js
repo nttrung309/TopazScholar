@@ -20,7 +20,8 @@ import {
 import { routerStatistics } from "view/admin/statistics/router.jsx";
 import { routerCalendar } from "view/calendar/router.jsx";
 import { routerSupply } from "view/admin/supply/router.jsx";
-import { routerDetail } from "view/detail/router.jsx";
+import { routerCreateActivityUser } from "view/activity/create/router.jsx";
+import { routerEditActivityUser } from "view/activity/create/router.jsx";
 
 export const privatePage = [
   routerHome,
@@ -28,9 +29,11 @@ export const privatePage = [
   routerRegistered,
   routerHosting,
   routerJoined,
-  routerDetail,
+  r,
   routerContact,
   routerCalendar,
+  routerCreateActivityUser,
+  routerEditActivityUser
 ];
 
 export const publicPage = [routerLogin, routerSignUp];

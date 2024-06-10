@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { createReducer } from '@reduxjs/toolkit';
 import { authLogOut, setStatusLogin } from './userAction';
-import { AuthLogin, AuthSignUp, AutoLogin } from './userThunk';
+import { AttendActivity, AuthLogin, AuthSignUp, AutoLogin } from './userThunk';
 
 const initialState = {
   statusLogin: false,
@@ -76,6 +76,18 @@ const userStore = createReducer(initialState, (builder) => {
       }
     })
     .addCase(AutoLogin.rejected, (state, action) => {
+      state.dataLoadingState = "failed";
+      state.error = action.error.message;
+    })
+
+    //Attend activity
+    .addCase(AttendActivity.pending, (state, action) => {
+      state.dataLoadingState = "loading";
+    })
+    .addCase(AttendActivity.fulfilled, (state, action) => {
+        state.dataLoadingState = "succeeded";
+    })
+    .addCase(AttendActivity.rejected, (state, action) => {
       state.dataLoadingState = "failed";
       state.error = action.error.message;
     });

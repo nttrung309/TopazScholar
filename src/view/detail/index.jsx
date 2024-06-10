@@ -1,9 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubSidebar from "shared/components/SubSidebar";
 import Image from "../../shared/asset/image/temp/card-img.png";
-import { Button, Radio } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Modal, Radio, message } from "antd";
+import { Link, useParams } from "react-router-dom";
 import SuggestActivityCard from "./components/SuggestActivityCard";
+import { useDispatch, useSelector } from "react-redux";
+import { GetActivityByActID } from "../../redux/activity/activityThunk";
+import { ActivityDataSelector } from "../../redux/activity/activitySelector";
+import { AuthUIDSelector } from "../../redux/auth/userSelector";
+import { AttendActivity } from "../../redux/auth/userThunk";
 
 const options = [
   {
@@ -17,29 +22,130 @@ const options = [
 ];
 
 const DetailActivity = () => {
+  const dispatch = useDispatch();
+  const { actID } = useParams();  // Lấy uid từ URL
+  const [messageApi, contextHolder] = message.useMessage();
+  const activityData = useSelector(ActivityDataSelector);
+  const userUID = useSelector(AuthUIDSelector);
   const [value, setValue] = useState("Mô tả chi tiết");
-
   //default || ongoing || registered || finished
-  const [state] = useState("finished");
+  const [state, setState] = useState("default");
 
   //true || false
-  const hosting = true;
+  const [hosting, setHosting] = useState(false);
+
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  useEffect(() => {
+    LoadActivityData();
+  }, [actID]);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
+
+  useEffect(() => {
+    if(activityData && userUID){
+      setHosting(userUID == activityData?.hostName);
+
+      const now = new Date();
+      if(new Date(activityData.endDate) < now){
+        setState('finished');
+      }
+      else {
+        if(userUID == activityData?.hostName){
+          if(new Date(activityData.startDate) > now){
+            setState('default');
+          }
+          else if((new Date(activityData.startDate) <= now) && (new Date(activityData.endDate) > now)){
+            setState('ongoing');
+          }
+        }
+        else{
+          if((new Date(activityData.startDate) <= now) && (new Date(activityData.endDate) > now)){
+            setState('ongoing');
+          }
+          else if(activityData?.participants?.includes(userUID)){
+            setState('registered');
+          }
+          else if(new Date(activityData.startDate) > now){
+            setState('default');
+          }
+          
+        }
+      }
+    }
+  }, [activityData, userUID]);
+
+  const LoadActivityData = async () => {
+    await dispatch(GetActivityByActID(actID))
+  }
+
+  function formatDate(dateStr) {
+    if(!dateStr) {
+      return;
+    }
+    const daysOfWeek = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
+    
+    // Tạo đối tượng Date từ chuỗi ngày tháng ban đầu
+    
+   
+    const dateParts = dateStr.split(/[/ :]/);
+    const date = new Date(dateParts[2], dateParts[0] - 1, dateParts[1], dateParts[3], dateParts[4], dateParts[5]);
+  
+    // Lấy các thành phần cần thiết
+    const dayOfWeek = daysOfWeek[date.getDay()];
+    const day = ("0" + date.getDate()).slice(-2);
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const year = date.getFullYear();
+    const hours = ("0" + date.getHours()).slice(-2);
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+  
+    // Tạo chuỗi theo định dạng mong muốn
+    return `${hours}:${minutes}, ${dayOfWeek} ${day}/${month}/${year}`;
+  }
+
+  const HandleRegister = async () => {
+    await dispatch(AttendActivity({
+      actID: activityData.actID,
+      userID: userUID
+    }));
+    HandleCancel();
+    infoRegisterSucceed();
+
+    setTimeout(() => {
+      window.location.reload(true);
+    }, 3000); // Hẹn giờ 3 giây
+  }
+
+  const infoRegisterSucceed = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'Đăng ký thành công',
+      duration: 3
+    });
+  };
+
+  const HandleCancel = () => {
+    setIsRegisterModalOpen(false);
+  }
 
   return (
     <div className="activity">
+      {contextHolder}
       <div className="main">
         <div className="page-title">
           <div className="title-icon">
             <i className="bi bi-lightning-fill" />
           </div>
           <div className="title-name">
-            Ngày hội Sinh viên và Doanh nghiệp - UIT Career Day 2020
+            {activityData?.name}
           </div>
         </div>
 
         <div className="column-2">
           <div className="cell left">
-            <img src={Image} alt="" />
+            <img src={activityData?.mediaContent?.images[0]} alt="" />
             <Radio.Group
               options={options}
               onChange={(e) => setValue(e.target.value)}
@@ -49,30 +155,7 @@ const DetailActivity = () => {
             />
             {value === "Mô tả chi tiết" ? (
               <div className="description">
-                Thứ bảy 05/12/2020, Trường ĐH Công nghệ Thông tin ĐHQG-HCM sẽ tổ
-                chức Ngày hội Sinh viên và Doanh nghiệp - UIT Career Day
-                2020.UIT Career Day 2020 có sự tham gia của 25 doanh nghiệp hoạt
-                động trong lĩnh vực công nghệ thông tin và truyền thông với dự
-                kiến hơn 1500 thông tin tuyển dụng thực tập, việc làm và hàng
-                ngàn quà tặng gửi đến các bạn sinh viên tham gia.Ngày hội là dịp
-                để sinh viên và doanh nghiệp có điều kiện gặp gỡ, trao đổi trực
-                tiếp, đáp ứng và thoả mãn nhu cầu về cung – cầu tuyển dụng, nhất
-                là nhu cầu tuyển dụng nguồn nhân lực có chất lượng trong lĩnh
-                vực công nghệ thông tin và truyền thông.Ngày hội sẽ diễn ra
-                trong thời gian từ 7h30 sáng đến 12h00 cùng ngày với hơn 30 gian
-                hàng, gồm các nội dung chính: Check-in khai mạc; Doanh nghiệp tự
-                giới thiệu; Phỏng vấn thử thành công thật; các Hội thảo chuyên
-                đề về sản phẩm công nghệ mới, tư vấn kỹ năng nghề nghiệp.Ngày
-                hội được tài trợ và đồng hành bởi các doanh nghiệp:• Tài trợ
-                Vàng: công ty KMS Technology Việt Nam, công ty NashTech Việt
-                Nam• Tài trợ Bạc: công ty VNG, công ty Netcompany Vietnam, công
-                ty FPT Software Tp. HCM, công ty ELCA Việt Nam, công ty Fujinet
-                Systems và công ty FOSSIL VIETNAM• Tài trợ Đồng: công ty Chợ
-                tốt, công ty DXC Việt Nam và công ty Dirox CÁC HOẠT ĐỘNG CHÍNH
-                TRONG NGÀY HỘI- Check-in Khai mạc và Trao học bổng- Gian hàng
-                giới thiệu, game show của các doanh nghiệp- Hội thảo Công nghệ,
-                Kỹ năng:- Phỏng vấn, tuyển dụng - Tư vấn nghề nghiệp- Bốc thăm
-                may mắn Ẩn bớt
+                {activityData?.content}
               </div>
             ) : (
               <div className="comment">
@@ -213,9 +296,11 @@ const DetailActivity = () => {
               <>
                 {state === "default" ? (
                   <div className="button-wrapper">
-                    <Button type="primary" size="large" style={{ flex: 1 }}>
+                    <Button type="primary" size="large" style={{ flex: 1 }} onClick={() => setIsRegisterModalOpen(true)}>
                       Đăng ký tham gia
                     </Button>
+                    <Modal title="Bạn có chắc muốn đăng kí tham gia?" open={isRegisterModalOpen} onOk={HandleRegister} onCancel={HandleCancel}>
+                    </Modal>
                     <Button type="primary" size="large">
                       <i className="bi bi-share-fill" />
                     </Button>
@@ -255,12 +340,12 @@ const DetailActivity = () => {
               <div className="infor-wrapper">
                 <div className="row">
                   <i className="bi bi-clock" />
-                  7:30, Thứ bảy 05/12/2020
+                  {activityData && formatDate(activityData?.startDate)}
                 </div>
 
                 <div className="row">
                   <i className="bi bi-geo-alt" />
-                  Trường ĐH Công nghệ Thông tin ĐHQG-HCM
+                  {activityData?.address}
                 </div>
 
                 <div className="row">
@@ -281,7 +366,7 @@ const DetailActivity = () => {
                 <div className="label">Số người tham gia</div>
                 {hosting && <Link to="#">Xem danh sách</Link>}
               </div>
-              <div className="number">100</div>
+              <div className="number">{activityData?.participants?.length}</div>
               <div className="sub-text">Đã tham gia</div>
             </div>
 
