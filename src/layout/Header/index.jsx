@@ -33,6 +33,7 @@ const Header = ({ collapsed, handleCollapsed }) => {
   };
 
   const userDropdownItems = [
+<<<<<<< Updated upstream
     {
       key: "1",
       label: (
@@ -45,6 +46,24 @@ const Header = ({ collapsed, handleCollapsed }) => {
         </a>
       ),
     },
+=======
+    // {
+    //   key: "1",
+    //   label: (
+    //     <a className="user-dropdown-item" target="_blank" rel="noopener noreferrer" href="">
+    //       1st menu item
+    //     </a>
+    //   ),
+    // },
+    // {
+    //   key: "2",
+    //   label: (
+    //     <a className="user-dropdown-item" onClick={() => {}}>
+    //       2nd menu item
+    //     </a>
+    //   ),
+    // },
+>>>>>>> Stashed changes
     {
       key: "3",
       label: (
