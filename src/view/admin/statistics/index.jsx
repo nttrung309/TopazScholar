@@ -30,25 +30,12 @@ const Statistics = () => {
   const dispatch = useDispatch();
   const numberCategories = useSelector(ActivityDataSelector);
   const today = new Date();
-  var firstDay = new Date(
-    today.getFullYear(),
-    today.getMonth() - 1,
-    1
-  ).toISOString();
-  var lastDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    0
-  ).toISOString();
-
-  console.log(firstDay, lastDay);
 
   useEffect(() => {
     const getNumberCategories = async () => {
       try {
         // @ts-ignore
-        // prettier-ignore
-        await dispatch(GetNumberCategories({ firstDay: firstDay, lastDay: lastDay }));
+        await dispatch(GetNumberCategories());
       } catch (error) {
         console.error("Error occurred:", error.message);
       }
@@ -158,7 +145,7 @@ const Statistics = () => {
           </div>
           <div className="title">
             Biểu đồ số lượng hoạt động theo loại hoạt động{" "}
-            <span>tháng {today.getMonth()}</span>
+            <span>tháng {today.getMonth() + 1}</span>
           </div>
         </div>
         <div className="statistics-card">
@@ -168,7 +155,7 @@ const Statistics = () => {
           <div className="title">Chưa biết</div>
         </div>
       </div>
-      {/* <div
+      <div
         style={{
           width: "100%",
           paddingLeft: 20,
@@ -177,7 +164,7 @@ const Statistics = () => {
         }}
       >
         <Line data={data} />
-      </div> */}
+      </div>
     </div>
   );
 };

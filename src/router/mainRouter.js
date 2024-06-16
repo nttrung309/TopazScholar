@@ -9,6 +9,7 @@ import {
   routerJoined,
   routerRegistered,
 } from "view/activity/router.jsx";
+import { routerDetail } from "view/detail/router.jsx";
 import { routerContact } from "view/contact/router.jsx";
 import { routerHome } from "../view/home/router.jsx";
 import { routerAccount } from "view/admin/account/router.jsx";
@@ -22,7 +23,6 @@ import { routerCalendar } from "view/calendar/router.jsx";
 import { routerSupply } from "view/admin/supply/router.jsx";
 import { routerCreateActivityUser } from "view/activity/create/router.jsx";
 import { routerEditActivityUser } from "view/activity/create/router.jsx";
-import { routerDetail } from "view/detail/router.jsx";
 
 export const privatePage = [
   routerHome,
@@ -46,12 +46,4 @@ export const adminPage = [
   routerEditActivity,
   routerStatistics,
   routerSupply,
-  routerHome,
-  routerExplore,
-  routerRegistered,
-  routerHosting,
-  routerJoined,
-  routerDetail,
-  routerContact,
-  routerCalendar,
 ];

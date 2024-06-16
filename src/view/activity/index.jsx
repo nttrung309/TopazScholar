@@ -80,7 +80,6 @@ const Activity = () => {
 
   const filteredActivities = useMemo(() => {
     const now = new Date();
-    if(!Array.isArray(activityData)) return;
     return (activityData?.length > 0) ? 
       (type === 'explore') ? 
         activityData.filter(activity => {

@@ -12,7 +12,7 @@ import {
   Upload,
   message,
 } from "antd";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BsChevronLeft, BsCloudArrowUp } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -34,10 +34,8 @@ const getBase64 = (file) =>
   });
 
 const CreateNewActivity = () => {
-  const navigate = useNavigate();
   const type = useLocation().pathname;
   const actID = useLocation()?.state?.id;
-  //const {actID} = useParams();
   const dispatch = useDispatch();
   const userID = useSelector(AuthUIDSelector);
   const activity = useSelector(ActivityDataSelector);
@@ -110,7 +108,7 @@ const CreateNewActivity = () => {
     };
 
     getInitialValue();
-  }, [activity]);
+  }, []);
 
   useEffect(() => {
     if (activityStatus === "Finished")
@@ -159,9 +157,6 @@ const CreateNewActivity = () => {
       const result = await dispatch(HostActivity(formData));
       form.resetFields();
       if (result) message.success("Tạo hoạt động mới thành công!");
-      setTimeout(() => {
-        navigate('/admin/activity')
-      }, 2000);
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -223,9 +218,6 @@ const CreateNewActivity = () => {
       // @ts-ignore
       const result = await dispatch(UpdateActivity(formData));
       if (result) message.success("Cập nhật hoạt động thành công!");
-      setTimeout(() => {
-          navigate('/admin/activity');
-      }, 2000);
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");

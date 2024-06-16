@@ -30,14 +30,7 @@ ActivityRoute.get("/", (req, res) => {
 
 //Get number activities of category
 ActivityRoute.get("/get-number-categories", (req, res) => {
-  const data = req.query;
-  console.log(data);
-  Activity.find({
-    dateCreated: {
-      $gte: data.firstDay,
-      $lt: data.lastDay,
-    },
-  }).then((data) => {
+  Activity.find({}).then((data) => {
     const category = data.reduce((accumulator, item) => {
       accumulator[item.category] = accumulator[item.category] || 0;
       accumulator[item.category] += 1;
