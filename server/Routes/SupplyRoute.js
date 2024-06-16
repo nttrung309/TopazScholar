@@ -43,14 +43,26 @@ SupplyRoute.post("/update", async (req, res) => {
   const data = req.body;
   console.log(data);
   try {
-    const result = await Supply.findOneAndUpdate(
-      { supplyID: data.supplyID },
-      data,
-      {
-        new: true,
-      }
-    );
-    res.send({ status: "Success", supply: result });
+    if (data?.status === "Used") {
+      const user = await User.findOne({ name: data.lastUser });
+      const result = await Supply.findOneAndUpdate(
+        { supplyID: data.supplyID },
+        { ...data, lastUser: user.uid },
+        {
+          new: true,
+        }
+      );
+      res.send({ status: "Success", supply: result });
+    } else {
+      const result = await Supply.findOneAndUpdate(
+        { supplyID: data.supplyID },
+        data,
+        {
+          new: true,
+        }
+      );
+      res.send({ status: "Success", supply: result });
+    }
   } catch (error) {
     console.log("error:" + error);
     res.send({ status: "Error", error: error });

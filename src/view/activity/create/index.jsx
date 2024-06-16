@@ -12,7 +12,7 @@ import {
   Upload,
   message,
 } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { BsChevronLeft, BsCloudArrowUp } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -34,7 +34,6 @@ const getBase64 = (file) =>
   });
 
 const CreateNewActivityUser = () => {
-  const navigate = useNavigate();
   const type = useLocation().pathname;
   const actID = useLocation()?.state?.id;
   const dispatch = useDispatch();
@@ -158,9 +157,6 @@ const CreateNewActivityUser = () => {
       const result = await dispatch(HostActivity(formData));
       form.resetFields();
       if (result) message.success("Tạo hoạt động mới thành công!");
-      setTimeout(() => {
-        navigate('/explore')
-      }, 2000);
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -223,9 +219,6 @@ const CreateNewActivityUser = () => {
       // @ts-ignore
       const result = await dispatch(UpdateActivity(formData));
       if (result) message.success("Cập nhật hoạt động thành công!");
-      setTimeout(() => {
-        navigate('/activity/' + activity.actID)
-      }, 2000);
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -590,7 +583,7 @@ const CreateNewActivityUser = () => {
               </Form.Item>
             </Form.Item>
           )}
-          {type !== '/activity/create' ? (
+          {type == '/activity/edit' ? (
             <div style={{ justifySelf: "flex-end" }}>
               <Button style={{ marginRight: 20 }} htmlType="reset">
                 Reset
@@ -603,7 +596,7 @@ const CreateNewActivityUser = () => {
                 Lưu thay đổi
               </Button>
             </div>
-          ) : (
+          ) : type == '/activity/create' ? (
             <Button
               style={{ justifySelf: "flex-end" }}
               key="submit"
@@ -612,7 +605,7 @@ const CreateNewActivityUser = () => {
             >
               Tạo hoạt động
             </Button>
-          )}
+          ): null}
         </Form>
       </div>
     </div>

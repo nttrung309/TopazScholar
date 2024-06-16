@@ -31,7 +31,6 @@ import {
 import { AuthUIDSelector } from "../../../redux/auth/userSelector";
 import { AccountManageDataSelector } from "../../../redux/admin/account/accountManageSelector";
 import { GetAllUsersData } from "../../../redux/admin/account/accountManageThunk";
-import dayjs from "dayjs";
 
 const Popover = ({
   record,
@@ -192,19 +191,19 @@ const Supply = () => {
       title: "Người sử dụng cuối",
       dataIndex: "lastUser",
       key: "lastUser",
-      render: (value) => users.find((item) => item.uid === value)?.name,
+      render: (value) => {
+        return value;
+      },
     },
     {
-      title: "Ngày cập nhật",
-      dataIndex: "lastUpdateDate",
+      title: "Ngày sử dụng cuối",
+      dataIndex: "lastUsedDate",
       key: "lastUsedDate",
-      render: (item) => dayjs(item).format("DD/MM/YYYY"),
     },
     {
       title: "Người phê duyệt cuối",
       dataIndex: "lastAdmin",
       key: "lastAdmin",
-      render: (value) => users.find((item) => item.uid === value)?.name,
     },
     {
       title: "",
@@ -260,8 +259,7 @@ const Supply = () => {
     try {
       const values = await form.validateFields();
       // @ts-ignore
-      //prettier-ignore
-      dispatch(CreateSupply({ ...values, lastAdmin: userID, lastUser: userID }));
+      dispatch(CreateSupply(values));
       console.log(supplyResult);
       if (supplyResult === "Success") message.success("Tạo mới thành công!");
       else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
@@ -298,11 +296,11 @@ const Supply = () => {
       // prettier-ignore
       dispatch(UpdateSupply({ ...values, supplyID: record.supplyID , lastAdmin: userID,}));
 
-      if (supplyResult === "Success") message.success("Tạo mới thành công!");
-      else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
+      // if (supplyResult === "Success") message.success("Tạo mới thành công!");
+      // else if (supplyResult === "Error") message.error("Có lỗi xảy ra!");
 
-      setOpenStatusModal(false);
-      form.resetFields();
+      // setOpenStatusModal(false);
+      // form.resetFields();
     } catch (error) {
       console.log("Failed:", error);
       message.error("Có lỗi xảy ra!");
@@ -313,7 +311,7 @@ const Supply = () => {
     <div className="account">
       <div className="page-title">
         <div className="title-icon">
-          <i className="bi bi-plug-fill" />
+          <i className="bi bi-lightning-fill" />
         </div>
         <div className="title-name">Quản lý vật dụng</div>
         <Button
